@@ -1,0 +1,7 @@
+{
+  "name": "mobilidade",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
