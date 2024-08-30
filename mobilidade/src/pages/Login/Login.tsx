@@ -1,7 +1,7 @@
 import { IonButton, IonContent, IonFooter, IonImg, IonPage, IonTitle } from "@ionic/react";
 import { useParams } from "react-router";
 
-import "./Login.css";
+import "./login.css";
 import { useState } from "react";
 
 const Login: React.FC = () => {
@@ -40,12 +40,11 @@ const Login: React.FC = () => {
   const handleSubmit = () => {};
 
   return (
-    // <IonPage>
-    <>
+    <IonPage>
       <IonContent fullscreen>
         <div id="branding-container">
-          <IonImg src="./src/assets/img/mobil-icon.png" />
-          <IonTitle>Mobil</IonTitle>
+          <IonImg  src="./src/assets/img/logo.jpg" />
+          <IonTitle className={""} >Mobil</IonTitle>
         </div>
 
         <div id="form-container">
@@ -86,8 +85,7 @@ const Login: React.FC = () => {
       <IonFooter>
         <p>@Mobil 2024</p>
       </IonFooter>
-    </>
-    // </IonPage>
+    </IonPage>
   );
 };
 

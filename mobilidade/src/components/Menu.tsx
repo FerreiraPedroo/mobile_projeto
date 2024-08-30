@@ -11,7 +11,7 @@ import {
 } from '@ionic/react';
 
 import { useLocation } from 'react-router-dom';
-import { heartOutline, heartSharp} from 'ionicons/icons';
+import { homeOutline, locationOutline, manOutline, mapOutline} from 'ionicons/icons';
 import './Menu.css';
 
 interface AppPage {
@@ -23,26 +23,30 @@ interface AppPage {
 
 const appPages: AppPage[] = [
   {
+    title: 'Inicio',
+    url: '/home',
+    iosIcon: homeOutline,
+    mdIcon: homeOutline
+  },
+  {
     title: 'Rotas',
-    url: '/rotas/inicio',
-    iosIcon: "",
-    mdIcon: ""
+    url: '/routes',
+    iosIcon: mapOutline,
+    mdIcon: mapOutline
   },
   {
     title: 'Pontos de parada',
-    url: '/stop/inicio',
-    iosIcon: "",
-    mdIcon: ""
+    url: '/landing-point',
+    iosIcon: locationOutline,
+    mdIcon: locationOutline
   },
   {
-    title: 'Passageiros',
-    url: '/passageiro/inicio',
-    iosIcon: heartOutline,
-    mdIcon: heartSharp
+    title: 'Responsável',
+    url: '/responsable',
+    iosIcon: manOutline,
+    mdIcon: manOutline
   }
 ];
-
-const labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
 
 const Menu: React.FC = () => {
   const location = useLocation();

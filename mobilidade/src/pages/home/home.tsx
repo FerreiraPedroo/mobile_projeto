@@ -1,5 +1,4 @@
 import {
-  IonAvatar,
   IonButtons,
   IonCard,
   IonCardContent,
@@ -9,17 +8,15 @@ import {
   IonHeader,
   IonMenuButton,
   IonPage,
-  IonSkeletonText,
-  IonSpinner,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useParams } from "react-router";
+import { useState } from "react";
 
 import { GoogleMap } from "@capacitor/google-maps";
 
-import "./Page.css";
-import { useEffect, useRef, useState } from "react";
+import "./home.css";
+import { useStorage } from "../../hooks/useStorage";
 
 const apiKey = "YOUR_API_KEY_HERE";
 const dateActual = new Date();
@@ -33,6 +30,7 @@ interface Passager {
 }
 
 const Page: React.FC = () => {
+  const { loginToken } = useStorage();
   const [passagerList, setPassagerList] = useState<Passager[]>([
     {
       id: 0,
@@ -98,7 +96,6 @@ const Page: React.FC = () => {
           <IonTitle>{"Mobil"}</IonTitle>
         </IonToolbar>
       </IonHeader>
-
       <IonContent fullscreen>
         <div id="day-container">
           {dateActual.toLocaleDateString("pt-BR", {
@@ -107,7 +104,7 @@ const Page: React.FC = () => {
             month: "long",
             day: "numeric",
           })}
-          - {dateActual.toLocaleTimeString()}
+          {" - "} {dateActual.toLocaleTimeString()}
         </div>
         {/* <capacitor-google-map
           ref={mapRef}
@@ -118,10 +115,9 @@ const Page: React.FC = () => {
           }}
         ></capacitor-google-map> */}
         <div id="passager-container">
-          {passagerList.map((passager) => {
+          {passagerList.map((passager, key) => {
             return (
-              <>
-              <IonCard onClick={() => openPassager(passager.id)}>
+              <IonCard key={key} onClick={() => openPassager(passager.id)}>
                 <IonCardHeader>
                   <img className="passager-photo" src={passager.photo}></img>
                   <IonCardTitle>{passager.name}</IonCardTitle>
@@ -133,7 +129,7 @@ const Page: React.FC = () => {
                     <div>desembarque: {passager.landing_point}</div>
                   </div>
                 </IonCardContent>
-              </IonCard></>
+              </IonCard>
             );
           })}
         </div>

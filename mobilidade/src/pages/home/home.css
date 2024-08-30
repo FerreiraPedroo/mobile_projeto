@@ -16,24 +16,9 @@ capacitor-google-map {
   flex-direction: column;
 }
 
-ion-card-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  padding: 6px;
-}
-
 .passager-photo {
   width: 40px;
   height: 40px;
-}
-
-ion-card-title {
-  width: 100%;
-  font-size: 1rem;
-  margin: 0px;
 }
 
 .passager-point {
@@ -42,7 +27,4 @@ ion-card-title {
   padding: 0px;
 }
 
-ion-card-content {
-  padding: 4px !important;
-}
 
