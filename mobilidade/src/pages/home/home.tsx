@@ -29,7 +29,7 @@ interface Passager {
   landing_point: string;
 }
 
-const Page: React.FC = () => {
+const Home: React.FC = () => {
   const { loginToken } = useStorage();
   const [passagerList, setPassagerList] = useState<Passager[]>([
     {
@@ -138,4 +138,4 @@ const Page: React.FC = () => {
   );
 };
 
-export default Page;
+export { Home };

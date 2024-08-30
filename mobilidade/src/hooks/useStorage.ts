@@ -18,7 +18,7 @@ export interface ResponsableList {
 
 export function useStorage() {
   const [store, setStore] = useState<Storage>();
-  const [loginToken, setLoginToken] = useState<String>("return");
+  const [loginToken, setLoginToken] = useState<String>();
   const [routeList, setRouteList] = useState<RouteList[]>([]);
   const [responsableList, setResponsableList] = useState<ResponsableList[]>([]);
 

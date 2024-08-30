@@ -1,34 +1,38 @@
 import {
-  IonButtons,
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
   IonContent,
-  IonHeader,
-  IonImg,
-  IonMenuButton,
   IonPage,
-  IonSplitPane,
-  IonTitle,
-  IonToolbar,
+  useIonRouter,
 } from "@ionic/react";
-import { useState } from "react";
 
-import { GoogleMap } from "@capacitor/google-maps";
-
-import "./splash.css";
 import { useStorage } from "../../hooks/useStorage";
 
+import "./splash.css";
+import { useEffect } from "react";
+
 const Splash: React.FC = () => {
+  
+  const router = useIonRouter();
+
   const { loginToken } = useStorage();
+
+  useEffect(()=>{
+    const checkLogin = async () => {
+      if(!loginToken){
+        router.push("/login","root","replace")
+      }else {
+        console.log("OK",{loginToken})
+
+      }
+    }
+    checkLogin()
+  },[])
 
   return (
     <IonPage>
       <IonContent fullscreen>
-        <IonTitle>
-          <IonImg src="./src/img/logo.jpg"></IonImg>
-        </IonTitle>
+        <div id="splash-box">
+          <img id="splash-img" src="./src/assets/img/logo.jpg"></img>
+        </div>
       </IonContent>
     </IonPage>
   );

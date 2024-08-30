@@ -1,4 +1,4 @@
-import { IonButton, IonContent, IonFooter, IonImg, IonPage, IonTitle } from "@ionic/react";
+import { IonButton, IonContent, IonFooter, IonImg, IonPage, IonText, IonTitle } from "@ionic/react";
 import { useParams } from "react-router";
 
 import "./login.css";
@@ -8,12 +8,14 @@ const Login: React.FC = () => {
   const { name } = useParams<{ name: string }>();
 
   const [login, setLogin] = useState({ user: "", password: "" });
+
   const [loginError, setLoginError] = useState({
     user: "",
     datauser: "",
     password: "",
     datapassword: "",
   });
+
   const handleInput = (e: any) => {
     const errorClean = { [e.target.name]: "", ["data" + e.target.name]: "" };
 
@@ -37,14 +39,16 @@ const Login: React.FC = () => {
       return { ...prev, ...errorClean };
     });
   };
-  const handleSubmit = () => {};
+
+  const handleSubmit = () => { };
 
   return (
     <IonPage>
       <IonContent fullscreen>
         <div id="branding-container">
-          <IonImg  src="./src/assets/img/logo.jpg" />
-          <IonTitle className={""} >Mobil</IonTitle>
+          <img id="login-img" src="./src/assets/img/logo.jpg" />
+          <IonText></IonText>
+          <p id="login-title" >Mobil</p>
         </div>
 
         <div id="form-container">
