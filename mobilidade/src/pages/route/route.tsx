@@ -7,7 +7,6 @@ import {
   IonContent,
   IonHeader,
   IonItem,
-  IonLabel,
   IonMenuButton,
   IonPage,
   IonTitle,
@@ -79,16 +78,14 @@ const RouteList: React.FC = () => {
           {routeList.map((route, key) => {
             return (
                 <IonCard key={key} onClick={() => null} button={true}>
-                  <IonCardHeader>
+                  <IonCardHeader className="route-card-header-box">
                     <img className="route-photo" src={route.photo}></img>
                     <IonCardTitle>{route.name}</IonCardTitle>
                   </IonCardHeader>
 
-                  <IonCardContent>
-                    <div className="route-point">
+                  <IonCardContent className="route-point">
                       <div>pontos de parada: {route.boarding_point_amount}</div>
                       <div>passageiros: {route.passager_amount}</div>
-                    </div>
                   </IonCardContent>
                 </IonCard>
             );

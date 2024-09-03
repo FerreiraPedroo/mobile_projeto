@@ -1,6 +1,6 @@
 import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { Redirect, Route } from "react-router-dom";
+import { Route } from "react-router-dom";
 import Menu from "./components/Menu";
 
 /* Core CSS required for Ionic components to work properly */
@@ -34,8 +34,9 @@ import "@ionic/react/css/palettes/dark.system.css";
 import "./theme/variables.css";
 import { useEffect } from "react";
 import { Splash } from "./pages/splash/splash";
-import { Login } from "./pages/Login/login";
-import { Home } from "./pages/Home/home";
+
+import { Home } from "./pages/home/home";
+import { Login } from "./pages/login/login";
 import { RouteList } from "./pages/route/route";
 
 setupIonicReact();

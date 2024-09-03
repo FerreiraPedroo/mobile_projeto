@@ -114,6 +114,8 @@ const Home: React.FC = () => {
             height: 400,
           }}
         ></capacitor-google-map> */}
+        <IonTitle id="day-router-title">Rotas de hoje</IonTitle>
+
         <div id="passager-container">
           {passagerList.map((passager, key) => {
             return (
