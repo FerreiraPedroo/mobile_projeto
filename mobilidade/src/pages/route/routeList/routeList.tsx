@@ -13,10 +13,9 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { useState } from "react";
-
 import { GoogleMap } from "@capacitor/google-maps";
 
-import "./route.css";
+import "./routeList.css";
 
 const apiKey = "YOUR_API_KEY_HERE";
 const dateActual = new Date();
@@ -25,8 +24,10 @@ interface Route {
   id: number;
   name: string;
   photo: string;
-  boarding_point_amount: number;
-  passager_amount: number;
+  boarding_point: number;
+  landing_point: number;
+  passagers: number;
+  // starthour: string;
 }
 
 const RouteList: React.FC = () => {
@@ -35,22 +36,25 @@ const RouteList: React.FC = () => {
       id: 0,
       name: "Natação",
       photo: "default.png",
-      boarding_point_amount: 3,
-      passager_amount: 6,
+      boarding_point: 3,
+      landing_point: 2,
+      passagers: 10
     },
     {
       id: 2,
       name: "Escolar Manhã",
       photo: "default.png",
-      boarding_point_amount: 3,
-      passager_amount: 6,
+      boarding_point: 8,
+      landing_point: 1,
+      passagers: 10
     },
     {
       id: 3,
       name: "Escolar a Tarde",
       photo: "default.png",
-      boarding_point_amount: 3,
-      passager_amount: 6,
+      boarding_point: 2,
+      landing_point: 3,
+      passagers: 6
     },
   ]);
 
@@ -77,17 +81,22 @@ const RouteList: React.FC = () => {
         <div id="route-container">
           {routeList.map((route, key) => {
             return (
-                <IonCard key={key} onClick={() => null} button={true}>
-                  <IonCardHeader className="route-card-header-box">
-                    <img className="route-photo" src={route.photo}></img>
-                    <IonCardTitle>{route.name}</IonCardTitle>
-                  </IonCardHeader>
+              <IonCard key={key} routerLink={`/route/${route.id}`}>
+                <IonCardHeader class="route-card-header">
+                  <img className="route-photo" src={route.photo}></img>
+                  <IonCardTitle>{route.name}</IonCardTitle>
+                </IonCardHeader>
 
-                  <IonCardContent className="route-point">
-                      <div>pontos de parada: {route.boarding_point_amount}</div>
-                      <div>passageiros: {route.passager_amount}</div>
-                  </IonCardContent>
-                </IonCard>
+                <IonCardContent className="route-card-point">
+                  <div>
+                    Pontos de <br /> Embarque: {route.boarding_point}
+                  </div>
+                  <div>
+                    Pontos de <br /> Desembarque: {route.landing_point}
+                  </div>
+                  <div>Passageiros: {route.passagers}</div>
+                </IonCardContent>
+              </IonCard>
             );
           })}
         </div>

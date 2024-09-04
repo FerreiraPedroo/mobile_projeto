@@ -13,56 +13,66 @@ import {
 } from "@ionic/react";
 import { useState } from "react";
 
+import { useStorage } from "../../hooks/useStorage";
 import { GoogleMap } from "@capacitor/google-maps";
 
 import "./home.css";
-import { useStorage } from "../../hooks/useStorage";
 
 const apiKey = "YOUR_API_KEY_HERE";
 const dateActual = new Date();
 
-interface Passager {
+interface Route {
   id: number;
   name: string;
   photo: string;
-  boarding_point: string;
-  landing_point: string;
+  boarding_point: number;
+  landing_point: number;
+  passagers: number;
+  starthour: string;
 }
 
 const Home: React.FC = () => {
   const { loginToken } = useStorage();
-  const [passagerList, setPassagerList] = useState<Passager[]>([
+  const [routeList, setRouteList] = useState<Route[]>([
     {
       id: 0,
-      name: "Pedro Henrique de Assis Ferreira NAscimento",
-      photo: "default.png",
-      boarding_point: "AKI",
-      landing_point: "ALI",
+      name: "Pedro Henrique de Assis",
+      photo: "./src/assets/img/ default.png",
+      boarding_point: 0,
+      landing_point: 0,
+      passagers: 0,
+      starthour: "07:00",
     },
     {
       id: 1,
       name: "Pedro Henrique de Assis Ferreira NAscimento",
       photo: "default.png",
-      boarding_point: "AKI",
-      landing_point: "ALI",
+      boarding_point: 0,
+      landing_point: 0,
+      passagers: 0,
+      starthour: "07:00",
     },
     {
       id: 2,
       name: "Pedro Henrique de Assis Ferreira NAscimento",
       photo: "default.png",
-      boarding_point: "AKI",
-      landing_point: "ALI",
+      boarding_point: 0,
+      landing_point: 0,
+      passagers: 0,
+      starthour: "07:00",
     },
     {
       id: 3,
       name: "Pedro Henrique de Assis Ferreira NAscimento",
       photo: "default.png",
-      boarding_point: "AKI",
-      landing_point: "ALI",
+      boarding_point: 0,
+      landing_point: 0,
+      passagers: 0,
+      starthour: "07:00",
     },
   ]);
 
-  const openPassager = (id: number) => {
+  const openRoute = (id: number) => {
     console.log(id);
   };
 
@@ -96,6 +106,7 @@ const Home: React.FC = () => {
           <IonTitle>{"Mobil"}</IonTitle>
         </IonToolbar>
       </IonHeader>
+
       <IonContent fullscreen>
         <div id="day-container">
           {dateActual.toLocaleDateString("pt-BR", {
@@ -116,20 +127,26 @@ const Home: React.FC = () => {
         ></capacitor-google-map> */}
         <IonTitle id="day-router-title">Rotas de hoje</IonTitle>
 
-        <div id="passager-container">
-          {passagerList.map((passager, key) => {
+        <div id="home-container">
+          {routeList.map((route, key) => {
             return (
-              <IonCard key={key} onClick={() => openPassager(passager.id)}>
-                <IonCardHeader>
-                  <img className="passager-photo" src={passager.photo}></img>
-                  <IonCardTitle>{passager.name}</IonCardTitle>
+              <IonCard key={key} routerLink={`/route/${route.id}`}>
+                <IonCardHeader class="home-card-header">
+                  <img className="home-photo" src={route.photo}></img>
+                  <IonCardTitle>{route.name}</IonCardTitle>
+                  <div className="home-card-start">
+                    INICIO <br /> {route.starthour}
+                  </div>
                 </IonCardHeader>
 
-                <IonCardContent>
-                  <div className="passager-point">
-                    <div>embarque: {passager.boarding_point}</div>
-                    <div>desembarque: {passager.landing_point}</div>
+                <IonCardContent className="home-card-point">
+                  <div>
+                    Pontos de <br /> Embarque: {route.boarding_point}
                   </div>
+                  <div>
+                    Pontos de <br /> Desembarque: {route.landing_point}
+                  </div>
+                  <div>Passageiros: {route.passagers}</div>
                 </IonCardContent>
               </IonCard>
             );

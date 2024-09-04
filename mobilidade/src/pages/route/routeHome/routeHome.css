@@ -1,0 +1,26 @@
+#route-container {
+  display: flex;
+  flex-direction: column;
+}
+
+p {
+  height: auto;
+  width: 100%;
+  font-size: 2rem;
+  font-weight: bolder;
+  margin: 12px 8px 8px 0px;
+}
+
+#route-home-loading {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  place-items: center;
+  font-size: 1.5em;
+}
+
+#route-home-name {
+  font-size: 1.5rem;
+  padding: 0 16px;
+}

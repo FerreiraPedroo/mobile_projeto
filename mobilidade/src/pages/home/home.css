@@ -1,3 +1,9 @@
+capacitor-google-map {
+  display: inline-block;
+  width: 275px;
+  height: 400px;
+}
+
 #day-container {
   padding: 12px 0;
   font-weight: bold;
@@ -5,26 +11,38 @@
   font-size: 1.2rem;
 }
 
-capacitor-google-map {
-  display: inline-block;
-  width: 275px;
-  height: 400px;
-}
-
-#passager-container {
+#home-container {
   display: flex;
   flex-direction: column;
 }
 
-.passager-photo {
+.home-card-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.home-card-start {
+  flex-grow: 1;
+  text-align: end;
+  font-size: 1rem;
+  font-weight: 600;
+} 
+
+.home-photo {
   width: 40px;
   height: 40px;
 }
 
-.passager-point {
+.home-card-point {
   display: flex;
+  align-items: flex-end;
   justify-content: space-evenly;
-  padding: 0px;
+  padding: 0 4px 0px 4px;
+  font-size: 1.1rem;
+  padding: 8px;
+
 }
 
 
