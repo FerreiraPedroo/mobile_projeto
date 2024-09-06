@@ -30,6 +30,8 @@ interface Route {
   // starthour: string;
 }
 
+import routeImg from "../../../assets/img/route-map.png";
+
 const RouteList: React.FC = () => {
   const [routeList, setRouteList] = useState<Route[]>([
     {
@@ -83,16 +85,16 @@ const RouteList: React.FC = () => {
             return (
               <IonCard key={key} routerLink={`/route/${route.id}`}>
                 <IonCardHeader class="route-card-header">
-                  <img className="route-photo" src={route.photo}></img>
+                  <img className="route-photo" src={routeImg}></img>
                   <IonCardTitle>{route.name}</IonCardTitle>
                 </IonCardHeader>
 
                 <IonCardContent className="route-card-point">
                   <div>
-                    Pontos de <br /> Embarque: {route.boarding_point}
+                    Pontos de  Embarque: {route.boarding_point}
                   </div>
                   <div>
-                    Pontos de <br /> Desembarque: {route.landing_point}
+                    Pontos de  Desembarque: {route.landing_point}
                   </div>
                   <div>Passageiros: {route.passagers}</div>
                 </IonCardContent>

@@ -1,11 +1,21 @@
-import express from 'express'
+import express, { urlencoded } from 'express'
 import { validateTokenJWT } from './helpers/jwt.js';
 import { loginUserService } from './service/loginUserService.js';
+import cors from "cors";
 import QRCode from 'qrcode';
 
 
 const app = express();
 app.use(express.json());
+app.use(urlencoded({ extended: false }));
+app.use(
+    cors({
+        origin: "http://localhost:8100",
+        methods: "GET, POST, PUT, DELETE",
+        credentials: true,
+        exposedHeaders: ["x-strao-update-data"]
+    })
+);
 
 app.post("/check-login", async (req, res, next) => {
     const { token } = req.body;
@@ -43,6 +53,38 @@ app.post("/login", async (req, res, next) => {
     }
 })
 
+app.get("/point-list/:userId", async (req, res, next) => {
+    const { userId } = req.params;
+
+    try {
+        if (userId) {
+            // const routeListData = await routeList(userId);
+
+            // const routeInfo = routeListData.map((route) => {
+            //     return {
+            //         id: route.id,
+            //         nome: route.name,
+            //         photo: route.photo,
+            //         boarding_point_amount: route.boarding_point.length,
+            //         passager_amount: route.passager.length,
+            //     }
+            // })
+
+            const routeInfo = [{ name: "Ponto1" }, { name: "Ponto2" }, { name: "Ponto3" }, { name: "Ponto4" }]
+
+            return res.status(200).send({ codStatus: 200, message: "OK", data: routeInfo });
+        } else {
+            throw { codStatus: 422, error: "Id do usuário não é valido." }
+        }
+    } catch (error) {
+        return res.status(error.codStatus || 422).send({
+            codStatus: error.codStatus || 500,
+            message: error.message || "[ROT]: Erro ao checar o token.",
+            error: error.error
+        })
+    }
+})
+
 app.get("/route-list/:userId", async (req, res, next) => {
     const { userId } = req.params;
 
@@ -75,33 +117,50 @@ app.get("/route-list/:userId", async (req, res, next) => {
 
 app.get("/route/:routeId", async (req, res, next) => {
     const { routeId } = req.params;
+    console.log({routeId})
+    const routeInfo = {
+        id: 0,
+        name: "routeData.name",
+        photo: "routeData.photo",
+        boarding_point_amount: [{
+            id: "point.id",
+            name: "point.name",
+        }],
+        passager_amount: [{
+            id: "passager.id",
+            name: "passager.name",
+        }]
+    }
+
+    return res.status(200).send({ codStatus: 200, message: "OK", data: routeInfo });
+
 
     try {
-        if (userId) {
-            const routeData = await routeRead(routeId);
+        // if (userId) {
+        //     const routeData = await routeRead(routeId);
 
-            const routeInfo = {
-                id: routeData.id,
-                nome: routeData.name,
-                photo: routeData.photo,
-                boarding_point_amount: routeData.boarding_point.map((point) => {
-                    return {
-                        id: point.id,
-                        name: point.name,
-                    }
-                }),
-                passager_amount: routeData.passager.map((passager) => {
-                    return {
-                        id: passager.id,
-                        name: passager.name,
-                    }
-                }),
-            }
+        //     const routeInfo = {
+        //         id: routeData.id,
+        //         nome: routeData.name,
+        //         photo: routeData.photo,
+        //         boarding_point_amount: routeData.boarding_point.map((point) => {
+        //             return {
+        //                 id: point.id,
+        //                 name: point.name,
+        //             }
+        //         }),
+        //         passager_amount: routeData.passager.map((passager) => {
+        //             return {
+        //                 id: passager.id,
+        //                 name: passager.name,
+        //             }
+        //         }),
+        //     }
 
-            return res.status(200).send({ codStatus: 200, message: "OK", data: routeInfo });
-        } else {
-            throw { codStatus: 422, error: "Id dda rota não é valido." }
-        }
+        //     return res.status(200).send({ codStatus: 200, message: "OK", data: routeInfo });
+        // } else {
+        //     throw { codStatus: 422, error: "Id dda rota não é valido." }
+        // }
     } catch (error) {
         return res.status(error.codStatus || 422).send({
             codStatus: error.codStatus || 500,

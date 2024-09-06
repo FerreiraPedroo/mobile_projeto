@@ -24,10 +24,7 @@ p {
 }
 
 .route-card-point {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-evenly;
-  padding: 0 4px 0px 4px;
+  width: 100%;
   font-size: 1.1rem;
-  padding: 8px;
+  padding: 10px 20px;
 }

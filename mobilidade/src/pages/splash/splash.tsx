@@ -10,22 +10,22 @@ import "./splash.css";
 import { useEffect } from "react";
 
 const Splash: React.FC = () => {
-  
+
   const router = useIonRouter();
 
   const { loginToken } = useStorage();
 
-  useEffect(()=>{
+  useEffect(() => {
     const checkLogin = async () => {
-      if(!loginToken){
-        router.push("/login","root","replace")
-      }else {
-        console.log("OK",{loginToken})
+      if (!loginToken) {
+        router.push("/login", "root", "replace")
+      } else {
+        console.log("OK", { loginToken })
 
       }
     }
     checkLogin()
-  },[])
+  }, [])
 
   return (
     <IonPage>

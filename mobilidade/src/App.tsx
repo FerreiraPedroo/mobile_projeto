@@ -32,7 +32,6 @@ import "@ionic/react/css/palettes/dark.system.css";
 
 /* Theme variables */
 import "./theme/variables.css";
-import { useEffect } from "react";
 import { Splash } from "./pages/splash/splash";
 
 import { Home } from "./pages/home/home";
