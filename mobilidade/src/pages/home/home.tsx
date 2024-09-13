@@ -11,10 +11,12 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useStorage } from "../../hooks/useStorage";
 import { GoogleMap } from "@capacitor/google-maps";
+import loading from "../../assets/img/loading.gif";
+
 
 import "./home.css";
 
@@ -35,68 +37,39 @@ import routeImg from "../../assets/img/route-map.png";
 
 const Home: React.FC = () => {
   const { loginToken } = useStorage();
-  const [routeList, setRouteList] = useState<Route[]>([
-    {
-      id: 0,
-      name: "Pedro Henrique de Assis",
-      photo: "./src/assets/img/ default.png",
-      boarding_point: 0,
-      landing_point: 0,
-      passagers: 0,
-      starthour: "07:00",
-    },
-    {
-      id: 1,
-      name: "Pedro Henrique de Assis Ferreira NAscimento",
-      photo: "default.png",
-      boarding_point: 0,
-      landing_point: 0,
-      passagers: 0,
-      starthour: "07:00",
-    },
-    {
-      id: 2,
-      name: "Pedro Henrique de Assis Ferreira NAscimento",
-      photo: "default.png",
-      boarding_point: 0,
-      landing_point: 0,
-      passagers: 0,
-      starthour: "07:00",
-    },
-    {
-      id: 3,
-      name: "Pedro Henrique de Assis Ferreira NAscimento",
-      photo: "default.png",
-      boarding_point: 0,
-      landing_point: 0,
-      passagers: 0,
-      starthour: "07:00",
-    },
-  ]);
+  const [routeList, setRouteList] = useState<Route[] | null>(null);
 
   const openRoute = (id: number) => {
     console.log(id);
   };
 
-  // const mapRef = useRef();
-  // async function loadMap(mapRef: HTMLElement) {
-  //   const newMap = await GoogleMap.create({
-  //     id: "my-map", // Unique identifier for this map instance
-  //     element: mapRef, // reference to the capacitor-google-map element
-  //     apiKey: apiKey, // Your Google Maps API Key
-  //     config: {
-  //       center: {
-  //         // The initial position to be rendered by the map
-  //         lat: 33.6,
-  //         lng: -117.9,
-  //       },
-  //       zoom: 8, // The initial zoom level to be rendered by the map
-  //     },
-  //   });
-  // }
-  // useEffect(() => {
-  //   loadMap(mapRef.current!);
-  // }, []);
+
+  useEffect(() => {
+    async function getDayRouteList(userId: number) {
+      try {
+
+        const response = await fetch(`http://localhost:3000/day-route-list/${userId}`, {
+          method: "GET",
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+
+        const routeDataReturn = await response.json();
+        if (routeDataReturn.codStatus == 200) {
+          setRouteList(routeDataReturn.data)
+          return;
+        }
+
+        throw "Erro";
+      } catch (error) {
+        setRouteList(null)
+      }
+    };
+
+    getDayRouteList(0);
+  }, [])
 
   return (
     <IonPage>
@@ -117,43 +90,43 @@ const Home: React.FC = () => {
             month: "long",
             day: "numeric",
           })}
-          {" - "} {dateActual.toLocaleTimeString()}
+          <br /> {dateActual.toLocaleTimeString()}<hr />
         </div>
-        {/* <capacitor-google-map
-          ref={mapRef}
-          style={{
-            display: "inline-block",
-            width: 275,
-            height: 400,
-          }}
-        ></capacitor-google-map> */}
-        <IonTitle id="day-router-title">Rotas de hoje</IonTitle>
 
-        <div id="home-container">
-          {routeList.map((route, key) => {
-            return (
-              <IonCard key={key} routerLink={`/route/${route.id}`}>
-                <IonCardHeader class="home-card-header">
-                  <img className="home-photo" src={routeImg}></img>
-                  <IonCardTitle>{route.name}</IonCardTitle>
-                  <div className="home-card-start">
-                    INICIO <br /> {route.starthour}
-                  </div>
-                </IonCardHeader>
+        {routeList ?
+          <>
+            <IonTitle id="day-router-title">Rotas de hoje</IonTitle>
+            <div id="home-container">
+              {routeList.map((route, key) => {
+                return (
+                  <IonCard key={key} routerLink={`/route/${route.id}`}>
+                    <IonCardHeader class="home-card-header">
+                      <img className="home-photo" src={routeImg}></img>
+                      <IonCardTitle class="home-card-title">{route.name}</IonCardTitle>
+                      <div className="home-card-start">
+                        INICIO<br />{route.starthour}
+                      </div>
+                    </IonCardHeader>
 
-                <IonCardContent className="home-card-point">
-                  <div>
-                    Pontos de Embarque: {route.boarding_point}
-                  </div>
-                  <div>
-                    Pontos de Desembarque: {route.landing_point}
-                  </div>
-                  <div>Passageiros: {route.passagers}</div>
-                </IonCardContent>
-              </IonCard>
-            );
-          })}
-        </div>
+                    <IonCardContent className="home-card-point">
+                      <div>
+                        Pontos de Embarque: {route.boarding_point}
+                      </div>
+                      <div>
+                        Pontos de Desembarque: {route.landing_point}
+                      </div>
+                      <div>Passageiros: {route.passagers}</div>
+                    </IonCardContent>
+                  </IonCard>
+                );
+              })
+              }
+            </div>
+          </>
+          : <div id="home-loading">
+            <img src={loading}></img>
+          </div>
+        }
       </IonContent>
     </IonPage>
   );

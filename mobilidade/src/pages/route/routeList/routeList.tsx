@@ -83,7 +83,7 @@ const RouteList: React.FC = () => {
         <div id="route-container">
           {routeList.map((route, key) => {
             return (
-              <IonCard key={key} routerLink={`/route/${route.id}`}>
+              <IonCard key={key} routerLink={`/route-config/${route.id}`}>
                 <IonCardHeader class="route-card-header">
                   <img className="route-photo" src={routeImg}></img>
                   <IonCardTitle>{route.name}</IonCardTitle>

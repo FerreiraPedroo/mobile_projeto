@@ -37,6 +37,7 @@ import { Splash } from "./pages/splash/splash";
 import { Home } from "./pages/home/home";
 import { Login } from "./pages/login/login";
 import { RouteList } from "./pages/route/routeList/routeList";
+import { RouteConfig } from "./pages/route/routeConfig/routeConfig";
 import { RouteHome } from "./pages/route/routeHome/routeHome";
 
 setupIonicReact();
@@ -54,6 +55,7 @@ const App: React.FC = () => {
             <Route path="/home" exact={true} component={Home} />
             <Route path="/routes" exact={true} component={RouteList} />
             <Route path="/route/:routeId" exact={true} component={RouteHome} />
+            <Route path="/route-config/:routeId" exact={true} component={RouteConfig} />
             <Route component={Login} />
           </IonRouterOutlet>
         </IonSplitPane>

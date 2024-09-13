@@ -1,26 +1,31 @@
 import {
   IonAccordion,
   IonAccordionGroup,
+  IonAvatar,
+  IonButton,
   IonButtons,
   IonContent,
   IonFabButton,
   IonHeader,
   IonIcon,
+  IonImg,
   IonItem,
   IonLabel,
+  IonList,
   IonMenuButton,
+  IonModal,
   IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import { RouteComponentProps } from "react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import "./routeHome.css";
+import "./routeConfig.css";
 import loading from "../../../assets/img/loading.gif";
 import { add } from "ionicons/icons";
 
-interface Route {
+interface RouteConfig {
   id: number;
   name: string;
   photo: string;
@@ -28,7 +33,7 @@ interface Route {
   landing_point: number;
   passagers: number;
 }
-interface RouteHomeParams
+interface RouteConfigParams
   extends RouteComponentProps<{
     routeId: string;
   }> { }
@@ -39,9 +44,16 @@ interface ModalInfoInterface {
 
 import routePoint from "../../../assets/img/point.png";
 
-const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
-  const [routeInfo, setRouteInfo] = useState<Route | null>(null);
+const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
+  const [routeInfo, setRouteInfo] = useState<RouteConfig | null>(null);
   const [modalInfo, setModalInfo] = useState<ModalInfoInterface>({ type: "", data: null });
+  const [presentingElement, setPresentingElement] = useState<HTMLElement | null>(null);
+  const modal = useRef<HTMLIonModalElement>(null);
+  const page = useRef(null);
+
+  function dismiss() {
+    modal.current?.dismiss();
+  }
 
   async function openAddModal(typeParam: string, routeParam: string) {
     setModalInfo({ type: typeParam, data: null });
@@ -58,17 +70,15 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
 
       const pointListReturn = await response.json();
 
-      if (pointListReturn.codStatus == 200) {
-        setModalInfo(pointListReturn)
-      }
-
+      if (pointListReturn.codStatus == "201")
+        console.log(pointListReturn)
+      setModalInfo(pointListReturn)
 
     } catch (error) {
       setModalInfo({ type: "", data: [] })
     }
   }
 
-  console.log("RENDER")
   useEffect(() => {
     async function getRoute(routeId: string) {
       try {
@@ -98,7 +108,7 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
   }, []);
 
   return (
-    <IonPage>
+    <IonPage ref={page}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -111,16 +121,17 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
       {routeInfo ? (
         <IonContent fullscreen>
           <IonItem>
-          <p id="route-home-name">{routeInfo.name}</p>
+            <p>Rota</p>
           </IonItem>
+          <p id="route-config-name">{routeInfo.name}</p>
 
-          <div id="route-home-container">
+          <div id="route-config-container">
             <IonAccordionGroup expand="inset" mode={"md"}>
               <IonAccordion value="first">
                 <IonItem slot="header" color="light">
                   <IonLabel>Pontos de embarque</IonLabel>
                 </IonItem>
-                <div className="route-home-add-point" slot="content">
+                <div className="route-config-add-point" slot="content">
                   <IonFabButton id="open-modal" size="small" onClick={() => openAddModal("boarding", "point-list")}>
                     <IonIcon icon={add}></IonIcon>
                   </IonFabButton>
@@ -133,7 +144,7 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
                 <IonItem slot="header" color="light">
                   <IonLabel>Pontos de desembarque</IonLabel>
                 </IonItem>
-                <div className="route-home-add-point" slot="content">
+                <div className="route-config-add-point" slot="content">
                   <IonFabButton id="open-modal" size="small" onClick={() => openAddModal("landing", "point-list")}>
                     <IonIcon icon={add}></IonIcon>
                   </IonFabButton>
@@ -146,7 +157,7 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
                 <IonItem slot="header" color="light">
                   <IonLabel>Passageiros</IonLabel>
                 </IonItem>
-                <div className="route-home-add-point" slot="content">
+                <div className="route-config-add-point" slot="content">
                   <IonFabButton id="open-modal" size="small" onClick={() => openAddModal("passager", "passager-list")}>
                     <IonIcon icon={add}></IonIcon>
                   </IonFabButton>
@@ -157,9 +168,44 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
               </IonAccordion>
             </IonAccordionGroup>
           </div>
+
+          <IonModal ref={modal} trigger="open-modal" presentingElement={presentingElement!}>
+            <IonHeader>
+              <IonToolbar>
+                <IonTitle>Adicionar</IonTitle>
+                <IonButtons slot="end">
+                  <IonButton onClick={() => dismiss()}>Close</IonButton>
+                </IonButtons>
+              </IonToolbar>
+            </IonHeader>
+            <IonContent className="ion-padding">
+              {modalInfo.data ?
+                <IonList>
+                  {modalInfo.data.map((item) => {
+                    return (
+                      <IonItem key={item.name}>
+                        <IonAvatar slot="start">
+                          <IonImg src={routePoint} />
+                        </IonAvatar>
+                        <IonLabel>
+                          <h2>{item.name}</h2>
+                          <p>Sales Rep</p>
+                        </IonLabel>
+                      </IonItem>
+                    )
+                  }
+                  )}
+                </IonList>
+
+                : <div id="route-config-loading">
+                  <img src={loading}></img>
+                </div>
+              }
+            </IonContent>
+          </IonModal>
         </IonContent>
       ) : (
-        <div id="route-home-loading">
+        <div id="route-config-loading">
           <img src={loading}></img>
         </div>
       )}
@@ -167,4 +213,4 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
   );
 };
 
-export { RouteHome };
+export { RouteConfig };
