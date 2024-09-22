@@ -1,14 +1,15 @@
+import { useContext, useEffect, useState } from "react";
+import { useIonRouter } from '@ionic/react';
+import { ContextAppInfo } from "../../services/context/context";
 import { IonButton, IonContent, IonFooter, IonImg, IonPage, IonText, IonTitle } from "@ionic/react";
-import { useParams } from "react-router";
 
 import "./login.css";
-import { useState } from "react";
 
 const Login: React.FC = () => {
-  const { name } = useParams<{ name: string }>();
+  const router = useIonRouter()
+  const { userInfo, setUserInfo } = useContext(ContextAppInfo);
 
   const [login, setLogin] = useState({ user: "", password: "" });
-
   const [loginError, setLoginError] = useState({
     user: "",
     datauser: "",
@@ -40,7 +41,69 @@ const Login: React.FC = () => {
     });
   };
 
-  const handleSubmit = () => { };
+  async function handleSubmit() {
+    try {
+      const body = new FormData();
+      body.set("user", login.user);
+      body.set("password", login.password);
+
+      const response = await fetch(`http://localhost:3000/login`, {
+        method: "POST",
+        mode: 'cors',
+        body,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
+      });
+
+      const loginDataReturn = await response.json();
+
+      if (loginDataReturn.codStatus == 200) {
+        router.push("/home");
+        return;
+      } else {
+        throw "Erro";
+      }
+    } catch (error) {
+
+    }
+  };
+
+  useEffect(() => {
+    if (userInfo.token != null) {
+      async function checkToken() {
+        try {
+          const body = new FormData()
+          body.set("token", userInfo.token ?? "")
+
+          const response = await fetch(`http://localhost:3000/check-login`, {
+            method: "POST",
+            mode: 'cors',
+            body,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+          const loginDataReturn = await response.json();
+          if (loginDataReturn.codStatus == 200) {
+            router.push("/home");
+            return;
+          } else {
+            throw "Erro";
+          }
+
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      checkToken()
+    }
+
+  }, [])
+
+  console.log(userInfo)
 
   return (
     <IonPage>
@@ -79,7 +142,7 @@ const Login: React.FC = () => {
 
         <div id="action-container">
           <div className="box-input">
-            <IonButton color={"primary"} title="ENTRAR" routerLink="/home">
+            <IonButton color={"primary"} title="ENTRAR" onClick={handleSubmit}>
               ENTRAR
             </IonButton>
           </div>

@@ -12,13 +12,15 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GoogleMap } from "@capacitor/google-maps";
-
-import "./routeList.css";
-
 const apiKey = "YOUR_API_KEY_HERE";
 const dateActual = new Date();
+
+
+import { ContextAppInfo } from "../../../services/context/context";
+import routeImg from "../../../assets/img/route-map.png";
+import "./routeList.css";
 
 interface Route {
   id: number;
@@ -30,10 +32,10 @@ interface Route {
   // starthour: string;
 }
 
-import routeImg from "../../../assets/img/route-map.png";
-
 const RouteList: React.FC = () => {
-  const [routeList, setRouteList] = useState<Route[]>([
+  const userInfo = useContext(ContextAppInfo);
+
+  const [routesList, setRoutesList] = useState<Route[]>([
     {
       id: 0,
       name: "Natação",
@@ -64,6 +66,33 @@ const RouteList: React.FC = () => {
     console.log(id);
   };
 
+  useEffect(() => {
+    async function getRoutes(userId: number) {
+      try {
+
+        const response = await fetch(`http://localhost:3000/route-list/${userId}`, {
+          method: "GET",
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+
+        const routeDataReturn = await response.json();
+        if (routeDataReturn.codStatus == 200) {
+          setRoutesList(routeDataReturn.data)
+          return;
+        }
+
+        throw "Erro";
+      } catch (error) {
+        setRoutesList([])
+      }
+    };
+
+    getRoutes(userInfo.userId!);
+  }, [])
+
   return (
     <IonPage>
       <IonHeader>
@@ -81,7 +110,7 @@ const RouteList: React.FC = () => {
         </IonItem>
 
         <div id="route-container">
-          {routeList.map((route, key) => {
+          {routesList.map((route, key) => {
             return (
               <IonCard key={key} routerLink={`/route-config/${route.id}`}>
                 <IonCardHeader class="route-card-header">

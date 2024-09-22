@@ -68,7 +68,6 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
     }
   }
 
-  console.log("RENDER")
   useEffect(() => {
     async function getRoute(routeId: string) {
       try {
