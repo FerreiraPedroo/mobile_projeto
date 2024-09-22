@@ -87,4 +87,37 @@ async function pointList(routeId) {
 
 }
 
-export { selectRoute, routeList, pointList }
+
+// USER ///////////////////////////////////////////////////////////////
+async function getUserByEmail(email) {
+    const conn = await connect();
+
+    const [user] = await conn.query(`SELECT * FROM user WHERE email='${email}'`);
+
+    if (!user.length) {
+        throw { codStatus: 422, message: "Usuario não encontrado.", error: "" };
+    }
+
+    return user[0];
+}
+async function getUserByID(userId) {
+    const conn = await connect();
+
+    const [user] = await conn.query(`SELECT * FROM user WHERE id=${'userId'}`);
+    
+    if (!user.length) {
+        return new Error({ codStatus: 422, message: "Usuario não encontrado.", error: "" });
+    }
+
+    return user[0];
+}
+async function setUserToken(userId, token) {
+    console.log(`UPDATE user SET token='${token}' WHERE id=${userId}`)
+    const conn = await connect();
+    await conn.query(`UPDATE user SET token='${token}' WHERE id=${userId}`);
+    
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////
+export { selectRoute, routeList, pointList, getUserByEmail, getUserByID, setUserToken }

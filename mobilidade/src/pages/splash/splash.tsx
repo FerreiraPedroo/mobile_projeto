@@ -4,27 +4,42 @@ import {
   useIonRouter,
 } from "@ionic/react";
 
-import { useStorage } from "../../hooks/useStorage";
+import { useContext, useEffect } from "react";
+import { ContextAppInfo } from "../../services/context/context";
 
 import "./splash.css";
-import { useEffect } from "react";
 
 const Splash: React.FC = () => {
-
+  const { userInfo } = useContext(ContextAppInfo);
   const router = useIonRouter();
 
-  const { loginToken } = useStorage();
-
   useEffect(() => {
-    const checkLogin = async () => {
-      if (!loginToken) {
-        router.push("/login", "root", "replace")
-      } else {
-        console.log("OK", { loginToken })
+    if (userInfo.token != null) {
+      async function checkToken() {
+        try {
+          const response = await fetch(`http://localhost:3000/check-login`, {
+            method: "POST",
+            mode: 'cors',
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*'
+            },
+            body: JSON.stringify({ token: userInfo.token })
+          });
 
+          const loginDataReturn = await response.json();
+          if (loginDataReturn.codStatus == 200) {
+            router.push("/home");
+            return;
+          }
+        } catch (error) {
+        }
       }
+      checkToken()
+    } else {
+      router.push("/login");
     }
-    checkLogin()
+
   }, [])
 
   return (

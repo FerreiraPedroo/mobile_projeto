@@ -11,9 +11,8 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
-import { useStorage } from "../../hooks/useStorage";
 import { GoogleMap } from "@capacitor/google-maps";
 import loading from "../../assets/img/loading.gif";
 
@@ -34,9 +33,11 @@ interface Route {
 }
 
 import routeImg from "../../assets/img/route-map.png";
+import { ContextAppInfo } from "../../services/context/context";
 
 const Home: React.FC = () => {
-  const { loginToken } = useStorage();
+  const { userInfo, changeUserInfo } = useContext(ContextAppInfo);
+
   const [routeList, setRouteList] = useState<Route[] | null>(null);
 
   const openRoute = (id: number) => {
@@ -53,6 +54,7 @@ const Home: React.FC = () => {
           mode: 'cors',
           headers: {
             'Content-Type': 'application/json',
+            'Autorization': userInfo.token ?? ""
           }
         });
 
@@ -60,7 +62,11 @@ const Home: React.FC = () => {
         if (routeDataReturn.codStatus == 200) {
           setRouteList(routeDataReturn.data)
           return;
+        } else {
+          await changeUserInfo({ userId: null, userName: null, token: null })
+          return;
         }
+
 
         throw "Erro";
       } catch (error) {

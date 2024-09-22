@@ -1,13 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { useIonRouter } from '@ionic/react';
 import { ContextAppInfo } from "../../services/context/context";
-import { IonButton, IonContent, IonFooter, IonImg, IonPage, IonText, IonTitle } from "@ionic/react";
+import { IonButton, IonContent, IonFooter, IonPage, IonText } from "@ionic/react";
 
 import "./login.css";
 
 const Login: React.FC = () => {
   const router = useIonRouter()
-  const { userInfo, setUserInfo } = useContext(ContextAppInfo);
+  const { userInfo, changeUserInfo } = useContext(ContextAppInfo);
 
   const [login, setLogin] = useState({ user: "", password: "" });
   const [loginError, setLoginError] = useState({
@@ -43,67 +43,69 @@ const Login: React.FC = () => {
 
   async function handleSubmit() {
     try {
-      const body = new FormData();
-      body.set("user", login.user);
-      body.set("password", login.password);
-
       const response = await fetch(`http://localhost:3000/login`, {
         method: "POST",
         mode: 'cors',
-        body,
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
-        }
+        },
+        body: JSON.stringify({
+          user: login.user,
+          password: login.password
+        })
       });
 
       const loginDataReturn = await response.json();
 
       if (loginDataReturn.codStatus == 200) {
+        changeUserInfo({
+          userId: loginDataReturn.data.userId,
+          userName: loginDataReturn.data.userName,
+          token: loginDataReturn.data.token
+        })
+
         router.push("/home");
         return;
       } else {
-        throw "Erro";
+        await changeUserInfo({ userId: null, userName: null, token: null })
       }
-    } catch (error) {
 
+    } catch (error) {
+      console.log(error)
     }
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (userInfo.token != null) {
       async function checkToken() {
         try {
-          const body = new FormData()
-          body.set("token", userInfo.token ?? "")
-
           const response = await fetch(`http://localhost:3000/check-login`, {
             method: "POST",
             mode: 'cors',
-            body,
             headers: {
               'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*'
             },
+            body: JSON.stringify({ token: userInfo.token })
           });
 
           const loginDataReturn = await response.json();
+
           if (loginDataReturn.codStatus == 200) {
             router.push("/home");
-            return;
-          } else {
-            throw "Erro";
-          }
 
+          } else {
+            await changeUserInfo({ userId: null, userName: null, token: null })
+            console.log("NOK")
+          }
         } catch (error) {
           console.log(error);
         }
       }
       checkToken()
     }
-
-  }, [])
-
-  console.log(userInfo)
+  }, [userInfo])
 
   return (
     <IonPage>

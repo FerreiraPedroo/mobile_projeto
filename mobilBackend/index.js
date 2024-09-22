@@ -24,7 +24,14 @@ app.post("/check-login", async (req, res, next) => {
     try {
         if (token) {
             const tokenValid = await validateTokenJWT(token);
-            return res.status(200).send({ codStatus: 200, message: "OK" })
+
+            const userInfo = await db.getUserByID(tokenValid.token)
+
+            if (userInfo instanceof Error) {
+                throw userInfo
+            }
+
+            // return res.status(200).send({ codStatus: 200, message: "OK" })
         } else {
             throw { codStatus: 422, error: "Token não enviado." }
         }
@@ -38,10 +45,11 @@ app.post("/check-login", async (req, res, next) => {
 })
 
 app.post("/login", async (req, res, next) => {
-    const { email, password } = req.body;
+    const { user, password } = req.body;
+
     try {
-        if (email && password) {
-            const logedToken = await loginUserService({ email, password });
+        if (user || password) {
+            const logedToken = await loginUserService({ user, password });
             return res.status(200).send({ codStatus: 200, message: "Login OK.", data: logedToken })
         } else {
             throw { codStatus: 422, error: "Usuário ou senha errado(s)." }
@@ -161,9 +169,9 @@ app.get("/route-list/:userId", async (req, res, next) => {
     try {
         if (userId) {
             const { routes, boardingPointRows, landingPointRows, routeRespPassagerRows } = await db.routeList(userId);
-            
+
             const routesInfo = []
-            
+
             // const routeInfo = routes.map((route) => {
             //     return {
             //         id: route.id,

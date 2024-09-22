@@ -1,47 +1,49 @@
-import { Storage } from "@ionic/storage";
-import { useEffect, useState } from "react";
-export interface RouteList {
-  id: number;
-  name: string;
-  photo: string;
-  boarding_point_amount: number;
-  passager_amount: number;
-}
+// import { Storage } from "@ionic/storage";
+// import { useEffect, useState } from "react";
+// export interface RouteList {
+//   id: number;
+//   name: string;
+//   photo: string;
+//   boarding_point_amount: number;
+//   passager_amount: number;
+// }
 
-export interface ResponsableList {
-  id: number;
-  name: string;
-  photo: string;
-  boarding_point_amount: number;
-  passager_amount: number;
-}
+// export interface ResponsableList {
+//   id: number;
+//   name: string;
+//   photo: string;
+//   boarding_point_amount: number;
+//   passager_amount: number;
+// }
 
-export function useStorage() {
-  const [store, setStore] = useState<Storage>();
-  const [loginToken, setLoginToken] = useState<String>();
-  const [routeList, setRouteList] = useState<RouteList[]>([]);
-  const [responsableList, setResponsableList] = useState<ResponsableList[]>([]);
+// const storage = await new Storage({
+//   name: "mobildb",
+// }).create();
 
-  useEffect(() => {
-    const initStorage = async () => {
-      const newStore = new Storage({
-        name: "mobildb",
-      });
-      const createdStore = await newStore.create();
-      setStore(createdStore);
+// export function useStorage() {
+//   const [store, setStore] = useState<Storage>();
+//   const [loginToken, setLoginToken] = useState<String>();
+//   const [routeList, setRouteList] = useState<RouteList[]>([]);
+//   const [responsableList, setResponsableList] = useState<ResponsableList[]>([]);
 
-      const storedLoginToken = await createdStore.get("logintoken" || []);
-      setLoginToken(storedLoginToken);
+//   useEffect(() => {
+//     const initStorage = async () => {
+//       const newStore = 
+//       const createdStore = await newStore.create();
+//       setStore(createdStore);
 
-      const storedRouteList = await createdStore.get("routelist" || []);
-      setRouteList(storedRouteList);
+//       const storedLoginToken = await createdStore.get("logintoken" || []);
+//       setLoginToken(storedLoginToken);
 
-      const storedResponsableList = await createdStore.get("responsablelist" || []);
-      setResponsableList(storedResponsableList);
-    };
+//       const storedRouteList = await createdStore.get("routelist" || []);
+//       setRouteList(storedRouteList);
 
-    initStorage();
-  }, []);
+//       const storedResponsableList = await createdStore.get("responsablelist" || []);
+//       setResponsableList(storedResponsableList);
+//     };
 
-  return { loginToken, routeList, responsableList };
-}
+//     initStorage();
+//   }, []);
+
+//   return { loginToken, routeList, responsableList };
+// }
