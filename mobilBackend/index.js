@@ -1,9 +1,11 @@
 import express, { urlencoded } from 'express'
-import { validateTokenJWT } from './helpers/jwt.js';
-import { loginUserService } from './service/loginUserService.js';
 import cors from "cors";
 import QRCode from 'qrcode';
 
+import { validateTokenJWT } from './helpers/jwt.js';
+import { loginUserService } from './service/loginUserService.js';
+
+import * as db from "./database/db.js";
 
 const app = express();
 app.use(express.json());
@@ -13,7 +15,7 @@ app.use(
         origin: "http://localhost:8100",
         methods: "GET, POST, PUT, DELETE",
         credentials: true,
-        exposedHeaders: ["x-strao-update-data"]
+        // exposedHeaders: ["x-strao-update-data"]
     })
 );
 
@@ -158,19 +160,21 @@ app.get("/route-list/:userId", async (req, res, next) => {
 
     try {
         if (userId) {
-            const routeListData = await routeList(userId);
+            const { routes, boardingPointRows, landingPointRows, routeRespPassagerRows } = await db.routeList(userId);
+            
+            const routesInfo = []
+            
+            // const routeInfo = routes.map((route) => {
+            //     return {
+            //         id: route.id,
+            //         nome: route.name,
+            //         photo: route.photo,
+            //         boarding_point_amount: route.boarding_point.length,
+            //         passager_amount: route.passager.length,
+            //     }
+            // })
 
-            const routeInfo = routeListData.map((route) => {
-                return {
-                    id: route.id,
-                    nome: route.name,
-                    photo: route.photo,
-                    boarding_point_amount: route.boarding_point.length,
-                    passager_amount: route.passager.length,
-                }
-            })
-
-            return res.status(200).send({ codStatus: 200, message: "OK", data: routeInfo });
+            return res.status(200).send({ codStatus: 200, message: "OK", data: routesInfo });
         } else {
             throw { codStatus: 422, error: "Id do usuário não é valido." }
         }
@@ -185,54 +189,46 @@ app.get("/route-list/:userId", async (req, res, next) => {
 
 app.get("/route/:routeId", async (req, res, next) => {
     const { routeId } = req.params;
-    console.log({ routeId })
-    const routeInfo = {
-        id: 0,
-        name: "routeData.name",
-        photo: "routeData.photo",
-        boarding_point_amount: [{
-            id: "point.id",
-            name: "point.name",
-        }],
-        passager_amount: [{
-            id: "passager.id",
-            name: "passager.name",
-        }]
-    }
-
-    return res.status(200).send({ codStatus: 200, message: "OK", data: routeInfo });
-
 
     try {
-        // if (userId) {
-        //     const routeData = await routeRead(routeId);
 
-        //     const routeInfo = {
-        //         id: routeData.id,
-        //         nome: routeData.name,
-        //         photo: routeData.photo,
-        //         boarding_point_amount: routeData.boarding_point.map((point) => {
-        //             return {
-        //                 id: point.id,
-        //                 name: point.name,
-        //             }
-        //         }),
-        //         passager_amount: routeData.passager.map((passager) => {
-        //             return {
-        //                 id: passager.id,
-        //                 name: passager.name,
-        //             }
-        //         }),
-        //     }
+        const routeData = await db.selectRoute(routeId);
 
-        //     return res.status(200).send({ codStatus: 200, message: "OK", data: routeInfo });
-        // } else {
-        //     throw { codStatus: 422, error: "Id dda rota não é valido." }
-        // }
+        let routeInfo = null;
+
+        if (!routeData) {
+            throw { codStatus: 422, message: "Rota não encontrada." }
+        }
+
+        const routeBoardingPoint = routeData.boarding_point ? routeData.boarding_point.map((point) => {
+            return {
+                id: point.id,
+                name: point.name,
+            }
+        }) : [];
+
+        const routePassager = routeData.passager ? routeData.passager.map((passager) => {
+            return {
+                id: passager.id,
+                name: passager.name,
+            }
+        }) : [];
+
+        routeInfo = {
+            id: routeData.route.id,
+            name: routeData.route.name,
+            photo: routeData.route.photo,
+            start_time: routeData.route.start_time,
+            end_time: routeData.route.end_time,
+            boarding_point_amount: routeBoardingPoint,
+            passager_amount: routePassager
+        }
+
+        return res.status(200).send({ codStatus: 200, message: "OK", data: routeInfo });
     } catch (error) {
         return res.status(error.codStatus || 422).send({
             codStatus: error.codStatus || 500,
-            message: error.message || "[ROT]: Erro ao checar o token.",
+            message: error.message || "[ROT]: Erro ao obter a rota.",
             error: error.error
         })
     }
