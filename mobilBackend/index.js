@@ -13,7 +13,7 @@ app.use(urlencoded({ extended: false }));
 app.use(
     cors({
         origin: "http://localhost:8100",
-        methods: "GET, POST, PUT, DELETE",
+        methods: "GET, POST, PUT, DELETE, OPTIONS",
         credentials: true,
         // exposedHeaders: ["x-strao-update-data"]
     })

@@ -70,8 +70,8 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
 
   useEffect(() => {
     async function getRoute(routeId: string) {
-      try {
 
+      try {
         const response = await fetch(`http://localhost:3000/route/${routeId}`, {
           method: "GET",
           mode: 'cors',
@@ -88,6 +88,7 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
 
         throw "Erro";
       } catch (error) {
+        
         setRouteInfo(null)
       }
     };

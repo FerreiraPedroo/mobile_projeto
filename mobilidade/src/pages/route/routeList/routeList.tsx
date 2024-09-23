@@ -17,7 +17,6 @@ import { GoogleMap } from "@capacitor/google-maps";
 const apiKey = "YOUR_API_KEY_HERE";
 const dateActual = new Date();
 
-
 import { ContextAppInfo } from "../../../services/context/context";
 import routeImg from "../../../assets/img/route-map.png";
 import "./routeList.css";
@@ -33,7 +32,7 @@ interface Route {
 }
 
 const RouteList: React.FC = () => {
-  const userInfo = useContext(ContextAppInfo);
+  const { userInfo } = useContext(ContextAppInfo);
 
   const [routesList, setRoutesList] = useState<Route[]>([
     {
@@ -42,7 +41,7 @@ const RouteList: React.FC = () => {
       photo: "default.png",
       boarding_point: 3,
       landing_point: 2,
-      passagers: 10
+      passagers: 10,
     },
     {
       id: 2,
@@ -50,7 +49,7 @@ const RouteList: React.FC = () => {
       photo: "default.png",
       boarding_point: 8,
       landing_point: 1,
-      passagers: 10
+      passagers: 10,
     },
     {
       id: 3,
@@ -58,7 +57,7 @@ const RouteList: React.FC = () => {
       photo: "default.png",
       boarding_point: 2,
       landing_point: 3,
-      passagers: 6
+      passagers: 6,
     },
   ]);
 
@@ -69,29 +68,28 @@ const RouteList: React.FC = () => {
   useEffect(() => {
     async function getRoutes(userId: number) {
       try {
-
         const response = await fetch(`http://localhost:3000/route-list/${userId}`, {
           method: "GET",
-          mode: 'cors',
+          mode: "cors",
           headers: {
-            'Content-Type': 'application/json',
-          }
+            "Content-Type": "application/json",
+          },
         });
 
         const routeDataReturn = await response.json();
         if (routeDataReturn.codStatus == 200) {
-          setRoutesList(routeDataReturn.data)
+          setRoutesList(routeDataReturn.data);
           return;
         }
 
         throw "Erro";
       } catch (error) {
-        setRoutesList([])
+        setRoutesList([]);
       }
-    };
+    }
 
     getRoutes(userInfo.userId!);
-  }, [])
+  }, []);
 
   return (
     <IonPage>
@@ -119,12 +117,8 @@ const RouteList: React.FC = () => {
                 </IonCardHeader>
 
                 <IonCardContent className="route-card-point">
-                  <div>
-                    Pontos de  Embarque: {route.boarding_point}
-                  </div>
-                  <div>
-                    Pontos de  Desembarque: {route.landing_point}
-                  </div>
+                  <div>Pontos de Embarque: {route.boarding_point}</div>
+                  <div>Pontos de Desembarque: {route.landing_point}</div>
                   <div>Passageiros: {route.passagers}</div>
                 </IonCardContent>
               </IonCard>

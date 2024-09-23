@@ -2,58 +2,53 @@ import React, { createContext, ReactElement, ReactEventHandler, useEffect, useSt
 import { Storage } from "@ionic/storage";
 
 interface IUserInfo {
-    userId: number | null
-    userName: string | null
-    token: string | null
+  userId: number | null;
+  userName: string | null;
+  token: string | null;
 }
 
 interface IUserContext {
-    userInfo: IUserInfo
-    changeUserInfo: any
+  userInfo: IUserInfo;
+  changeUserInfo: any;
 }
 
-const ContextAppInfo = createContext<IUserContext>({ changeUserInfo: () => null, userInfo: { userId: null, userName: null, token: null } })
+const ContextAppInfo = createContext<IUserContext>({
+  changeUserInfo: () => null,
+  userInfo: { userId: null, userName: null, token: null },
+});
 
 const newStorage = new Storage({
-    name: "mobildb",
-})
+  name: "mobildb",
+});
 
 function AppContext({ children }: { children: ReactElement }) {
-    const [userInfo, setUserInfo] = useState({ userId: null, userName: null, token: null })
+  const [userInfo, setUserInfo] = useState({ userId: null, userName: null, token: null });
 
-    async function changeUserInfo(info: IUserInfo) {
-        const storage = await newStorage.create();
+  async function changeUserInfo(info: IUserInfo) {
+    const storage = await newStorage.create();
+    const storedUserInfo = await storage.set("userInfo", info);
+    setUserInfo(storedUserInfo);
+  }
 
-        const storedUserInfo = await storage.set("userInfo", info);
+  useEffect(() => {
+    async function loadStoreUserInfo() {
+      const storage = await newStorage.create();
+      const storedUserInfo = await storage.get("userInfo");
 
-        if (storedUserInfo) {
-            setUserInfo(storedUserInfo);
-        } else {
-            setUserInfo({ userId: null, userName: null, token: null });
-        }
+      if (storedUserInfo) {
+        setUserInfo(storedUserInfo);
+      } else {
+        setUserInfo({ userId: null, userName: null, token: null });
+      }
     }
-    console.log({sotrage: userInfo})
-    useEffect(() => {
-        async function loadStoreUserInfo() {
-            const storage = await newStorage.create();
-            const storedUserInfo = await storage.get("userInfo");
+    loadStoreUserInfo();
+  }, []);
 
-            if (storedUserInfo) {
-                setUserInfo(storedUserInfo);
-            } else {
-                setUserInfo({ userId: null, userName: null, token: null });
-            }
-        }
-        loadStoreUserInfo()
-    }, [])
-
-    return (
-        <ContextAppInfo.Provider value={{ changeUserInfo, userInfo }}>
-            {children}
-        </ContextAppInfo.Provider>
-    )
+  return (
+    <ContextAppInfo.Provider value={{ changeUserInfo, userInfo }}>
+      {children}
+    </ContextAppInfo.Provider>
+  );
 }
-
-
 
 export { AppContext, ContextAppInfo };

@@ -10,12 +10,12 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  useIonRouter,
 } from "@ionic/react";
 import { useContext, useEffect, useState } from "react";
 
 import { GoogleMap } from "@capacitor/google-maps";
 import loading from "../../assets/img/loading.gif";
-
 
 import "./home.css";
 
@@ -36,6 +36,7 @@ import routeImg from "../../assets/img/route-map.png";
 import { ContextAppInfo } from "../../services/context/context";
 
 const Home: React.FC = () => {
+  const router = useIonRouter();
   const { userInfo, changeUserInfo } = useContext(ContextAppInfo);
 
   const [routeList, setRouteList] = useState<Route[] | null>(null);
@@ -44,38 +45,32 @@ const Home: React.FC = () => {
     console.log(id);
   };
 
-
   useEffect(() => {
     async function getDayRouteList(userId: number) {
       try {
-
         const response = await fetch(`http://localhost:3000/day-route-list/${userId}`, {
           method: "GET",
-          mode: 'cors',
+          mode: "cors",
           headers: {
-            'Content-Type': 'application/json',
-            'Autorization': userInfo.token ?? ""
-          }
+            "Content-Type": "application/json",
+            Autorization: userInfo.token ?? "",
+          },
         });
 
         const routeDataReturn = await response.json();
+
         if (routeDataReturn.codStatus == 200) {
-          setRouteList(routeDataReturn.data)
-          return;
+          setRouteList(routeDataReturn.data);
         } else {
-          await changeUserInfo({ userId: null, userName: null, token: null })
-          return;
+          await changeUserInfo({ userId: null, userName: null, token: null });
+          router.push("/login");
         }
-
-
-        throw "Erro";
       } catch (error) {
-        setRouteList(null)
+        setRouteList([]);
       }
-    };
-
-    getDayRouteList(0);
-  }, [])
+    }
+    getDayRouteList(userInfo.userId!);
+  }, []);
 
   return (
     <IonPage>
@@ -88,7 +83,7 @@ const Home: React.FC = () => {
         </IonToolbar>
       </IonHeader>
 
-      <IonContent fullscreen>
+      {/* <IonContent fullscreen>
         <div id="day-container">
           {dateActual.toLocaleDateString("pt-BR", {
             weekday: "long",
@@ -133,7 +128,7 @@ const Home: React.FC = () => {
             <img src={loading}></img>
           </div>
         }
-      </IonContent>
+      </IonContent> */}
     </IonPage>
   );
 };

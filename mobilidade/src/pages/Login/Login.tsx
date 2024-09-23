@@ -1,12 +1,12 @@
 import { useContext, useEffect, useLayoutEffect, useState } from "react";
-import { useIonRouter } from '@ionic/react';
+import { useIonRouter } from "@ionic/react";
 import { ContextAppInfo } from "../../services/context/context";
 import { IonButton, IonContent, IonFooter, IonPage, IonText } from "@ionic/react";
 
 import "./login.css";
 
 const Login: React.FC = () => {
-  const router = useIonRouter()
+  const router = useIonRouter();
   const { userInfo, changeUserInfo } = useContext(ContextAppInfo);
 
   const [login, setLogin] = useState({ user: "", password: "" });
@@ -15,10 +15,11 @@ const Login: React.FC = () => {
     datauser: "",
     password: "",
     datapassword: "",
+    error: "",
   });
 
   const handleInput = (e: any) => {
-    const errorClean = { [e.target.name]: "", ["data" + e.target.name]: "" };
+    const errorClean = { [e.target.name]: "", ["data" + e.target.name]: "", error: "" };
 
     if (!e.target.value && e.target.name == "user") {
       errorClean[e.target.name] = "O usuario não pode estar vazio.";
@@ -45,36 +46,32 @@ const Login: React.FC = () => {
     try {
       const response = await fetch(`http://localhost:3000/login`, {
         method: "POST",
-        mode: 'cors',
+        mode: "cors",
         headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify({
           user: login.user,
-          password: login.password
-        })
+          password: login.password,
+        }),
       });
 
       const loginDataReturn = await response.json();
 
       if (loginDataReturn.codStatus == 200) {
-        changeUserInfo({
+        await changeUserInfo({
           userId: loginDataReturn.data.userId,
           userName: loginDataReturn.data.userName,
-          token: loginDataReturn.data.token
-        })
-
-        router.push("/home");
-        return;
+          token: loginDataReturn.data.token,
+        });
       } else {
-        await changeUserInfo({ userId: null, userName: null, token: null })
+        await changeUserInfo({ userId: null, userName: null, token: null });
       }
-
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  };
+  }
 
   useLayoutEffect(() => {
     if (userInfo.token != null) {
@@ -82,30 +79,33 @@ const Login: React.FC = () => {
         try {
           const response = await fetch(`http://localhost:3000/check-login`, {
             method: "POST",
-            mode: 'cors',
+            mode: "cors",
             headers: {
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*'
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
             },
-            body: JSON.stringify({ token: userInfo.token })
+            body: JSON.stringify({ token: userInfo.token }),
           });
 
           const loginDataReturn = await response.json();
 
           if (loginDataReturn.codStatus == 200) {
             router.push("/home");
-
           } else {
-            await changeUserInfo({ userId: null, userName: null, token: null })
-            console.log("NOK")
+            await changeUserInfo({ userId: null, userName: null, token: null });
+            setLoginError((prev) => {
+              return { ...prev, error: "Erro ao conectar, tente novamente." };
+            });
           }
         } catch (error) {
-          console.log(error);
+          setLoginError((prev) => {
+            return { ...prev, error: "Erro ao conectar, tente novamente." };
+          });
         }
       }
-      checkToken()
+      checkToken();
     }
-  }, [userInfo])
+  }, [userInfo]);
 
   return (
     <IonPage>
@@ -113,7 +113,7 @@ const Login: React.FC = () => {
         <div id="branding-container">
           <img id="login-img" src="./src/assets/img/logo.jpg" />
           <IonText></IonText>
-          <p id="login-title" >Mobil</p>
+          <p id="login-title">Mobil</p>
         </div>
 
         <div id="form-container">
@@ -149,6 +149,7 @@ const Login: React.FC = () => {
             </IonButton>
           </div>
         </div>
+        <div id="erro-div">{loginError.error}</div>
       </IonContent>
 
       <IonFooter>
