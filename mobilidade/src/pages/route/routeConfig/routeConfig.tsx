@@ -19,7 +19,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { RouteComponentProps } from "react-router";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import "./routeConfig.css";
 import loading from "../../../assets/img/loading.gif";
@@ -43,11 +43,14 @@ interface ModalInfoInterface {
 }
 
 import routePoint from "../../../assets/img/point.png";
+import { ContextAppInfo } from "../../../services/context/context";
 
 const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
   const [routeInfo, setRouteInfo] = useState<RouteConfig | null>(null);
   const [modalInfo, setModalInfo] = useState<ModalInfoInterface>({ type: "", data: null });
   const [presentingElement, setPresentingElement] = useState<HTMLElement | null>(null);
+  const { userInfo } = useContext(ContextAppInfo)
+
   const modal = useRef<HTMLIonModalElement>(null);
   const page = useRef(null);
 
@@ -81,16 +84,16 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
 
   useEffect(() => {
     async function getRoute(routeId: string) {
-      try {
 
-        const response = await fetch(`http://localhost:3000/route/${routeId}`, {
+      try {
+        const response = await fetch(`http://localhost:3000/route/${userInfo.userId}/${routeId}`, {
           method: "GET",
           mode: 'cors',
           headers: {
             'Content-Type': 'application/json',
           }
         });
-
+        console.log(response)
         const routeDataReturn = await response.json();
         if (routeDataReturn.codStatus == 200) {
           setRouteInfo(routeDataReturn.data)
@@ -102,10 +105,11 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
         setRouteInfo(null)
       }
     };
+    if (userInfo.userId) {
+      getRoute(match.params.routeId);
+    }
 
-    getRoute(match.params.routeId);
-
-  }, []);
+  }, [userInfo]);
 
   return (
     <IonPage ref={page}>

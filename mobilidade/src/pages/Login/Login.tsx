@@ -58,7 +58,7 @@ const Login: React.FC = () => {
       });
 
       const loginDataReturn = await response.json();
-
+      console.log(loginDataReturn)
       if (loginDataReturn.codStatus == 200) {
         await changeUserInfo({
           userId: loginDataReturn.data.userId,

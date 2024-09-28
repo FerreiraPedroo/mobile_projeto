@@ -14,12 +14,8 @@ import {
 } from "@ionic/react";
 import { useContext, useEffect, useState } from "react";
 
-import { GoogleMap } from "@capacitor/google-maps";
 import loading from "../../assets/img/loading.gif";
 
-import "./home.css";
-
-const apiKey = "YOUR_API_KEY_HERE";
 const dateActual = new Date();
 
 interface Route {
@@ -32,18 +28,16 @@ interface Route {
   starthour: string;
 }
 
-import routeImg from "../../assets/img/route-map.png";
 import { ContextAppInfo } from "../../services/context/context";
+
+import routeImg from "../../assets/img/route-map.png";
+import "./home.css";
 
 const Home: React.FC = () => {
   const router = useIonRouter();
   const { userInfo, changeUserInfo } = useContext(ContextAppInfo);
 
   const [routeList, setRouteList] = useState<Route[] | null>(null);
-
-  const openRoute = (id: number) => {
-    console.log(id);
-  };
 
   useEffect(() => {
     async function getDayRouteList(userId: number) {
@@ -83,7 +77,7 @@ const Home: React.FC = () => {
         </IonToolbar>
       </IonHeader>
 
-      {/* <IonContent fullscreen>
+      <IonContent fullscreen>
         <div id="day-container">
           {dateActual.toLocaleDateString("pt-BR", {
             weekday: "long",
@@ -128,7 +122,7 @@ const Home: React.FC = () => {
             <img src={loading}></img>
           </div>
         }
-      </IonContent> */}
+      </IonContent>
     </IonPage>
   );
 };

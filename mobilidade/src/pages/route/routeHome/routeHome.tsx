@@ -14,7 +14,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { RouteComponentProps } from "react-router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import "./routeHome.css";
 import loading from "../../../assets/img/loading.gif";
@@ -38,48 +38,52 @@ interface ModalInfoInterface {
 }
 
 import routePoint from "../../../assets/img/point.png";
+import { ContextAppInfo } from "../../../services/context/context";
 
 const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
   const [routeInfo, setRouteInfo] = useState<Route | null>(null);
   const [modalInfo, setModalInfo] = useState<ModalInfoInterface>({ type: "", data: null });
+  const {userInfo} = useContext(ContextAppInfo)
+  console.log({routeInfo})
 
-  async function openAddModal(typeParam: string, routeParam: string) {
-    setModalInfo({ type: typeParam, data: null });
+  // async function openAddModal(typeParam: string, routeParam: string) {
+  //   setModalInfo({ type: typeParam, data: null });
+  //   console.log({ typeParam, routeParam })
+  //   try {
 
-    try {
+  //     const response = await fetch(`http://localhost:3000/${routeParam}/${1}/`, {
+  //       method: "GET",
+  //       mode: 'cors',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       }
+  //     });
 
-      const response = await fetch(`http://localhost:3000/${routeParam}/${1}`, {
-        method: "GET",
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-
-      const pointListReturn = await response.json();
-
-      if (pointListReturn.codStatus == 200) {
-        setModalInfo(pointListReturn)
-      }
+  //     const pointListReturn = await response.json();
+  //     console.log(pointListReturn)
+  //     if (pointListReturn.codStatus == 200) {
+  //       setModalInfo(pointListReturn)
+  //     }
 
 
-    } catch (error) {
-      setModalInfo({ type: "", data: [] })
-    }
-  }
+  //   } catch (error) {
+  //     setModalInfo({ type: "", data: [] })
+  //   }
+  // }
 
   useEffect(() => {
     async function getRoute(routeId: string) {
 
+
       try {
-        const response = await fetch(`http://localhost:3000/route/${routeId}`, {
+        const response = await fetch(`http://localhost:3000/route/${userInfo.userId}/${routeId}`, {
           method: "GET",
           mode: 'cors',
           headers: {
             'Content-Type': 'application/json',
           }
         });
-
+        console.log({response})
         const routeDataReturn = await response.json();
         if (routeDataReturn.codStatus == 200) {
           setRouteInfo(routeDataReturn.data)
@@ -88,14 +92,15 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
 
         throw "Erro";
       } catch (error) {
-        
+
         setRouteInfo(null)
       }
     };
+    if(userInfo.userId){
+      getRoute(match.params.routeId);
+    }
 
-    getRoute(match.params.routeId);
-
-  }, []);
+  }, [userInfo]);
 
   return (
     <IonPage>
@@ -111,7 +116,7 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
       {routeInfo ? (
         <IonContent fullscreen>
           <IonItem>
-          <p id="route-home-name">{routeInfo.name}</p>
+            <p id="route-home-name">{routeInfo.name}</p>
           </IonItem>
 
           <div id="route-home-container">
@@ -120,11 +125,6 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
                 <IonItem slot="header" color="light">
                   <IonLabel>Pontos de embarque</IonLabel>
                 </IonItem>
-                <div className="route-home-add-point" slot="content">
-                  <IonFabButton id="open-modal" size="small" onClick={() => openAddModal("boarding", "point-list")}>
-                    <IonIcon icon={add}></IonIcon>
-                  </IonFabButton>
-                </div>
                 <div className="ion-padding" slot="content">
                   First Content
                 </div>
@@ -133,11 +133,6 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
                 <IonItem slot="header" color="light">
                   <IonLabel>Pontos de desembarque</IonLabel>
                 </IonItem>
-                <div className="route-home-add-point" slot="content">
-                  <IonFabButton id="open-modal" size="small" onClick={() => openAddModal("landing", "point-list")}>
-                    <IonIcon icon={add}></IonIcon>
-                  </IonFabButton>
-                </div>
                 <div className="ion-padding" slot="content">
                   Second Content
                 </div>
@@ -146,11 +141,6 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
                 <IonItem slot="header" color="light">
                   <IonLabel>Passageiros</IonLabel>
                 </IonItem>
-                <div className="route-home-add-point" slot="content">
-                  <IonFabButton id="open-modal" size="small" onClick={() => openAddModal("passager", "passager-list")}>
-                    <IonIcon icon={add}></IonIcon>
-                  </IonFabButton>
-                </div>
                 <div className="ion-padding" slot="content">
                   Third Content
                 </div>

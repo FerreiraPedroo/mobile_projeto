@@ -21,17 +21,17 @@ async function selectRoute(routeId) {
 
     let boardingPointsInfo = [];
     if (boardingPointsId) {
-        const [boardingPointsRows] = await conn.query(`SELECT id, name, mapa, photo, name FROM point WHERE id IN('${boardingPointsId}')`)
+        const [boardingPointsRows] = await conn.query(`SELECT id, name, photo, name FROM point WHERE id IN('${boardingPointsId}')`)
         boardingPointsInfo = boardingPointsRows;
     }
-
+    console.log(boardingPointsId)
     // LANDING
     const [landingPoint] = await conn.query(`SELECT point_id FROM route_points WHERE route_id=${routeId} AND type="landing"`);
     const landingPointsIds = landingPoint.length ? landingPoint.join(",") : null;
 
     let landingPointsInfo = [];
     if (landingPointsIds) {
-        const [landingPointsRows] = await conn.query(`SELECT id, name, mapa photo name FROM point WHERE id IN('${landingPointsIds}')`)
+        const [landingPointsRows] = await conn.query(`SELECT id, name, photo, name FROM point WHERE id IN('${landingPointsIds}')`)
         landingPointsInfo = landingPointsRows;
     }
 
@@ -50,19 +50,17 @@ async function selectRoute(routeId) {
 
 async function routeList(userId) {
     const conn = await connect();
+    console.log({userId})
     const [routes] = await conn.query(`SELECT * FROM route WHERE user_id=${userId}`);
     const routeIds = routes.map(route => route.id).join(",");
-    console.log(routeIds)
+
 
     // BOARDING
     const [boardingPointRows] = await conn.query(`SELECT point_id FROM route_points WHERE route_id in (${routeIds}) AND type="boarding"`);
-
     // LANDING
     const [landingPointRows] = await conn.query(`SELECT point_id FROM route_points WHERE route_id in (${routeIds}) AND type="landing"`);
-
     // PASSAGER
     const [routeRespPassagerRows] = await conn.query(`SELECT responsable_passager_id FROM route_responsable_passager WHERE route_id in (${routeIds})`);
-
 
     return { routes, boardingPointRows, landingPointRows, routeRespPassagerRows }
 }
@@ -81,7 +79,7 @@ async function pointList(routeId) {
 
     let boardingPointsInfo = [];
     if (boardingPointsId) {
-        const [boardingPointsRows] = await conn.query(`SELECT id, name, mapa, photo, name FROM point WHERE id IN('${boardingPointsId}')`)
+        const [boardingPointsRows] = await conn.query(`SELECT id, name, photo, name FROM point WHERE id IN('${boardingPointsId}')`)
         boardingPointsInfo = boardingPointsRows;
     }
 
@@ -103,8 +101,8 @@ async function getUserByEmail(email) {
 async function getUserByID(userId) {
     const conn = await connect();
 
-    const [user] = await conn.query(`SELECT * FROM user WHERE id=${'userId'}`);
-    
+    const [user] = await conn.query(`SELECT * FROM user WHERE id=${userId}`);
+    console.log(user)
     if (!user.length) {
         return new Error({ codStatus: 422, message: "Usuario não encontrado.", error: "" });
     }

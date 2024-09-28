@@ -31,7 +31,7 @@ app.post("/check-login", async (req, res, next) => {
                 throw userInfo
             }
 
-            // return res.status(200).send({ codStatus: 200, message: "OK" })
+            return res.status(200).send({ codStatus: 200, message: "OK" })
         } else {
             throw { codStatus: 422, error: "Token não enviado." }
         }
@@ -170,23 +170,23 @@ app.get("/route-list/:userId", async (req, res, next) => {
         if (userId) {
             const { routes, boardingPointRows, landingPointRows, routeRespPassagerRows } = await db.routeList(userId);
 
-            const routesInfo = []
-
-            // const routeInfo = routes.map((route) => {
-            //     return {
-            //         id: route.id,
-            //         nome: route.name,
-            //         photo: route.photo,
-            //         boarding_point_amount: route.boarding_point.length,
-            //         passager_amount: route.passager.length,
-            //     }
-            // })
-
+            const routesInfo = routes.map((route) => {
+                return {
+                    id: route.id,
+                    name: route.name,
+                    photo: route.photo,
+                    boarding_point_amount: boardingPointRows.length,
+                    landing_point_amount: landingPointRows.length,
+                    passager_amount: routeRespPassagerRows.length,
+                }
+            })
+            console.log(routesInfo)
             return res.status(200).send({ codStatus: 200, message: "OK", data: routesInfo });
         } else {
             throw { codStatus: 422, error: "Id do usuário não é valido." }
         }
     } catch (error) {
+        console.log(error)
         return res.status(error.codStatus || 422).send({
             codStatus: error.codStatus || 500,
             message: error.message || "[ROT]: Erro ao checar o token.",
@@ -195,13 +195,13 @@ app.get("/route-list/:userId", async (req, res, next) => {
     }
 })
 
-app.get("/route/:routeId", async (req, res, next) => {
-    const { routeId } = req.params;
-
+app.get("/route/:userId/:routeId", async (req, res, next) => {
+    const { userId, routeId } = req.params;
+    // console.log({  userId,routeId })
     try {
 
         const routeData = await db.selectRoute(routeId);
-
+        // console.log({  routeData})
         let routeInfo = null;
 
         if (!routeData) {
@@ -267,7 +267,7 @@ app.get("/qrcode/:responsableId", async (req, res, next) => {
     }
 })
 
-
+// app.get("/passager-list/:")
 
 app.listen(3000, () => {
     console.log("SERVER RUN PORT:3000")

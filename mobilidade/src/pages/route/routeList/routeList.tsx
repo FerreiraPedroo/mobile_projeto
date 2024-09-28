@@ -25,71 +25,43 @@ interface Route {
   id: number;
   name: string;
   photo: string;
-  boarding_point: number;
-  landing_point: number;
-  passagers: number;
-  // starthour: string;
+  boarding_point_amount: number;
+  landing_point_amount: number;
+  passager_amount: number;
 }
 
 const RouteList: React.FC = () => {
   const { userInfo } = useContext(ContextAppInfo);
 
-  const [routesList, setRoutesList] = useState<Route[]>([
-    {
-      id: 0,
-      name: "Natação",
-      photo: "default.png",
-      boarding_point: 3,
-      landing_point: 2,
-      passagers: 10,
-    },
-    {
-      id: 2,
-      name: "Escolar Manhã",
-      photo: "default.png",
-      boarding_point: 8,
-      landing_point: 1,
-      passagers: 10,
-    },
-    {
-      id: 3,
-      name: "Escolar a Tarde",
-      photo: "default.png",
-      boarding_point: 2,
-      landing_point: 3,
-      passagers: 6,
-    },
-  ]);
-
-  const openRoute = (id: number) => {
-    console.log(id);
-  };
+  const [routesList, setRoutesList] = useState<Route[]>([]);
 
   useEffect(() => {
-    async function getRoutes(userId: number) {
-      try {
-        const response = await fetch(`http://localhost:3000/route-list/${userId}`, {
-          method: "GET",
-          mode: "cors",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+    if (userInfo.userId) {
+      async function getRoutes(userId: number) {
+        try {
+          const response = await fetch(`http://localhost:3000/route-list/${userId}`, {
+            method: "GET",
+            mode: "cors",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
 
-        const routeDataReturn = await response.json();
-        if (routeDataReturn.codStatus == 200) {
-          setRoutesList(routeDataReturn.data);
-          return;
+          const routeDataReturn = await response.json();
+          if (routeDataReturn.codStatus == 200) {
+            setRoutesList(routeDataReturn.data);
+            return;
+          }
+
+          throw "Erro";
+        } catch (error) {
+          setRoutesList([]);
         }
-
-        throw "Erro";
-      } catch (error) {
-        setRoutesList([]);
       }
-    }
 
-    getRoutes(userInfo.userId!);
-  }, []);
+      getRoutes(userInfo.userId);
+    }
+  }, [userInfo]);
 
   return (
     <IonPage>
@@ -117,9 +89,9 @@ const RouteList: React.FC = () => {
                 </IonCardHeader>
 
                 <IonCardContent className="route-card-point">
-                  <div>Pontos de Embarque: {route.boarding_point}</div>
-                  <div>Pontos de Desembarque: {route.landing_point}</div>
-                  <div>Passageiros: {route.passagers}</div>
+                  <div>Pontos de Embarque: {route.boarding_point_amount}</div>
+                  <div>Pontos de Desembarque: {route.landing_point_amount}</div>
+                  <div>Passageiros: {route.passager_amount}</div>
                 </IonCardContent>
               </IonCard>
             );
