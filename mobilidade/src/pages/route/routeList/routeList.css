@@ -3,14 +3,6 @@
   flex-direction: column;
 }
 
-p {
-  height: auto;
-  width: 100%;
-  font-size: 2rem;
-  font-weight: bolder;
-  margin: 12px 8px 8px 0px;
-}
-
 .route-card-header {
   display: flex;
   flex-direction: row;
@@ -27,4 +19,15 @@ p {
   width: 100%;
   font-size: 1.1rem;
   padding: 10px 20px;
+}
+
+#route-list-add-route-icon {
+  width: 48px;
+}
+
+#route-list-add-route-text {
+  border: 0;
+  font-size: 1.3rem;
+  font-weight: normal;
+  padding: 12px;
 }

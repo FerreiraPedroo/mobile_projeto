@@ -1,8 +1,3 @@
-#route-container {
-  display: flex;
-  flex-direction: column;
-}
-
 p {
   height: auto;
   width: 100%;
@@ -20,19 +15,20 @@ p {
   font-size: 1.5em;
 }
 
-*{
+* {
   /* border: 1px solid red; */
-}
-
-#route-home-name {
-  font-size: 1.5rem;
-  padding: 0 16px;
 }
 
 .route-home-add-point {
   width: 100%;
+  min-height: 50px;
   display: flex;
-  justify-content: end;
-  margin: -2px;
-  padding: 0px;
+  font-size: 1.1rem;
+  justify-content: start;
+  align-items: center;
+  padding: 8px 12px;
+  border: 1px solid silver;
+}
+.route-home-add-point:last-child {
+  border-radius: 0 0 4px 4px;
 }

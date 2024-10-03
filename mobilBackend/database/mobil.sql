@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS `mobil`.`user` (
   `password` VARCHAR(32) NOT NULL,
   `name` VARCHAR(255) NOT NULL,
   `user_type` VARCHAR(45) NULL,
+  `driver_id` INT NULL,
   `token` LONGTEXT NULL,
 `recovery_password` VARCHAR(128) NULL,
   PRIMARY KEY (`id`),
@@ -52,7 +53,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mobil`.`point` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NOT NULL,
+  `user_id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(90) NOT NULL,
   `maps` VARCHAR(45) NULL,
   `photo` VARCHAR(128) NULL,
   PRIMARY KEY (`id`),
@@ -92,8 +94,8 @@ CREATE TABLE IF NOT EXISTS `mobil`.`route_responsable_passager` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `responsable_passager_id` INT NOT NULL,
   `route_id` INT NOT NULL,
-  `boarding_point_id` INT NOT NULL,
-  `landing_point_id` INT NOT NULL,
+  `boarding_point_id` INT NULL,
+  `landing_point_id` INT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
 ENGINE = InnoDB;

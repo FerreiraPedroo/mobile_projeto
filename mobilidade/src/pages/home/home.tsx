@@ -14,24 +14,23 @@ import {
 } from "@ionic/react";
 import { useContext, useEffect, useState } from "react";
 
-import loading from "../../assets/img/loading.gif";
-
-const dateActual = new Date();
-
 interface Route {
   id: number;
   name: string;
   photo: string;
-  boarding_point: number;
-  landing_point: number;
-  passagers: number;
+  boarding_point_amount: number;
+  landing_point_amount: number;
+  passager_amount: number;
   starthour: string;
 }
 
 import { ContextAppInfo } from "../../services/context/context";
 
+import loading from "../../assets/img/loading.gif";
 import routeImg from "../../assets/img/route-map.png";
 import "./home.css";
+
+const dateActual = new Date();
 
 const Home: React.FC = () => {
   const router = useIonRouter();
@@ -40,6 +39,7 @@ const Home: React.FC = () => {
   const [routeList, setRouteList] = useState<Route[] | null>(null);
 
   useEffect(() => {
+
     async function getDayRouteList(userId: number) {
       try {
         const response = await fetch(`http://localhost:3000/day-route-list/${userId}`, {
@@ -63,8 +63,10 @@ const Home: React.FC = () => {
         setRouteList([]);
       }
     }
-    getDayRouteList(userInfo.userId!);
-  }, []);
+    if (userInfo.userId) {
+      getDayRouteList(userInfo.userId!);
+    }
+  }, [userInfo]);
 
   return (
     <IonPage>
@@ -105,12 +107,12 @@ const Home: React.FC = () => {
 
                     <IonCardContent className="home-card-point">
                       <div>
-                        Pontos de Embarque: {route.boarding_point}
+                        Pontos de Embarque: {route.boarding_point_amount}
                       </div>
                       <div>
-                        Pontos de Desembarque: {route.landing_point}
+                        Pontos de Desembarque: {route.landing_point_amount}
                       </div>
-                      <div>Passageiros: {route.passagers}</div>
+                      <div>Passageiros: {route.passager_amount}</div>
                     </IonCardContent>
                   </IonCard>
                 );

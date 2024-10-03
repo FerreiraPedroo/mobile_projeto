@@ -1,14 +1,8 @@
-#route-container {
-  display: flex;
-  flex-direction: column;
-}
-
-p {
+#route-config-route {
   height: auto;
   width: 100%;
-  font-size: 2rem;
-  font-weight: bolder;
-  margin: 12px 8px 8px 0px;
+  font-size: 1rem;
+  margin: 0px;
 }
 
 #route-config-loading {
@@ -20,19 +14,96 @@ p {
   font-size: 1.5em;
 }
 
-*{
-  /* border: 1px solid red; */
+#route-config-name-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 16px;
 }
 
 #route-config-name {
   font-size: 1.5rem;
-  padding: 0 16px;
 }
 
-.route-config-add-point {
-  width: 100%;
-  display: flex;
-  justify-content: end;
+.route-config-list-point {
   margin: -2px;
+}
+
+.route-config-point {
+  width: 100%;
+  min-height: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  gap:8px;
+  border: 1px solid silver;
+}
+
+.route-config-point-name {
+  font-size: 1.1rem;
+  font-weight: normal;
+}
+
+.route-config-point-delete {
+  font-size: 1.1rem;
+  font-weight: normal;
+}
+
+.route-config-point:last-child {
+  border-radius: 0 0 4px 4px;
+}
+
+.route-config-button-trash {
   padding: 0px;
+  margin: 0px
+}
+
+#route-config-point-empty {
+  width: 100%;
+  font-size: 1.2rem;
+  padding-top: 120px;
+  text-align: center;
+}
+
+.route-config-delete-modal{
+  padding: 20px 8px 8px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.route-config-delete-modal p{
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 6px;
+  margin: 0px;
+  border-bottom: 1px solid blue;
+}
+
+.route-config-delete-item-name{
+  font-size: 1.3rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 8px;
+  padding-bottom: 12px;
+  color: red;
+  border-bottom: 1px solid blue;
+}
+
+.route-config-delete-modal p span{
+  color: red;
+}
+.route-config-delete-modal-buttons{
+  display: flex;
+  flex-direction: column;
+  padding: 0px 16px;
+  gap: 8px;
+}
+
+.route-config-icon{
+  width: 48px;
+  margin: 0 12px;
+  margin: 0;
+  padding: 0;
 }

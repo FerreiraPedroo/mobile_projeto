@@ -63,24 +63,85 @@ app.post("/login", async (req, res, next) => {
     }
 })
 
-app.get("/point-list/:userId", async (req, res, next) => {
+// ROUTE ////////////////////////////////////////////////////////////////////
+app.get("/point/:userId/:routeId/:type", async (req, res, next) => {
+    const { userId, routeId, type } = req.params;
+
+    try {
+        const pointListData = await db.pointList(userId, routeId, type);
+
+        const pointsInfo = pointListData.map((point) => {
+            return {
+                id: point.id,
+                name: point.name,
+                photo: point.photo,
+            }
+        })
+
+        return res.status(200).send({ codStatus: 200, message: "OK", data: pointsInfo });
+
+    } catch (error) {
+        return res.status(error.codStatus || 422).send({
+            codStatus: error.codStatus || 422,
+            message: error.message || "[ROT]: Erro ao obter a lista de pontos.",
+            error: error.error
+        })
+    }
+})
+app.post("/point/:routeId/:pointId/:type", async (req, res, next) => {
+    const { routeId, pointId, type } = req.params;
+
+    try {
+        const routePointData = await db.routePointAdd(routeId, pointId, type);
+
+        return res.status(200).send({ codStatus: 200, message: "OK" });
+
+    } catch (error) {
+        return res.status(error.codStatus || 422).send({
+            codStatus: error.codStatus || 422,
+            message: error.message || "[ROT]: Erro ao obter a lista de pontos.",
+            error: error.error
+        })
+    }
+})
+app.delete("/point/:routeId/:pointId/:type", async (req, res, next) => {
+    const { routeId, pointId, type } = req.params;
+
+    try {
+        const routePointData = await db.routePointDelete(routeId, pointId, type);
+
+        return res.status(200).send({ codStatus: 200, message: "OK" });
+
+    } catch (error) {
+        return res.status(error.codStatus || 422).send({
+            codStatus: error.codStatus || 422,
+            message: error.message || "[ROT]: Erro ao obter a lista de pontos.",
+            error: error.error
+        })
+    }
+})
+
+app.get("/day-route-list/:userId", async (req, res, next) => {
     const { userId } = req.params;
 
     try {
         if (userId) {
-            // const routeListData = await routeList(userId);
+            const routeListData = await db.routeList(userId);
 
-            // const routeInfo = routeListData.map((route) => {
-            //     return {
-            //         id: route.id,
-            //         nome: route.name,
-            //         photo: route.photo,
-            //         boarding_point_amount: route.boarding_point.length,
-            //         passager_amount: route.passager.length,
-            //     }
-            // })
+            const routeInfo = routeListData.routes.map((route) => {
+                const boardingPoints = routeListData.boardingPointRows.filter((point) => point.route_id == route.id);
+                const landingPoints = routeListData.landingPointRows.filter((point) => point.route_id == route.id);
+                const passagers = routeListData.routeRespPassagerRows.filter((point) => point.route_id == route.id);
 
-            const routeInfo = [{ name: "Ponto1" }, { name: "Ponto2" }, { name: "Ponto3" }, { name: "Ponto4" }]
+                return {
+                    id: route.id,
+                    name: route.name,
+                    photo: route.photo,
+                    boarding_point_amount: boardingPoints.length,
+                    landing_point_amount: landingPoints.length,
+                    passager_amount: passagers.length,
+                }
+            })
 
             return res.status(200).send({ codStatus: 200, message: "OK", data: routeInfo });
         } else {
@@ -94,75 +155,6 @@ app.get("/point-list/:userId", async (req, res, next) => {
         })
     }
 })
-
-app.get("/day-route-list/:userId", async (req, res, next) => {
-    const { userId } = req.params;
-
-    try {
-        // if (userId) {
-        // const routeListData = await routeList(userId);
-
-        // const routeInfo = routeListData.map((route) => {
-        //     return {
-        //         id: route.id,
-        //         nome: route.name,
-        //         photo: route.photo,
-        //         boarding_point_amount: route.boarding_point.length,
-        //         passager_amount: route.passager.length,
-        //     }
-        // })
-
-        const routeDayList = [
-            {
-                id: 0,
-                name: "Pedro H",
-                photo: "./src/assets/img/ default.png",
-                boarding_point: 0,
-                landing_point: 0,
-                passagers: 0,
-                starthour: "07:00",
-            },
-            {
-                id: 1,
-                name: "Pedro Henrique de Assis ",
-                photo: "default.png",
-                boarding_point: 0,
-                landing_point: 0,
-                passagers: 0,
-                starthour: "07:00",
-            },
-            {
-                id: 2,
-                name: "Assis Ferreira NAscimento",
-                photo: "default.png",
-                boarding_point: 0,
-                landing_point: 0,
-                passagers: 0,
-                starthour: "07:00",
-            },
-            {
-                id: 3,
-                name: "Henrique de NAscimento",
-                photo: "default.png",
-                boarding_point: 0,
-                landing_point: 0,
-                passagers: 0,
-                starthour: "07:00",
-            },
-        ]
-        return res.status(200).send({ codStatus: 200, message: "OK", data: routeDayList });
-        // } else {
-        //     throw { codStatus: 422, error: "Id do usuário não é valido." }
-        // }
-    } catch (error) {
-        return res.status(error.codStatus || 422).send({
-            codStatus: error.codStatus || 500,
-            message: error.message || "[ROT]: Erro ao checar o token.",
-            error: error.error
-        })
-    }
-})
-
 app.get("/route-list/:userId", async (req, res, next) => {
     const { userId } = req.params;
 
@@ -171,16 +163,19 @@ app.get("/route-list/:userId", async (req, res, next) => {
             const { routes, boardingPointRows, landingPointRows, routeRespPassagerRows } = await db.routeList(userId);
 
             const routesInfo = routes.map((route) => {
+                const boardingPointsAmount = boardingPointRows.filter((point) => point.route_id == route.id).length
+                const landingPointsAmount = landingPointRows.filter((point) => point.route_id == route.id).length
+                const passagerAmount = routeRespPassagerRows.filter((point) => point.route_id == route.id).length
                 return {
                     id: route.id,
                     name: route.name,
                     photo: route.photo,
-                    boarding_point_amount: boardingPointRows.length,
-                    landing_point_amount: landingPointRows.length,
-                    passager_amount: routeRespPassagerRows.length,
+                    boardingPointsAmount,
+                    landingPointsAmount,
+                    passagerAmount,
                 }
             })
-            console.log(routesInfo)
+            console.log({ routesInfo })
             return res.status(200).send({ codStatus: 200, message: "OK", data: routesInfo });
         } else {
             throw { codStatus: 422, error: "Id do usuário não é valido." }
@@ -194,33 +189,38 @@ app.get("/route-list/:userId", async (req, res, next) => {
         })
     }
 })
+app.get("/route/:routeId", async (req, res, next) => {
+    const { routeId } = req.params;
 
-app.get("/route/:userId/:routeId", async (req, res, next) => {
-    const { userId, routeId } = req.params;
-    // console.log({  userId,routeId })
     try {
-
         const routeData = await db.selectRoute(routeId);
-        // console.log({  routeData})
+
         let routeInfo = null;
 
         if (!routeData) {
             throw { codStatus: 422, message: "Rota não encontrada." }
         }
 
-        const routeBoardingPoint = routeData.boarding_point ? routeData.boarding_point.map((point) => {
+        const routeBoardingPoint = routeData.boardingPointsInfo.map((point) => {
             return {
                 id: point.id,
                 name: point.name,
             }
-        }) : [];
+        });
 
-        const routePassager = routeData.passager ? routeData.passager.map((passager) => {
+        const routeLandingPoint = routeData.landingPointsInfo.map((point) => {
+            return {
+                id: point.id,
+                name: point.name,
+            }
+        });
+
+        const routePassager = routeData.respPassagerInfo.map((passager) => {
             return {
                 id: passager.id,
                 name: passager.name,
             }
-        }) : [];
+        });
 
         routeInfo = {
             id: routeData.route.id,
@@ -228,8 +228,9 @@ app.get("/route/:userId/:routeId", async (req, res, next) => {
             photo: routeData.route.photo,
             start_time: routeData.route.start_time,
             end_time: routeData.route.end_time,
-            boarding_point_amount: routeBoardingPoint,
-            passager_amount: routePassager
+            boardingPoints: routeBoardingPoint,
+            landingPoints: routeLandingPoint,
+            passagers: routePassager
         }
 
         return res.status(200).send({ codStatus: 200, message: "OK", data: routeInfo });
@@ -241,6 +242,115 @@ app.get("/route/:userId/:routeId", async (req, res, next) => {
         })
     }
 })
+app.post("/route", async (req, res, next) => {
+    const { routeName, userId } = req.body;
+
+    try {
+        const routeData = await db.routeCreate(routeName, userId);
+
+        if (!routeData) {
+            throw { codStatus: 422, message: "Não foi possivel criar a rota." }
+        }
+
+        return res.status(200).send({ codStatus: 200, message: "OK" });
+    } catch (error) {
+        return res.status(error.codStatus || 422).send({
+            codStatus: error.codStatus || 500,
+            message: error.message || "[ROT]: Erro ao obter a rota.",
+            error: error.error
+        })
+    }
+})
+app.delete("/point/:routeId/:userId/:type", async (req, res, next) => {
+    const { routeId, userId, type } = req.params;
+
+    try {
+        const routeDeleted = await db.routeDelete(routeId, userId, type);
+
+        return res.status(200).send({ codStatus: 200, message: "OK" });
+
+    } catch (error) {
+        return res.status(error.codStatus || 422).send({
+            codStatus: error.codStatus || 422,
+            message: error.message || "[ROT]: Erro ao excluir a rota.",
+            error: error.error
+        })
+    }
+})
+/////////////////////////////////////////////////////////////////////////////
+
+// PASSAGER /////////////////////////////////////////////////////////////////
+app.get("/passager/:userId/:routeId/:type", async (req, res, next) => {
+    const { userId, routeId, type } = req.params;
+
+    try {
+        const { responsables, responsablePassagers } = await db.passagerList(userId, routeId, type);
+
+        const passagerInfo = responsablePassagers
+        // .map((passager) => {
+        //     return {
+        //         id: passager.id,
+        //         name: passager.name,
+        //         photo: passager.photo,
+        //     }
+        // })
+
+        return res.status(200).send({ codStatus: 200, message: "OK", data: passagerInfo });
+
+    } catch (error) {
+        return res.status(error.codStatus || 422).send({
+            codStatus: error.codStatus || 422,
+            message: error.message || "[ROT]: Erro ao obter a lista de pontos.",
+            error: error.error
+        })
+    }
+})
+app.post("/passager/:routeId/:passagerId/:type", async (req, res, next) => {
+    const { routeId, passagerId, type } = req.params;
+
+    try {
+        const routePointData = await db.routePassagerAdd(routeId, passagerId, type);
+
+        return res.status(200).send({ codStatus: 200, message: "OK" });
+
+    } catch (error) {
+        return res.status(error.codStatus || 422).send({
+            codStatus: error.codStatus || 422,
+            message: error.message || "[ROT]: Erro ao obter a lista de pontos.",
+            error: error.error
+        })
+    }
+})
+app.delete("/passager/:routeId/:passagerId/:type", async (req, res, next) => {
+    const { routeId, passagerId, type } = req.params;
+
+    try {
+        const routePointData = await db.routePassagerDelete(routeId, passagerId, type);
+
+        return res.status(200).send({ codStatus: 200, message: "OK" });
+
+    } catch (error) {
+        return res.status(error.codStatus || 422).send({
+            codStatus: error.codStatus || 422,
+            message: error.message || "[ROT]: Erro ao obter a lista de pontos.",
+            error: error.error
+        })
+    }
+})
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.get("/qrcode/:responsableId", async (req, res, next) => {
     const { responsableId } = req.params;
@@ -267,7 +377,6 @@ app.get("/qrcode/:responsableId", async (req, res, next) => {
     }
 })
 
-// app.get("/passager-list/:")
 
 app.listen(3000, () => {
     console.log("SERVER RUN PORT:3000")

@@ -3,9 +3,7 @@ import {
   IonAccordionGroup,
   IonButtons,
   IonContent,
-  IonFabButton,
   IonHeader,
-  IonIcon,
   IonItem,
   IonLabel,
   IonMenuButton,
@@ -13,6 +11,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+
 import { RouteComponentProps } from "react-router";
 import { useContext, useEffect, useState } from "react";
 
@@ -24,67 +23,44 @@ interface Route {
   id: number;
   name: string;
   photo: string;
-  boarding_point: number;
-  landing_point: number;
-  passagers: number;
+  boardingPoints: {
+    id: number,
+    name: string
+  }[];
+  landingPoints: {
+    id: number,
+    name: string
+  }[];
+  passagers: {
+    id: number,
+    name: string
+  }[];
 }
 interface RouteHomeParams
   extends RouteComponentProps<{
     routeId: string;
   }> { }
-interface ModalInfoInterface {
-  type: string;
-  data: null | [{ name: string }] | []
-}
 
 import routePoint from "../../../assets/img/point.png";
-import { ContextAppInfo } from "../../../services/context/context";
+import "./routeHome.css";
 
 const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
   const [routeInfo, setRouteInfo] = useState<Route | null>(null);
-  const [modalInfo, setModalInfo] = useState<ModalInfoInterface>({ type: "", data: null });
-  const {userInfo} = useContext(ContextAppInfo)
-  console.log({routeInfo})
-
-  // async function openAddModal(typeParam: string, routeParam: string) {
-  //   setModalInfo({ type: typeParam, data: null });
-  //   console.log({ typeParam, routeParam })
-  //   try {
-
-  //     const response = await fetch(`http://localhost:3000/${routeParam}/${1}/`, {
-  //       method: "GET",
-  //       mode: 'cors',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       }
-  //     });
-
-  //     const pointListReturn = await response.json();
-  //     console.log(pointListReturn)
-  //     if (pointListReturn.codStatus == 200) {
-  //       setModalInfo(pointListReturn)
-  //     }
-
-
-  //   } catch (error) {
-  //     setModalInfo({ type: "", data: [] })
-  //   }
-  // }
 
   useEffect(() => {
     async function getRoute(routeId: string) {
-
-
       try {
-        const response = await fetch(`http://localhost:3000/route/${userInfo.userId}/${routeId}`, {
+        const response = await fetch(`http://localhost:3000/route/${routeId}`, {
           method: "GET",
           mode: 'cors',
           headers: {
             'Content-Type': 'application/json',
           }
         });
-        console.log({response})
+
         const routeDataReturn = await response.json();
+
+        console.log({ routeDataReturn })
         if (routeDataReturn.codStatus == 200) {
           setRouteInfo(routeDataReturn.data)
           return;
@@ -96,11 +72,9 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
         setRouteInfo(null)
       }
     };
-    if(userInfo.userId){
-      getRoute(match.params.routeId);
-    }
+    getRoute(match.params.routeId);
 
-  }, [userInfo]);
+  }, []);
 
   return (
     <IonPage>
@@ -116,34 +90,46 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
       {routeInfo ? (
         <IonContent fullscreen>
           <IonItem>
-            <p id="route-home-name">{routeInfo.name}</p>
+            <p>{routeInfo.name}</p>
           </IonItem>
 
-          <div id="route-home-container">
+          <div>
             <IonAccordionGroup expand="inset" mode={"md"}>
               <IonAccordion value="first">
                 <IonItem slot="header" color="light">
-                  <IonLabel>Pontos de embarque</IonLabel>
+                  <IonLabel>Passageiros</IonLabel>
                 </IonItem>
-                <div className="ion-padding" slot="content">
-                  First Content
-                </div>
+                {routeInfo.passagers.map((point) =>
+                (
+                  <div key={point.id} className="route-home-add-point" slot="content">
+                    {point.name}
+                  </div>
+                )
+                )}
               </IonAccordion>
               <IonAccordion value="second">
                 <IonItem slot="header" color="light">
                   <IonLabel>Pontos de desembarque</IonLabel>
                 </IonItem>
-                <div className="ion-padding" slot="content">
-                  Second Content
-                </div>
+                {routeInfo.boardingPoints.map((point) =>
+                (
+                  <div key={point.id} className="route-home-add-point" slot="content">
+                    {point.name}
+                  </div>
+                )
+                )}
               </IonAccordion>
               <IonAccordion value="third">
                 <IonItem slot="header" color="light">
-                  <IonLabel>Passageiros</IonLabel>
+                  <IonLabel>Pontos de desembarque</IonLabel>
                 </IonItem>
-                <div className="ion-padding" slot="content">
-                  Third Content
-                </div>
+                {routeInfo.landingPoints.map((point) =>
+                (
+                  <div key={point.id} className="route-home-add-point" slot="content">
+                    {point.name}
+                  </div>
+                )
+                )}
               </IonAccordion>
             </IonAccordionGroup>
           </div>

@@ -1,4 +1,4 @@
-import React, { createContext, ReactElement, ReactEventHandler, useEffect, useState } from "react";
+import React, { createContext, Dispatch, ReactElement, SetStateAction, useLayoutEffect, useState } from "react";
 import { Storage } from "@ionic/storage";
 
 interface IUserInfo {
@@ -10,6 +10,8 @@ interface IUserInfo {
 interface IUserContext {
   userInfo: IUserInfo;
   changeUserInfo: any;
+  updatePage: boolean;
+  setUpdatePage: Dispatch<SetStateAction<boolean>>
 }
 
 const ContextAppInfo = createContext<IUserContext>({
@@ -23,6 +25,7 @@ const newStorage = new Storage({
 
 function AppContext({ children }: { children: ReactElement }) {
   const [userInfo, setUserInfo] = useState({ userId: null, userName: null, token: null });
+  const [updatePage, setUpdatePage] = useState(false);
 
   async function changeUserInfo(info: IUserInfo) {
     const storage = await newStorage.create();
@@ -30,7 +33,7 @@ function AppContext({ children }: { children: ReactElement }) {
     setUserInfo(storedUserInfo);
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     async function loadStoreUserInfo() {
       const storage = await newStorage.create();
       const storedUserInfo = await storage.get("userInfo");
@@ -45,7 +48,7 @@ function AppContext({ children }: { children: ReactElement }) {
   }, []);
 
   return (
-    <ContextAppInfo.Provider value={{ changeUserInfo, userInfo }}>
+    <ContextAppInfo.Provider value={{ changeUserInfo, userInfo, updatePage, setUpdatePage }}>
       {children}
     </ContextAppInfo.Provider>
   );
