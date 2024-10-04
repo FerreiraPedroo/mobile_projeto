@@ -1,0 +1,68 @@
+capacitor-google-map {
+  display: inline-block;
+  width: 275px;
+  height: 400px;
+}
+
+#day-container {
+  padding: 12px 0;
+  text-align: center;
+  font-size: 1.4rem;
+}
+#day-container hr {
+  border-width: 1px;
+  color:red;
+  margin: 4px;
+}
+
+#day-router-title{
+  font-size: 1.4rem;
+  
+
+}
+
+#home-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-card-title {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: blue;
+}
+
+.home-card-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.home-card-start {
+  flex-grow: 1;
+  text-align: end;
+  font-size: 1.2rem;
+  color: blue;
+} 
+
+.home-photo {
+  width: 40px;
+  height: 40px;
+}
+
+.home-card-point {
+  font-size: 1.1rem;
+  padding: 10px 20px;
+}
+
+#home-loading {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  place-items: center;
+  font-size: 1.5em;
+}
+
+

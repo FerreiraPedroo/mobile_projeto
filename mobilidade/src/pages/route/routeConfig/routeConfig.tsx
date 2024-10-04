@@ -18,6 +18,7 @@ import {
   IonText,
   IonTitle,
   IonToolbar,
+  useIonRouter,
 } from "@ionic/react";
 import { RouteComponentProps } from "react-router";
 import { useContext, useEffect, useState } from "react";
@@ -69,6 +70,8 @@ interface ModalDeleteInfoInterface {
 }
 
 const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
+  const router = useIonRouter();
+
   const [modalDeleteInfo, setModalDeleteInfo] = useState<ModalDeleteInfoInterface>({ type: "", typeName: "", route: "", data: null });
   const [modalInfo, setModalInfo] = useState<ModalInfoInterface>({ type: "", route: "", data: null });
   const [routeInfo, setRouteInfo] = useState<RouteConfig | null>(null);
@@ -138,9 +141,11 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
       const deleteReturn = await response.json();
 
       if (deleteReturn.codStatus == 200) {
-        console.log({ deleteReturn })
         setModalDeleteShow(false);
         setUpdatePage((prev) => !prev)
+        if (type == 'route') {
+          router.push("/routes");
+        }
       }
 
     } catch (error) {

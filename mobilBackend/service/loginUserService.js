@@ -19,7 +19,8 @@ export async function loginUserService({ user, password }) {
 		const logedToken = {
 			userId: userInfo.id,
 			userName: userInfo.name,
-			token: userAuthToken
+			token: userAuthToken,
+			type: userInfo.user_type
 		};
 
 		return logedToken;

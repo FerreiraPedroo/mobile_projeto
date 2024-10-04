@@ -10,7 +10,10 @@ import {
   IonNote,
 } from '@ionic/react';
 
+import { useContext } from 'react';
 import { useLocation } from 'react-router-dom';
+import { ContextAppInfo } from '../services/context/context';
+
 import { homeOutline, locationOutline, manOutline, mapOutline} from 'ionicons/icons';
 import './Menu.css';
 
@@ -21,7 +24,7 @@ interface AppPage {
   title: string;
 }
 
-const appPages: AppPage[] = [
+const appDriverPages: AppPage[] = [
   {
     title: 'Inicio',
     url: '/home',
@@ -48,8 +51,18 @@ const appPages: AppPage[] = [
   }
 ];
 
+const appResponsablePages: AppPage[] = [
+  {
+    title: 'Passagers',
+    url: '/resp-passagers',
+    iosIcon: homeOutline,
+    mdIcon: homeOutline
+  }
+];
+
 const Menu: React.FC = () => {
   const location = useLocation();
+  const { userInfo } = useContext(ContextAppInfo);
 
   return (
     <IonMenu contentId="main" type="overlay">
@@ -57,7 +70,8 @@ const Menu: React.FC = () => {
         <IonList id="inbox-list">
           <IonListHeader>Mobil</IonListHeader>
           <IonNote></IonNote>
-          {appPages.map((appPage, index) => {
+
+          {userInfo.type == "driver" && appDriverPages.map((appPage, index) => {
             return (
               <IonMenuToggle key={index} autoHide={false}>
                 <IonItem className={location.pathname === appPage.url ? 'selected' : ''} routerLink={appPage.url} routerDirection="none" lines="none" detail={false}>
@@ -67,6 +81,18 @@ const Menu: React.FC = () => {
               </IonMenuToggle>
             );
           })}
+
+          {userInfo.type == "responsable" && appResponsablePages.map((appPage, index) => {
+            return (
+              <IonMenuToggle key={index} autoHide={false}>
+                <IonItem className={location.pathname === appPage.url ? 'selected' : ''} routerLink={appPage.url} routerDirection="none" lines="none" detail={false}>
+                  <IonIcon aria-hidden="true" slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
+                  <IonLabel>{appPage.title}</IonLabel>
+                </IonItem>
+              </IonMenuToggle>
+            );
+          })}
+
         </IonList>
       </IonContent>
     </IonMenu>

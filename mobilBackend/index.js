@@ -50,6 +50,7 @@ app.post("/login", async (req, res, next) => {
     try {
         if (user || password) {
             const logedToken = await loginUserService({ user, password });
+            console.log({logedToken})
             return res.status(200).send({ codStatus: 200, message: "Login OK.", data: logedToken })
         } else {
             throw { codStatus: 422, error: "Usuário ou senha errado(s)." }
@@ -175,7 +176,7 @@ app.get("/route-list/:userId", async (req, res, next) => {
                     passagerAmount,
                 }
             })
-            console.log({ routesInfo })
+
             return res.status(200).send({ codStatus: 200, message: "OK", data: routesInfo });
         } else {
             throw { codStatus: 422, error: "Id do usuário não é valido." }
@@ -261,7 +262,7 @@ app.post("/route", async (req, res, next) => {
         })
     }
 })
-app.delete("/point/:routeId/:userId/:type", async (req, res, next) => {
+app.delete("/route/:routeId/:userId/:type", async (req, res, next) => {
     const { routeId, userId, type } = req.params;
 
     try {
@@ -270,6 +271,7 @@ app.delete("/point/:routeId/:userId/:type", async (req, res, next) => {
         return res.status(200).send({ codStatus: 200, message: "OK" });
 
     } catch (error) {
+        console.log({ error })
         return res.status(error.codStatus || 422).send({
             codStatus: error.codStatus || 422,
             message: error.message || "[ROT]: Erro ao excluir a rota.",
@@ -287,13 +289,13 @@ app.get("/passager/:userId/:routeId/:type", async (req, res, next) => {
         const { responsables, responsablePassagers } = await db.passagerList(userId, routeId, type);
 
         const passagerInfo = responsablePassagers
-        // .map((passager) => {
-        //     return {
-        //         id: passager.id,
-        //         name: passager.name,
-        //         photo: passager.photo,
-        //     }
-        // })
+            .map((passager) => {
+                return {
+                    id: passager.id,
+                    name: passager.name,
+                    photo: passager.photo,
+                }
+            })
 
         return res.status(200).send({ codStatus: 200, message: "OK", data: passagerInfo });
 

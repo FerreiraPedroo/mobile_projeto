@@ -1,4 +1,4 @@
-import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact } from "@ionic/react";
+import { IonApp, IonRoute, IonRouterOutlet, IonSplitPane, setupIonicReact } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import { Redirect, Route } from "react-router-dom";
 import Menu from "./components/Menu";
@@ -39,6 +39,7 @@ import { Login } from "./pages/login/login";
 import { RouteList } from "./pages/route/routeList/routeList";
 import { RouteConfig } from "./pages/route/routeConfig/routeConfig";
 import { RouteHome } from "./pages/route/routeHome/routeHome";
+import { RespHome } from "./pages/resp/home/respHome";
 
 setupIonicReact();
 
@@ -56,6 +57,8 @@ const App: React.FC = () => {
             <Route path="/routes" exact={true} component={RouteList} />
             <Route path="/route/:routeId" exact={true} component={RouteHome} />
             <Route path="/route-config/:routeId" exact={true} component={RouteConfig} />
+
+            <Route path="/resp-home" exact={true} component={RespHome} />
             <Redirect to={"/"} />
           </IonRouterOutlet>
         </IonSplitPane>

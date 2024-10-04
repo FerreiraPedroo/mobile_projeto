@@ -58,12 +58,13 @@ const Login: React.FC = () => {
       });
 
       const loginDataReturn = await response.json();
-      console.log(loginDataReturn)
+
       if (loginDataReturn.codStatus == 200) {
         await changeUserInfo({
           userId: loginDataReturn.data.userId,
           userName: loginDataReturn.data.userName,
           token: loginDataReturn.data.token,
+          type: loginDataReturn.data.type,
         });
       } else {
         await changeUserInfo({ userId: null, userName: null, token: null });
@@ -90,7 +91,12 @@ const Login: React.FC = () => {
           const loginDataReturn = await response.json();
 
           if (loginDataReturn.codStatus == 200) {
-            router.push("/home");
+            if(userInfo.type == "driver"){
+              router.push("/home");
+            }
+            if(userInfo.type == "responsable"){
+              router.push("/resp-home");
+            }
           } else {
             await changeUserInfo({ userId: null, userName: null, token: null });
             setLoginError((prev) => {

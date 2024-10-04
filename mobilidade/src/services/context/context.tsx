@@ -5,6 +5,7 @@ interface IUserInfo {
   userId: number | null;
   userName: string | null;
   token: string | null;
+  type: string | null;
 }
 
 interface IUserContext {
@@ -16,7 +17,9 @@ interface IUserContext {
 
 const ContextAppInfo = createContext<IUserContext>({
   changeUserInfo: () => null,
-  userInfo: { userId: null, userName: null, token: null },
+  userInfo: { userId: null, userName: null, token: null, type: null },
+  updatePage: false,
+  setUpdatePage: () => null
 });
 
 const newStorage = new Storage({
@@ -24,7 +27,7 @@ const newStorage = new Storage({
 });
 
 function AppContext({ children }: { children: ReactElement }) {
-  const [userInfo, setUserInfo] = useState({ userId: null, userName: null, token: null });
+  const [userInfo, setUserInfo] = useState({ userId: null, userName: null, token: null, type: null });
   const [updatePage, setUpdatePage] = useState(false);
 
   async function changeUserInfo(info: IUserInfo) {
@@ -41,7 +44,7 @@ function AppContext({ children }: { children: ReactElement }) {
       if (storedUserInfo) {
         setUserInfo(storedUserInfo);
       } else {
-        setUserInfo({ userId: null, userName: null, token: null });
+        setUserInfo({ userId: null, userName: null, token: null, type: null });
       }
     }
     loadStoreUserInfo();
