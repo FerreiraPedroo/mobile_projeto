@@ -147,7 +147,6 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
           router.push("/routes");
         }
       }
-
     } catch (error) {
 
     }
@@ -287,7 +286,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
                   {modalInfo.data.map((item) => (
                     <IonItem key={item.name}>
                       <IonAvatar slot="start" onClick={() => routeAddItem(modalInfo.type, modalInfo.route, item.id)}>
-                        <IonImg src={routePoint} />
+                        <IonIcon icon={modalInfo.type == "passager" ? personCircleOutline : locationOutline} className={"route-config-icon"} size="large"></IonIcon>
                       </IonAvatar>
                       <IonLabel>
                         <h2>{item.name}</h2>

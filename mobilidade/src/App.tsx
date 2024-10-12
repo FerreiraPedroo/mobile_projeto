@@ -59,6 +59,7 @@ const App: React.FC = () => {
             <Route path="/route-config/:routeId" exact={true} component={RouteConfig} />
 
             <Route path="/resp-home" exact={true} component={RespHome} />
+            <Route path="/resp-passager" exact={true} component={RespHome} />
             <Redirect to={"/"} />
           </IonRouterOutlet>
         </IonSplitPane>

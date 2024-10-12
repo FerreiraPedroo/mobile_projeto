@@ -50,7 +50,7 @@ app.post("/login", async (req, res, next) => {
     try {
         if (user || password) {
             const logedToken = await loginUserService({ user, password });
-            console.log({logedToken})
+            console.log({ logedToken })
             return res.status(200).send({ codStatus: 200, message: "Login OK.", data: logedToken })
         } else {
             throw { codStatus: 422, error: "Usuário ou senha errado(s)." }
@@ -244,10 +244,10 @@ app.get("/route/:routeId", async (req, res, next) => {
     }
 })
 app.post("/route", async (req, res, next) => {
-    const { routeName, userId } = req.body;
+    const { routeName, userId, day } = req.body;
 
     try {
-        const routeData = await db.routeCreate(routeName, userId);
+        const routeData = await db.routeCreate(routeName, userId, day);
 
         if (!routeData) {
             throw { codStatus: 422, message: "Não foi possivel criar a rota." }
@@ -341,6 +341,41 @@ app.delete("/passager/:routeId/:passagerId/:type", async (req, res, next) => {
 })
 /////////////////////////////////////////////////////////////////////////////
 
+// RESPONSABLE /////////////////////////////////////////////////////////////
+app.get("/resp-day-route-list/:userId/:day", async (req, res, next) => {
+    const { userId, day } = req.params;
+
+    try {
+        if (userId && day) {
+            const routeListData = await db.respRouteList(userId, day);
+
+            const routeInfo = routeListData.routes.map((route) => {
+                const boardingPoints = routeListData.boardingPointRows.filter((point) => point.route_id == route.id);
+                const landingPoints = routeListData.landingPointRows.filter((point) => point.route_id == route.id);
+                const passagers = routeListData.routeRespPassagerRows.filter((point) => point.route_id == route.id);
+
+                return {
+                    id: route.id,
+                    name: route.name,
+                    photo: route.photo,
+                    boarding_point_amount: boardingPoints.length,
+                    landing_point_amount: landingPoints.length,
+                    passager_amount: passagers.length,
+                }
+            })
+
+            return res.status(200).send({ codStatus: 200, message: "OK", data: routeInfo });
+        } else {
+            throw { codStatus: 422, error: "Id do usuário não é valido." }
+        }
+    } catch (error) {
+        return res.status(error.codStatus || 422).send({
+            codStatus: error.codStatus || 500,
+            message: error.message || "[ROT]: Erro ao checar o token.",
+            error: error.error
+        })
+    }
+})
 
 
 

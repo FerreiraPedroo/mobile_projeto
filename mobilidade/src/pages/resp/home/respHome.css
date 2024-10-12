@@ -9,16 +9,17 @@ capacitor-google-map {
   text-align: center;
   font-size: 1.4rem;
 }
+
 #day-container hr {
   border-width: 1px;
-  color:red;
+  color: red;
   margin: 4px;
 }
 
-#day-router-title{
+#resp-day-router-title {
   font-size: 1.4rem;
-  
-
+  padding: 4px;
+  line-height: 1.3;
 }
 
 #home-container {
@@ -44,7 +45,7 @@ capacitor-google-map {
   text-align: end;
   font-size: 1.2rem;
   color: blue;
-} 
+}
 
 .home-photo {
   width: 40px;
@@ -64,5 +65,3 @@ capacitor-google-map {
   place-items: center;
   font-size: 1.5em;
 }
-
-

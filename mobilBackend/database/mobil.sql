@@ -41,8 +41,9 @@ CREATE TABLE IF NOT EXISTS `mobil`.`route` (
   `name` VARCHAR(45) NOT NULL,
   `user_id` INT NOT NULL,
   `photo` VARCHAR(128) NULL,
-  `start_time` TIMESTAMP NULL DEFAULT NULL ,
-  `end_time` TIMESTAMP NULL DEFAULT NULL ,
+  `day` VARCHAR(90) NOT NULL,
+  `start_time` VARCHAR(90) NULL DEFAULT NULL ,
+  `end_time` VARCHAR(90) NULL DEFAULT NULL ,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
 ENGINE = InnoDB;
