@@ -194,7 +194,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
       {routeInfo ? (
         <IonContent fullscreen>
           <IonItem id="route-config-route">
-            Rota
+            Configuração da rota
           </IonItem>
           <div id="route-config-name-box">
             <p id="route-config-name">{routeInfo.name}</p>

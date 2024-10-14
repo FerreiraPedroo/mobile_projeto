@@ -159,7 +159,7 @@ const Login: React.FC = () => {
       </IonContent>
 
       <IonFooter>
-        <p>@Mobil 2024</p>
+        <h3>@Mobil 2024</h3>
       </IonFooter>
     </IonPage>
   );

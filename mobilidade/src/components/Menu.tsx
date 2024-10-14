@@ -14,7 +14,7 @@ import { useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ContextAppInfo } from '../services/context/context';
 
-import { homeOutline, locationOutline, manOutline, mapOutline} from 'ionicons/icons';
+import { homeOutline, locationOutline, manOutline, mapOutline } from 'ionicons/icons';
 import './Menu.css';
 
 interface AppPage {
@@ -53,10 +53,16 @@ const appDriverPages: AppPage[] = [
 
 const appResponsablePages: AppPage[] = [
   {
-    title: 'Passagers',
-    url: '/resp-passagers',
+    title: 'Inicio',
+    url: '/resp-home',
     iosIcon: homeOutline,
     mdIcon: homeOutline
+  },
+  {
+    title: 'Passageiros',
+    url: '/resp-passagers',
+    iosIcon: manOutline,
+    mdIcon: manOutline
   }
 ];
 

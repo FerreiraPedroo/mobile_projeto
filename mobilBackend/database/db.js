@@ -302,28 +302,48 @@ async function respRouteList(userId, day) {
     const conn = await connect();
     const date = new Date(day).setHours(0, 0, 0);
 
+    // RESPONSABLE PASSSAGERS
     const [respPassagers] = await conn.query(`SELECT id FROM responsable_passager WHERE user_responsable_id=${userId}`);
-
     const respoPassagerIds = respPassagers.reduce((prev, passager, idx) => {
-        if (idx == 0) {
-            return passager.id
-        }
-        return prev + "," + passager.id
-    }, "");
+        if (idx == 0) return passager.id
+        return prev + ", " + passager.id
+    }, "")
 
-    console.log(respoPassagerIds);
+    if (!respPassagers.length) {
+        return { routes: [], boardingPointRows: [], landingPointRows: [], routeRespPassagerRows: [] }
+    }
 
-    const [routeRespPass] = await conn.query(`SELECT id FROM route_responsable_passager WHERE responsable_passager_id IN ('${respoPassagerIds}')`)
+    // ROUTE RESPONSABLE PASSAGERS
+    let [routeRespPass] = await conn.query(`SELECT route_id FROM route_responsable_passager WHERE responsable_passager_id IN (${respoPassagerIds})`)
+    const routeIds = new Set(routeRespPass.map((route) => {
+        console.log(route.route_id)
 
-    console.log(routeRespPass);
+        return route.route_id
+    }))
 
-    const [routes] = await conn.query(`SELECT * FROM route WHERE user_id=${userId}`);
 
-    const routeIds = routes.length ? routes.reduce((prev, curr, idx) => {
-        if (idx == 0) return curr.id
-        return prev + ", " + curr.id
-    }, "") : null
 
+
+
+
+
+/*
+
+
+
+
+
+
+ */
+
+
+    console.log("OK",routeIds)
+
+    if (!routeIds.length) {
+        return { routes: [], boardingPointRows: [], landingPointRows: [], routeRespPassagerRows: [] }
+    }
+
+    const [routes] = await conn.query(`SELECT * FROM route WHERE id IN (${routeIds.join(",")})`);
     // BOARDING
     const [boardingPointRows] = await conn.query(`SELECT route_id FROM route_points WHERE route_id in (${routeIds}) AND type="boarding"`);
     // LANDING
@@ -331,7 +351,8 @@ async function respRouteList(userId, day) {
     // PASSAGER
     const [routeRespPassagerRows] = await conn.query(`SELECT route_id FROM route_responsable_passager WHERE route_id in (${routeIds})`);
 
-    return { routes, boardingPointRows, landingPointRows, routeRespPassagerRows }
+    return { routes: "", boardingPointRows: "", landingPointRows: "", routeRespPassagerRows: "" }
+    // return { routes, boardingPointRows, landingPointRows, routeRespPassagerRows }
 }
 
 
