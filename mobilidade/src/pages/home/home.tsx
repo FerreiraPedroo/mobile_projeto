@@ -34,7 +34,7 @@ const dateActual = new Date();
 
 const Home: React.FC = () => {
   const router = useIonRouter();
-  const { userInfo, changeUserInfo } = useContext(ContextAppInfo);
+  const { userInfo, updatePage, changeUserInfo } = useContext(ContextAppInfo);
 
   const [routeList, setRouteList] = useState<Route[] | null>(null);
 
@@ -66,7 +66,7 @@ const Home: React.FC = () => {
     if (userInfo.userId) {
       getDayRouteList(userInfo.userId!);
     }
-  }, [userInfo]);
+  }, [userInfo, updatePage]);
 
   return (
     <IonPage>
@@ -81,13 +81,7 @@ const Home: React.FC = () => {
 
       <IonContent fullscreen>
         <div id="day-container">
-          {dateActual.toLocaleDateString("pt-BR", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-          <br /> {dateActual.toLocaleTimeString()}<hr />
+        {dateActual.toISOString().split("T")[0].split("-").reverse().join("/")}
         </div>
 
         {routeList ?

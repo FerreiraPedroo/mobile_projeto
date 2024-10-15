@@ -39,7 +39,11 @@ import { Login } from "./pages/login/login";
 import { RouteList } from "./pages/route/routeList/routeList";
 import { RouteConfig } from "./pages/route/routeConfig/routeConfig";
 import { RouteHome } from "./pages/route/routeHome/routeHome";
+import { PointList } from "./pages/point/pointList/pointList";
+import { ResponsableConfig } from "./pages/driverResponsable/responsableConfig/responsableConfig";
+
 import { RespHome } from "./pages/resp/home/respHome";
+import { ResponsableList } from "./pages/driverResponsable/responsableList/responsableList";
 
 setupIonicReact();
 
@@ -55,6 +59,9 @@ const App: React.FC = () => {
             <Route path="/login" exact={true} component={Login} />
             <Route path="/home" exact={true} component={Home} />
             <Route path="/routes" exact={true} component={RouteList} />
+            <Route path="/responsables" exact={true} component={ResponsableList} />
+            <Route path="/responsable/:responsableId" exact={true} component={ResponsableConfig} />
+            <Route path="/points" exact={true} component={PointList} />
             <Route path="/route/:routeId" exact={true} component={RouteHome} />
             <Route path="/route-config/:routeId" exact={true} component={RouteConfig} />
 

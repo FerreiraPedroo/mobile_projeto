@@ -17,44 +17,41 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { FormEvent, useContext, useEffect, useState } from "react";
-import { GoogleMap } from "@capacitor/google-maps";
-const apiKey = "YOUR_API_KEY_HERE";
-const dateActual = new Date();
+import { useContext, useEffect, useState } from "react";
 
 import { ContextAppInfo } from "../../../services/context/context";
-import routeImg from "../../../assets/img/route-map.png";
+
+import pointImg from "../../../assets/img/point.png";
 import { add } from "ionicons/icons";
-import "./routeList.css";
+import "./pointList.css";
 
 interface Route {
   id: number;
   name: string;
   photo: string;
-  boardingPointsAmount: number;
-  landingPointsAmount: number;
-  passagerAmount: number;
+  maps: number;
 }
 
-const RouteList: React.FC = () => {
+const PointList: React.FC = () => {
   const { userInfo, updatePage, setUpdatePage } = useContext(ContextAppInfo);
 
-  const [routesList, setRoutesList] = useState<Route[]>([]);
+  const [pointsList, setPointsList] = useState<Route[]>([]);
   const [modalShow, setModalShow] = useState(false);
-  const [routeName, setRouteName] = useState<string | number>("")
+  const [pointName, setPointName] = useState<string | number>("")
 
-  async function createRoute() {
+  async function createPoint() {
     try {
-      const response = await fetch(`http://localhost:3000/route`, {
+      const response = await fetch(`http://localhost:3000/point`, {
         method: "POST",
         mode: 'cors',
-        body: JSON.stringify({ routeName, userId: userInfo.userId }),
+        body: JSON.stringify({ pointName, userId: userInfo.userId }),
         headers: { 'Content-Type': 'application/json' }
       });
 
       const listReturn = await response.json();
 
       if (listReturn.codStatus == 200) {
+        setPointName("");
         setUpdatePage(prev => !prev)
         setModalShow(false)
       }
@@ -67,9 +64,9 @@ const RouteList: React.FC = () => {
 
   useEffect(() => {
     if (userInfo.userId) {
-      async function getRoutes(userId: number) {
+      async function getPoints(userId: number) {
         try {
-          const response = await fetch(`http://localhost:3000/route-list/${userId}`, {
+          const response = await fetch(`http://localhost:3000/point-list/${userId}`, {
             method: "GET",
             mode: "cors",
             headers: {
@@ -79,17 +76,17 @@ const RouteList: React.FC = () => {
 
           const routeDataReturn = await response.json();
           if (routeDataReturn.codStatus == 200) {
-            setRoutesList(routeDataReturn.data);
+            setPointsList(routeDataReturn.data);
             return;
           }
 
           throw "Erro";
         } catch (error) {
-          setRoutesList([]);
+          setPointsList([]);
         }
       }
 
-      getRoutes(userInfo.userId);
+      getPoints(userInfo.userId);
     }
   }, [userInfo, updatePage]);
 
@@ -106,25 +103,24 @@ const RouteList: React.FC = () => {
 
       <IonContent fullscreen>
         <IonItem>
-          <p>Rotas</p>
+          <p>Pontos de parada</p>
           <IonFabButton id="route-list-add-route-icon" size="small" onClick={() => setModalShow(true)}>
             <IonIcon icon={add}></IonIcon>
           </IonFabButton>
         </IonItem>
 
         <div id="route-container">
-          {routesList.map((route, key) => {
+          {pointsList.map((route, key) => {
             return (
               <IonCard key={key} routerLink={`/route-config/${route.id}`}>
                 <IonCardHeader class="route-card-header">
-                  <img className="route-photo" src={routeImg}></img>
+                  <img className="route-photo" src={pointImg}></img>
                   <IonCardTitle>{route.name}</IonCardTitle>
                 </IonCardHeader>
 
                 <IonCardContent className="route-card-point">
-                  <div>Pontos de Embarque: {route.boardingPointsAmount}</div>
-                  <div>Pontos de Desembarque: {route.landingPointsAmount}</div>
-                  <div>Passageiros: {route.passagerAmount}</div>
+                  <div>Mapa: {route.maps ?? "-"}</div>
+
                 </IonCardContent>
               </IonCard>
             );
@@ -133,10 +129,10 @@ const RouteList: React.FC = () => {
 
         <IonModal isOpen={modalShow} initialBreakpoint={.50} breakpoints={[.50]} onWillDismiss={() => setModalShow(false)}>
           <div className="route-config-delete-modal">
-            <p id="route-list-add-route-text">Digite o nome da rota:</p>
-            <IonInput fill="outline" color="dark" value={routeName} onIonInput={(e) => setRouteName(e.target.value!)} ></IonInput>
+            <p id="route-list-add-route-text">Digite o nome do ponto de parada:</p>
+            <IonInput fill="outline" color="dark" value={pointName} onIonInput={(e) => setPointName(e.target.value!)} ></IonInput>
             <div className="route-config-delete-modal-buttons">
-              <IonButton color="primary" expand="full" onClick={() => createRoute()}>CRIAR</IonButton>
+              <IonButton color="primary" expand="full" onClick={() => createPoint()}>CRIAR</IonButton>
               <IonButton color="medium" expand="full" onClick={() => setModalShow(false)}>VOLTAR</IonButton>
             </div>
           </div>
@@ -146,4 +142,4 @@ const RouteList: React.FC = () => {
   );
 };
 
-export { RouteList };
+export { PointList };

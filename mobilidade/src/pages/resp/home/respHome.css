@@ -30,7 +30,7 @@ capacitor-google-map {
 .home-card-title {
   font-size: 1.3rem;
   font-weight: 500;
-  color: blue;
+  color: white;
 }
 
 .home-card-header {
@@ -44,7 +44,7 @@ capacitor-google-map {
   flex-grow: 1;
   text-align: end;
   font-size: 1.2rem;
-  color: blue;
+  color: white;
 }
 
 .home-photo {

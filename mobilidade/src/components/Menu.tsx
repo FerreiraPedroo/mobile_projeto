@@ -39,13 +39,13 @@ const appDriverPages: AppPage[] = [
   },
   {
     title: 'Pontos de parada',
-    url: '/landing-point',
+    url: '/points',
     iosIcon: locationOutline,
     mdIcon: locationOutline
   },
   {
     title: 'Responsável',
-    url: '/responsable',
+    url: '/responsables',
     iosIcon: manOutline,
     mdIcon: manOutline
   }
