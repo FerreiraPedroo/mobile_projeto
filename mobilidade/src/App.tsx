@@ -59,11 +59,11 @@ const App: React.FC = () => {
             <Route path="/login" exact={true} component={Login} />
             <Route path="/home" exact={true} component={Home} />
             <Route path="/routes" exact={true} component={RouteList} />
+            <Route path="/route/:routeId" exact={true} component={RouteHome} />
+            <Route path="/route-config/:routeId" exact={true} component={RouteConfig} />
             <Route path="/responsables" exact={true} component={ResponsableList} />
             <Route path="/responsable/:responsableId" exact={true} component={ResponsableConfig} />
             <Route path="/points" exact={true} component={PointList} />
-            <Route path="/route/:routeId" exact={true} component={RouteHome} />
-            <Route path="/route-config/:routeId" exact={true} component={RouteConfig} />
 
             <Route path="/resp-home" exact={true} component={RespHome} />
             <Route path="/resp-passager" exact={true} component={RespHome} />

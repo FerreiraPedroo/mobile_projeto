@@ -1,5 +1,5 @@
 import mysql from "mysql2/promise";
-
+import QRCode from "qrcode";
 const global = {};
 
 async function connect() {
@@ -10,6 +10,9 @@ async function connect() {
   global.connection = connection;
   return connection;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// ROUTE /////////////////////////////////////////////////////////////////////
 async function selectRoute(routeId) {
   const conn = await connect();
   const [routeResults] = await conn.query(`SELECT * FROM route WHERE id=${routeId}`);
@@ -75,9 +78,12 @@ async function selectRoute(routeId) {
 
   return { route: routeResults[0], boardingPointsInfo, landingPointsInfo, respPassagerInfo };
 }
-
 async function routeList(userId) {
   const conn = await connect();
+
+  QRCode.toDataURL("I am a pony!", function (err, url) {
+    console.log(url);
+  });
 
   const [routes] = await conn.query(`SELECT * FROM route WHERE user_id=${userId}`);
 
@@ -103,7 +109,79 @@ async function routeList(userId) {
 
   return { routes, boardingPointRows, landingPointRows, routeRespPassagerRows };
 }
+async function routeCreate(routeName, userId, day) {
+  const conn = await connect();
+  const [route] = await conn.query(
+    `SELECT * FROM route WHERE name='${routeName}' AND user_id='${userId}'`
+  );
 
+  if (route.length) {
+    throw { codStatus: 422, message: "Esta rota existente.", error: "" };
+  }
+
+  let routeDay = null;
+  if (day) {
+    routeDay = new Date(day);
+  } else {
+    routeDay = Date.now();
+  }
+  console.log(routeDay);
+  const [routeResult] = await conn.query(
+    `INSERT INTO route (name, user_id, day) VALUES ('${routeName}',${userId}, ${routeDay})`
+  );
+
+  return routeResult;
+}
+async function routeDelete(routeId, userId, type) {
+  const conn = await connect();
+
+  const [route] = await conn.query(`SELECT id FROM route WHERE id=${routeId}`);
+
+  if (!route.length) {
+    throw { codStatus: 422, message: "Rota não encontrada", error: "" };
+  }
+
+  const [routePassagerResults] = await conn.query(
+    `SELECT id FROM route_responsable_passager WHERE route_id=${routeId}`
+  );
+
+  let routePassagerIds = null;
+  if (routePassagerResults.length) {
+    routePassagerIds = routePassagerResults.length
+      ? routePassagerResults.reduce((prev, curr, idx) => {
+          if (idx == 0) return curr.id;
+          return prev + ", " + curr.id;
+        }, "")
+      : null;
+  }
+
+  const [routePointsResult] = await conn.query(
+    `SELECT id FROM route_points WHERE route_id=${routeId}`
+  );
+
+  let routePointIds = null;
+  if (routePointsResult.length) {
+    routePointIds = routePointsResult.length
+      ? routePointsResult.reduce((prev, curr, idx) => {
+          if (idx == 0) return curr.id;
+          return prev + ", " + curr.id;
+        }, "")
+      : null;
+  }
+
+  if (routePassagerIds) {
+    await conn.query(`DELETE FROM route_responsable_passager WHERE id IN (${routePassagerIds})`);
+  }
+  if (routePointIds) {
+    await conn.query(`DELETE FROM route_points WHERE id IN (${routePointIds})`);
+  }
+  if (route.length) {
+    await conn.query(`DELETE FROM route WHERE id=${routeId}`);
+  }
+
+  return "OK";
+}
+// ROUTE PASSAGER
 async function passagerList(userId, routeId, type) {
   const conn = await connect();
 
@@ -189,7 +267,7 @@ async function routePassagerDelete(routeId, passagerId, type) {
 
   return pointResult;
 }
-
+// ROUTE POINTS
 async function userPointList(userId, routeId, type) {
   const conn = await connect();
 
@@ -264,80 +342,8 @@ async function routePointDelete(routeId, pointId, type) {
   return pointResult;
 }
 
-async function routeCreate(routeName, userId, day) {
-  const conn = await connect();
-  const [route] = await conn.query(
-    `SELECT * FROM route WHERE name='${routeName}' AND user_id='${userId}'`
-  );
-
-  if (route.length) {
-    throw { codStatus: 422, message: "Esta rota existente.", error: "" };
-  }
-
-  let routeDay = null;
-  if (day) {
-    routeDay = new Date(day);
-  } else {
-    routeDay = Date.now();
-  }
-  console.log(routeDay);
-  const [routeResult] = await conn.query(
-    `INSERT INTO route (name, user_id, day) VALUES ('${routeName}',${userId}, ${routeDay})`
-  );
-
-  return routeResult;
-}
-async function routeDelete(routeId, userId, type) {
-  const conn = await connect();
-
-  const [route] = await conn.query(`SELECT id FROM route WHERE id=${routeId}`);
-
-  if (!route.length) {
-    throw { codStatus: 422, message: "Rota não encontrada", error: "" };
-  }
-
-  const [routePassagerResults] = await conn.query(
-    `SELECT id FROM route_responsable_passager WHERE route_id=${routeId}`
-  );
-
-  let routePassagerIds = null;
-  if (routePassagerResults.length) {
-    routePassagerIds = routePassagerResults.length
-      ? routePassagerResults.reduce((prev, curr, idx) => {
-          if (idx == 0) return curr.id;
-          return prev + ", " + curr.id;
-        }, "")
-      : null;
-  }
-
-  const [routePointsResult] = await conn.query(
-    `SELECT id FROM route_points WHERE route_id=${routeId}`
-  );
-
-  let routePointIds = null;
-  if (routePointsResult.length) {
-    routePointIds = routePointsResult.length
-      ? routePointsResult.reduce((prev, curr, idx) => {
-          if (idx == 0) return curr.id;
-          return prev + ", " + curr.id;
-        }, "")
-      : null;
-  }
-
-  if (routePassagerIds) {
-    await conn.query(`DELETE FROM route_responsable_passager WHERE id IN (${routePassagerIds})`);
-  }
-  if (routePointIds) {
-    await conn.query(`DELETE FROM route_points WHERE id IN (${routePointIds})`);
-  }
-  if (route.length) {
-    await conn.query(`DELETE FROM route WHERE id=${routeId}`);
-  }
-
-  return "OK";
-}
-
-// POINTS /////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+// POINTS ////////////////////////////////////////////////////////////////////
 async function pointList(userId) {
   const conn = await connect();
 
@@ -361,8 +367,26 @@ async function pointCreate(pointName, userId, maps = null, photo = null) {
 
   return pointResult;
 }
+async function pointDelete(pointId, userId) {
+  const conn = await connect();
 
-// USER ///////////////////////////////////////////////////////////////
+  const [point] = await conn.query(
+    `SELECT id FROM point WHERE id=${pointId} AND user_id=${userId}`
+  );
+
+  if (!point.length) {
+    throw { codStatus: 422, message: "Ponto de parada não encontrada", error: "" };
+  }
+
+  await conn.query(`DELETE FROM route_points WHERE point_id=${pointId}`);
+
+  await conn.query(`DELETE FROM point WHERE id=${pointId}`);
+
+  return "OK";
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// USER //////////////////////////////////////////////////////////////////////
 async function getUserByEmail(email) {
   const conn = await connect();
 
@@ -392,7 +416,8 @@ async function setUserToken(userId, token) {
   return true;
 }
 
-// RESP ///////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+// DRIVER RESPONSABLE/////////////////////////////////////////////////////////
 async function respRouteList(userId, day) {
   const conn = await connect();
   const date = new Date(day).setHours(0, 0, 0);
@@ -479,7 +504,45 @@ async function responsablesList(userId) {
 
   return { responsables, resposablePassager };
 }
+async function responsableDelete(userId, responsableId) {
+  const conn = await connect();
 
+  // RESPOSANBLE ////////////////////////////////////////////////////////////////////
+  const [responsable] = await conn.query(
+    `SELECT id FROM user WHERE id=${responsableId} AND driver_id=${userId} AND user_type='responsable'`
+  );
+
+  if (!responsable.length) {
+    throw { codStatus: 422, message: "Responsavel não encontrada", error: "" };
+  }
+
+  // RESPOSANBLE PASSAGERS //////////////////////////////////////////////////////////
+  const [responsablePassager] = await conn.query(
+    `SELECT id FROM responsable_passager WHERE user_responsable_id=${responsableId}`
+  );
+
+  let responsablePassagerIds = null;
+  responsablePassagerIds = responsablePassager.reduce((prev, passagers, idx) => {
+    if (idx == 0) return passagers.id;
+    return prev + ", " + passagers.id;
+  }, "");
+
+  // UPDATE & DELETE ////////////////////////////////////////////////////////////////////
+  await conn.query(`DELETE FROM responsable_passager WHERE user_responsable_id=${responsableId}`);
+
+  if (responsablePassagerIds) {
+    await conn.query(
+      `DELETE FROM route_responsable_passager WHERE responsable_passager_id IN (${responsablePassagerIds})`
+    );
+  }
+
+  await conn.query(`UPDATE user SET driver_id=null WHERE id=${responsableId}`);
+
+  return "OK";
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// RESPONSABLE ///////////////////////////////////////////////////////////////
 async function selectResponsable(responsableId) {
   const conn = await connect();
   const [responsableResult] = await conn.query(
@@ -495,10 +558,10 @@ async function selectResponsable(responsableId) {
     `SELECT * FROM responsable_passager WHERE user_responsable_id=${responsableId}`
   );
 
-  return { responsableResult:responsableResult[0], routeRespPassagerResult };
+  return { responsableResult: responsableResult[0], routeRespPassagerResult };
 }
 
-////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 export {
   selectRoute,
   routeList,
@@ -518,4 +581,6 @@ export {
   pointCreate,
   responsablesList,
   selectResponsable,
+  responsableDelete,
+  pointDelete,
 };

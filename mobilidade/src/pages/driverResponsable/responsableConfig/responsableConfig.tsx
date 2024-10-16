@@ -1,4 +1,5 @@
 import {
+  IonAccordion,
   IonAccordionGroup,
   IonButton,
   IonButtons,
@@ -18,7 +19,7 @@ import { RouteComponentProps } from "react-router";
 import { useContext, useEffect, useState } from "react";
 import { ContextAppInfo } from "../../../services/context/context";
 
-import { trashSharp } from "ionicons/icons";
+import { personCircleOutline, trashSharp } from "ionicons/icons";
 
 import loading from "../../../assets/img/loading.gif";
 
@@ -27,7 +28,11 @@ import "./responsableConfig.css";
 interface RouteConfig {
   id: number;
   name: string;
-  photo: string;
+  email: string;
+  passagers: {
+    id: number;
+    name: string;
+  }[];
 }
 
 interface RouteConfigParams
@@ -36,37 +41,48 @@ interface RouteConfigParams
   }> {}
 
 interface ModalInfoInterface {
-  type: string;
+  id: number;
+  name: string;
   route: string;
-  data: null | [{ id: number; name: string }] | [];
 }
 
 const ResponsableConfig: React.FC<RouteConfigParams> = ({ match }) => {
-  const router = useIonRouter();
   const responsableId = match.params.responsableId;
+  const router = useIonRouter();
 
   const { userInfo, updatePage, setUpdatePage } = useContext(ContextAppInfo);
   const [responsableInfo, setResponsableInfo] = useState<RouteConfig | null>(null);
-  const [modalDeleteShow, setModalDeleteShow] = useState(false);
+  const [modalDeletePassagerShow, setModalDeletePassagerShow] = useState(false);
+  const [modalDeletePassagerInfo, setModalDeletePassagerInfo] = useState<ModalInfoInterface>();
 
-  async function responsableDelete() {
+  async function handleDelete(id: number, route: string) {
     try {
-      const response = await fetch(`http://localhost:3000/responsable/${responsableId}`, {
-        method: "DELETE",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `http://localhost:3000/${route}/${userInfo.userId}/${responsableId}${
+          route == "responsable-passager" ? "/" + id : ""
+        }`,
+        {
+          method: "DELETE",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       const deleteReturn = await response.json();
 
       if (deleteReturn.codStatus == 200) {
-        setModalDeleteShow(false);
+        setModalDeletePassagerShow(false);
         setUpdatePage((prev) => !prev);
-        router.push("/responsables");
+        router.push("/responsables")
       }
     } catch (error) {}
+  }
+
+  async function openDeletePassagerModal(id: number, name: string, route: string) {
+    setModalDeletePassagerShow(true);
+    setModalDeletePassagerInfo({ id, name, route });
   }
 
   useEffect(() => {
@@ -114,50 +130,84 @@ const ResponsableConfig: React.FC<RouteConfigParams> = ({ match }) => {
             <IonButton
               color="danger"
               className="route-config-button-trash"
-              onClick={() => setModalDeleteShow(true)}
+              onClick={() =>
+                openDeletePassagerModal(responsableInfo.id, responsableInfo.name, "responsable")
+              }
             >
               <IonIcon icon={trashSharp}></IonIcon>
             </IonButton>
           </div>
           <div id="route-config-container">
-            <IonAccordionGroup expand="inset" mode={"md"}>
-              {/* <IonAccordion value="first"> */}
-              <IonItem slot="header" color="light">
-                <IonLabel>Passageiros</IonLabel>
-              </IonItem>
-              {/* {responsableInfo && responsableInfo.boardingPoints.map((point) => (
-                  <div key={point.id} className="route-config-point" slot="content">
-                    <IonIcon icon={locationOutline} className={"route-config-icon"} size="large"></IonIcon>
-                    <p className="route-config-point-name">{point.name}</p>
-                    <div className="route-config-point-delete">
-                      <IonButton color="danger" className="route-config-button-trash" onClick={() => openDeleteModal("boarding", "Ponto de embarque", point.id, point.name, "point")}>
-                        <IonIcon icon={trashSharp}></IonIcon>
-                      </IonButton>
-                    </div>
+            {/* <IonAccordionGroup expand="inset" mode={"md"}>
+              <IonAccordion value="first"> */}
+            <IonItem slot="header" color="light">
+              <IonLabel>Passageiros</IonLabel>
+            </IonItem>
+
+            {responsableInfo &&
+              responsableInfo.passagers.map((passager) => (
+                <div key={passager.id} className="route-config-point" slot="content">
+                  <IonIcon
+                    icon={personCircleOutline}
+                    className={"route-config-icon"}
+                    size="large"
+                  ></IonIcon>
+                  <p className="route-config-point-name">{passager.name}</p>
+                  <div className="route-config-point-delete">
+                    {/* <IonButton
+                      color="danger"
+                      className="route-config-button-trash"
+                      onClick={() =>
+                        openDeletePassagerModal(passager.id, passager.name, "responsable-passager")
+                      }
+                    >
+                      <IonIcon icon={trashSharp}></IonIcon>
+                    </IonButton> */}
                   </div>
-                ))} */}
-              {/* </IonAccordion> */}
-            </IonAccordionGroup>
+                </div>
+              ))}
+            {/* </IonAccordion>
+            </IonAccordionGroup> */}
           </div>
 
           <IonModal
-            isOpen={modalDeleteShow}
+            isOpen={modalDeletePassagerShow}
             initialBreakpoint={0.5}
             breakpoints={[0.5]}
-            onWillDismiss={() => setModalDeleteShow(false)}
+            onWillDismiss={() => setModalDeletePassagerShow(false)}
           >
-            <div className="route-config-delete-modal">
-              <p>Deseja realmente excluir o responsável ?</p>
-
-              <div className="route-config-delete-modal-buttons">
-                <IonButton color="danger" expand="full" onClick={() => responsableDelete()}>
-                  EXCLUIR
-                </IonButton>
-                <IonButton color="medium" expand="full" onClick={() => setModalDeleteShow(false)}>
-                  VOLTAR
-                </IonButton>
+            {modalDeletePassagerInfo ? (
+              <div className="route-config-delete-modal">
+                <p>
+                  Deseja realmente excluir{" "}
+                  {modalDeletePassagerInfo.route == "responsable"
+                    ? "o RESPONSÁVEL, todos os passageiros serão excluidos."
+                    : "o passageiro "}
+                  ?
+                </p>
+                <div className="route-config-delete-item-name">{modalDeletePassagerInfo.name}</div>
+                <div className="route-config-delete-modal-buttons">
+                  <IonButton
+                    color="danger"
+                    expand="full"
+                    onClick={() =>
+                      handleDelete(modalDeletePassagerInfo.id, modalDeletePassagerInfo.route)
+                    }
+                  >
+                    EXCLUIR
+                  </IonButton>
+                  <IonButton
+                    color="medium"
+                    expand="full"
+                    onClick={() => setModalDeletePassagerShow(false)}
+                  >
+                    VOLTAR
+                  </IonButton>
+                </div>
               </div>
-            </div>
+            ) : (
+              ""
+            )}
           </IonModal>
         </IonContent>
       ) : (

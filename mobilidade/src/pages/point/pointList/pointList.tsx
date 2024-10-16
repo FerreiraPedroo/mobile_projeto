@@ -22,10 +22,10 @@ import { useContext, useEffect, useState } from "react";
 import { ContextAppInfo } from "../../../services/context/context";
 
 import pointImg from "../../../assets/img/point.png";
-import { add } from "ionicons/icons";
+import { add, trashSharp } from "ionicons/icons";
 import "./pointList.css";
 
-interface Route {
+interface Point {
   id: number;
   name: string;
   photo: string;
@@ -35,31 +35,54 @@ interface Route {
 const PointList: React.FC = () => {
   const { userInfo, updatePage, setUpdatePage } = useContext(ContextAppInfo);
 
-  const [pointsList, setPointsList] = useState<Route[]>([]);
+  const [pointsList, setPointsList] = useState<Point[]>([]);
   const [modalShow, setModalShow] = useState(false);
-  const [pointName, setPointName] = useState<string | number>("")
+  const [pointName, setPointName] = useState<string | number>("");
+
+  const [modalDeletePointShow, setModalDeletePointShow] = useState(false);
+  const [modalDeletePointInfo, setModalDeletePointInfo] = useState<Point>();
 
   async function createPoint() {
     try {
       const response = await fetch(`http://localhost:3000/point`, {
         method: "POST",
-        mode: 'cors',
+        mode: "cors",
         body: JSON.stringify({ pointName, userId: userInfo.userId }),
-        headers: { 'Content-Type': 'application/json' }
+        headers: { "Content-Type": "application/json" },
       });
 
       const listReturn = await response.json();
 
       if (listReturn.codStatus == 200) {
         setPointName("");
-        setUpdatePage(prev => !prev)
-        setModalShow(false)
+        setUpdatePage((prev) => !prev);
+        setModalShow(false);
       }
+    } catch (error) {}
+  }
 
-    } catch (error) {
+  async function deletePointModalOpen(point: Point) {
+    setModalDeletePointShow(true);
+    setModalDeletePointInfo(point);
+  }
 
-    }
+  async function deletePoint(pointId: number) {
+    try {
+      const response = await fetch(`http://localhost:3000/point/${pointId}/${userInfo.userId}`, {
+        method: "DELETE",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
+      const deleteReturn = await response.json();
+
+      if (deleteReturn.codStatus == 200) {
+        setModalDeletePointShow(false);
+        setUpdatePage((prev) => !prev);
+      }
+    } catch (error) {}
   }
 
   useEffect(() => {
@@ -104,38 +127,94 @@ const PointList: React.FC = () => {
       <IonContent fullscreen>
         <IonItem>
           <p>Pontos de parada</p>
-          <IonFabButton id="route-list-add-route-icon" size="small" onClick={() => setModalShow(true)}>
+          <IonFabButton
+            id="route-list-add-route-icon"
+            size="small"
+            onClick={() => setModalShow(true)}
+          >
             <IonIcon icon={add}></IonIcon>
           </IonFabButton>
         </IonItem>
 
         <div id="route-container">
-          {pointsList.map((route, key) => {
+          {pointsList.map((point, key) => {
             return (
-              <IonCard key={key} routerLink={`/route-config/${route.id}`}>
-                <IonCardHeader class="route-card-header">
-                  <img className="route-photo" src={pointImg}></img>
-                  <IonCardTitle>{route.name}</IonCardTitle>
-                </IonCardHeader>
-
-                <IonCardContent className="route-card-point">
-                  <div>Mapa: {route.maps ?? "-"}</div>
-
-                </IonCardContent>
+              <IonCard key={key}>
+                <div className="point-config">
+                  <div>
+                    <IonCardHeader class="route-card-header">
+                      <img className="route-photo" src={pointImg}></img>
+                      <IonCardTitle>{point.name}</IonCardTitle>
+                    </IonCardHeader>
+                  </div>
+                  <IonButton
+                    color="danger"
+                    className="route-config-button-trash"
+                    onClick={() => deletePointModalOpen(point)}
+                  >
+                    <IonIcon icon={trashSharp}></IonIcon>
+                  </IonButton>
+                </div>
               </IonCard>
             );
           })}
         </div>
 
-        <IonModal isOpen={modalShow} initialBreakpoint={.50} breakpoints={[.50]} onWillDismiss={() => setModalShow(false)}>
+        <IonModal
+          isOpen={modalShow}
+          initialBreakpoint={0.5}
+          breakpoints={[0.5]}
+          onWillDismiss={() => setModalShow(false)}
+        >
           <div className="route-config-delete-modal">
             <p id="route-list-add-route-text">Digite o nome do ponto de parada:</p>
-            <IonInput fill="outline" color="dark" value={pointName} onIonInput={(e) => setPointName(e.target.value!)} ></IonInput>
+            <IonInput
+              fill="outline"
+              color="dark"
+              value={pointName}
+              onIonInput={(e) => setPointName(e.target.value!)}
+            ></IonInput>
             <div className="route-config-delete-modal-buttons">
-              <IonButton color="primary" expand="full" onClick={() => createPoint()}>CRIAR</IonButton>
-              <IonButton color="medium" expand="full" onClick={() => setModalShow(false)}>VOLTAR</IonButton>
+              <IonButton color="primary" expand="full" onClick={() => createPoint()}>
+                CRIAR
+              </IonButton>
+              <IonButton color="medium" expand="full" onClick={() => setModalShow(false)}>
+                VOLTAR
+              </IonButton>
             </div>
           </div>
+        </IonModal>
+
+        <IonModal
+          isOpen={modalDeletePointShow}
+          initialBreakpoint={0.5}
+          breakpoints={[0.5]}
+          onWillDismiss={() => setModalDeletePointShow(false)}
+        >
+          {modalDeletePointInfo ? (
+            <div className="route-config-delete-modal">
+              <p>Deseja realmente excluir o ponto de parada ?</p>
+              <div className="route-config-delete-item-name">{modalDeletePointInfo.name}</div>
+              <div className="route-config-delete-modal-buttons">
+                <IonButton
+                  color="danger"
+                  expand="full"
+                  onClick={() => deletePoint(modalDeletePointInfo.id)}
+                >
+                  EXCLUIR
+                </IonButton>
+                <IonButton
+                  color="medium"
+                  expand="full"
+                  onClick={() => setModalDeletePointShow(false)}
+                >
+                  VOLTAR
+                </IonButton>
+              </div>
+            </div>
+          ) : (
+            ""
+          )}
         </IonModal>
       </IonContent>
     </IonPage>

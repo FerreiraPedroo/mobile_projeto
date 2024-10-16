@@ -320,7 +320,6 @@ app.get("/point-list/:userId", async (req, res, next) => {
     });
   }
 });
-
 app.post("/point", async (req, res, next) => {
   const { pointName, userId, maps, photo } = req.body;
 
@@ -336,6 +335,22 @@ app.post("/point", async (req, res, next) => {
     return res.status(error.codStatus || 422).send({
       codStatus: error.codStatus || 500,
       message: error.message || "[ROT]: Erro ao criar a rota.",
+      error: error.error,
+    });
+  }
+});
+app.delete("/point/:pointId/:userId", async (req, res, next) => {
+  const { pointId, userId } = req.params;
+
+  try {
+    const pointDeleted = await db.pointDelete(pointId, userId);
+
+    return res.status(200).send({ codStatus: 200, message: "OK" });
+  } catch (error) {
+    console.log({ error });
+    return res.status(error.codStatus || 422).send({
+      codStatus: error.codStatus || 422,
+      message: error.message || "[ROT]: Erro ao excluir a rota.",
       error: error.error,
     });
   }
@@ -399,7 +414,7 @@ app.delete("/passager/:routeId/:passagerId/:type", async (req, res, next) => {
 });
 /////////////////////////////////////////////////////////////////////////////
 
-// RESPONSABLE /////////////////////////////////////////////////////////////
+// RESPONSABLE //////////////////////////////////////////////////////////////
 app.get("/resp-day-route-list/:userId/:day", async (req, res, next) => {
   const { userId, day } = req.params;
 
@@ -465,6 +480,7 @@ app.get("/qrcode/:responsableId", async (req, res, next) => {
   }
 });
 
+// DRIVER RESPONSABLE ///////////////////////////////////////////////////////
 app.get("/responsable-list/:userId", async (req, res, next) => {
   const { userId } = req.params;
 
@@ -514,8 +530,8 @@ app.get("/responsable/:responsableId", async (req, res, next) => {
       passagers: routeRespPassagerResult.map((passager) => {
         return {
           id: passager.id,
-          name: passager.name
-        }
+          name: passager.name,
+        };
       }),
     };
 
@@ -524,6 +540,23 @@ app.get("/responsable/:responsableId", async (req, res, next) => {
     return res.status(error.codStatus || 422).send({
       codStatus: error.codStatus || 500,
       message: error.message || "[ROT]: Erro ao obter a rota.",
+      error: error.error,
+    });
+  }
+});
+
+app.delete("/responsable/:userId/:responsableId", async (req, res, next) => {
+  const { userId, responsableId } = req.params;
+
+  try {
+    const responsableDeleted = await db.responsableDelete(userId, responsableId);
+
+    return res.status(200).send({ codStatus: 200, message: "OK" });
+  } catch (error) {
+    console.log({ error });
+    return res.status(error.codStatus || 422).send({
+      codStatus: error.codStatus || 422,
+      message: error.message || "[ROT]: Erro ao excluir a rota.",
       error: error.error,
     });
   }

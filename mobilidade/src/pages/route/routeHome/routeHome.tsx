@@ -17,7 +17,6 @@ import { useContext, useEffect, useState } from "react";
 
 import "./routeHome.css";
 import loading from "../../../assets/img/loading.gif";
-import { add } from "ionicons/icons";
 
 interface Route {
   id: number;
@@ -44,10 +43,12 @@ interface RouteHomeParams
 import { ContextAppInfo } from "../../../services/context/context";
 
 import "./routeHome.css";
+import { MyMap } from "../../../components/googleMaps/googleMaps";
 
 const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
   const { userInfo, updatePage, setUpdatePage } = useContext(ContextAppInfo);
   const [routeInfo, setRouteInfo] = useState<Route | null>(null);
+
 
   useEffect(() => {
     async function getRoute(routeId: string) {
@@ -75,6 +76,8 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
     getRoute(match.params.routeId);
   }, [userInfo, updatePage]);
 
+
+
   return (
     <IonPage>
       <IonHeader>
@@ -91,6 +94,8 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
           <IonItem>
             <p>{routeInfo.name}</p>
           </IonItem>
+
+          <MyMap></MyMap>
 
           <div>
             <IonAccordionGroup expand="inset" mode={"md"}>
