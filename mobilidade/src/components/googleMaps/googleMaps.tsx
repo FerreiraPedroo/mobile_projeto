@@ -3,53 +3,87 @@ import { Geolocation } from "@capacitor/geolocation";
 import { useEffect, useRef, useState } from "react";
 import { options } from "ionicons/icons";
 
+interface GPSPosition {
+  latitude: number;
+  longitude: number;
+}
+
+interface MapMarks {
+  id: number;
+  name: string;
+  img: string | null;
+  lat: number;
+  lng: number;
+}
+
 const MyMap: React.FC = () => {
-  const [GPSPosition, setGPSPosition] = useState({ latitude: 0, longitude: 0 });
-  const [newMap, setNewMap] = useState<GoogleMap | null>(null);
-
-  const [printCurrentPosition] = useState(() => { 
-    return async () => {
-    const coordinates = await Geolocation.getCurrentPosition();
-    setGPSPosition({
-      latitude: coordinates.coords.latitude,
-      longitude: coordinates.coords.longitude,
-    });
-    console.log("Current position:", coordinates);
-  }});
-
-  console.log({ printCurrentPosition, newMap });
+  const [GPSPosition, setGPSPosition] = useState<GPSPosition | null>(null);
 
   const mapRef = useRef<HTMLElement>();
+  const [map, setMap] = useState<GoogleMap | null>(null);
+  const [mapMarks, setMapMarks] = useState<MapMarks[] | []>([]);
 
-  useEffect(() => {
-    async function createMap() {
-      if (!mapRef.current) return;
-      if (!newMap) {
-        setNewMap(
-          await GoogleMap.create({
-            id: "my-cool-map",
-            element: mapRef.current,
-            apiKey: "AIzaSyCb4soVwdesG4ZGzV5Oh57Ah7nSdyHaCCs",
-            config: {
-              center: {
-                lat: GPSPosition.latitude,
-                lng: GPSPosition.longitude,
-              },
-              zoom: 8,
-            },
-          })
-        );
-      }
+  // ATUALIZAR A POSIÇÃO
+  function getCurrentPosition() {}
+
+  // ADICIONAR MARCADOR
+  async function addMark() {
+    if (map) {
+      const markerId = await map.addMarker({
+        coordinate: {
+          lat: GPSPosition!.latitude - 0.0000001,
+          lng: GPSPosition!.longitude - 0.000002,
+        },
+        title: "Pedro",
+      });
+
+      console.log({ markerId });
     }
+  }
 
-    createMap();
-  }, [GPSPosition]);
+  // CRIA O MAPA
+  // useEffect(() => {
+  //   async function createMap() {
+  //     if (!mapRef.current || !GPSPosition) return;
 
+  //     if (!map) {
+  //       console.log({
+  //         lat: GPSPosition!.latitude,
+  //         lng: GPSPosition!.longitude,
+  //       });
+
+  //       setMap(
+  //         await GoogleMap.create({
+  //           id: "my-cool-map",
+  //           element: mapRef.current,
+  //           apiKey: "AIzaSyA63Z8Kvc8xUGTLgl_mWcRQWTEfJZoUQXE",
+  //           config: {
+  //             disableDefaultUI: true,
+  //             center: {
+  //               lat: GPSPosition!.latitude,
+  //               lng: GPSPosition!.longitude,
+  //             },
+  //             zoom: 15,
+  //           },
+  //         })
+  //       );
+  //     }
+  //   }
+
+  //   createMap();
+  // }, [GPSPosition]);
+
+  // CRIA O GPS
   useEffect(() => {
-    (async () => {
-      await printCurrentPosition();
-
-    })();
+    async function createGPS() {
+      const coordinates = await Geolocation.getCurrentPosition();
+      setGPSPosition({
+        latitude: coordinates.coords.latitude,
+        longitude: coordinates.coords.longitude,
+      });
+      console.log("Current position:", coordinates);
+    }
+    createGPS();
   }, []);
 
   return (
