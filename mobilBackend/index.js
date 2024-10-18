@@ -216,6 +216,8 @@ app.get("/route/:routeId", async (req, res, next) => {
       return {
         id: point.id,
         name: point.name,
+        map: point.maps,
+        photo: point.phto,
       };
     });
 
@@ -223,6 +225,8 @@ app.get("/route/:routeId", async (req, res, next) => {
       return {
         id: point.id,
         name: point.name,
+        map: point.maps,
+        photo: point.phto,
       };
     });
 
@@ -243,7 +247,7 @@ app.get("/route/:routeId", async (req, res, next) => {
       landingPoints: routeLandingPoint,
       passagers: routePassager,
     };
-
+    console.log(routeInfo)
     return res.status(200).send({ codStatus: 200, message: "OK", data: routeInfo });
   } catch (error) {
     return res.status(error.codStatus || 422).send({
@@ -321,10 +325,10 @@ app.get("/point-list/:userId", async (req, res, next) => {
   }
 });
 app.post("/point", async (req, res, next) => {
-  const { pointName, userId, maps, photo } = req.body;
+  const { pointName, userId, pointMaps, photo } = req.body;
 
   try {
-    const routeData = await db.pointCreate(pointName, userId, maps, photo);
+    const routeData = await db.pointCreate(pointName, userId, pointMaps, photo);
 
     if (!routeData) {
       throw { codStatus: 422, message: "Não foi possivel criar o ponto de parada.." };

@@ -49,7 +49,6 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
   const { userInfo, updatePage, setUpdatePage } = useContext(ContextAppInfo);
   const [routeInfo, setRouteInfo] = useState<Route | null>(null);
 
-
   useEffect(() => {
     async function getRoute(routeId: string) {
       try {
@@ -76,8 +75,6 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
     getRoute(match.params.routeId);
   }, [userInfo, updatePage]);
 
-
-
   return (
     <IonPage>
       <IonHeader>
@@ -95,7 +92,7 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
             <p>{routeInfo.name}</p>
           </IonItem>
 
-          <MyMap></MyMap>
+          <MyMap routeInfo={routeInfo}></MyMap>
 
           <div>
             <IonAccordionGroup expand="inset" mode={"md"}>

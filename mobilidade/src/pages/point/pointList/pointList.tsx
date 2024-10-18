@@ -24,6 +24,7 @@ import { ContextAppInfo } from "../../../services/context/context";
 import pointImg from "../../../assets/img/point.png";
 import { add, trashSharp } from "ionicons/icons";
 import "./pointList.css";
+import { MapAddPoint } from "../../../components/googleMaps/googleMapsAddPoint";
 
 interface Point {
   id: number;
@@ -38,6 +39,7 @@ const PointList: React.FC = () => {
   const [pointsList, setPointsList] = useState<Point[]>([]);
   const [modalShow, setModalShow] = useState(false);
   const [pointName, setPointName] = useState<string | number>("");
+  const [pointCoordinate, setPointCoordinate] = useState<string>("");
 
   const [modalDeletePointShow, setModalDeletePointShow] = useState(false);
   const [modalDeletePointInfo, setModalDeletePointInfo] = useState<Point>();
@@ -47,7 +49,7 @@ const PointList: React.FC = () => {
       const response = await fetch(`http://localhost:3000/point`, {
         method: "POST",
         mode: "cors",
-        body: JSON.stringify({ pointName, userId: userInfo.userId }),
+        body: JSON.stringify({ pointName, pointMaps: pointCoordinate, userId: userInfo.userId }),
         headers: { "Content-Type": "application/json" },
       });
 
@@ -162,11 +164,21 @@ const PointList: React.FC = () => {
 
         <IonModal
           isOpen={modalShow}
-          initialBreakpoint={0.5}
-          breakpoints={[0.5]}
+          initialBreakpoint={1}
+          breakpoints={[1]}
           onWillDismiss={() => setModalShow(false)}
         >
+          {/* <MapAddPoint setPointCoordinate={setPointCoordinate}></MapAddPoint> */}
+
           <div className="route-config-delete-modal">
+            {/* <p id="route-list-add-route-text">Selecione no mapa um ponto:</p>
+            <IonInput
+              fill="outline"
+              color="dark"
+              readonly={true}
+              value={pointName}
+              onIonInput={(e) => setPointName(e.target.value!)}
+            ></IonInput> */}
             <p id="route-list-add-route-text">Digite o nome do ponto de parada:</p>
             <IonInput
               fill="outline"

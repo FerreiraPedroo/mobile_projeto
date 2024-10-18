@@ -32,7 +32,7 @@ async function selectRoute(routeId) {
   let boardingPointsInfo = [];
   if (boardingPointsId) {
     const [boardingPointsResult] = await conn.query(
-      `SELECT id, name, photo, name FROM point WHERE id IN ( ${boardingPointsId} )`
+      `SELECT id, name, maps, photo, name FROM point WHERE id IN ( ${boardingPointsId} )`
     );
     boardingPointsInfo = boardingPointsResult;
   }
@@ -52,7 +52,7 @@ async function selectRoute(routeId) {
   let landingPointsInfo = [];
   if (landingPointsIds) {
     const [landingPointsResults] = await conn.query(
-      `SELECT id, name, photo, name FROM point WHERE id IN( ${landingPointsIds} )`
+      `SELECT id, name, maps, photo FROM point WHERE id IN( ${landingPointsIds} )`
     );
     landingPointsInfo = landingPointsResults;
   }

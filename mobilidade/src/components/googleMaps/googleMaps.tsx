@@ -8,70 +8,94 @@ interface GPSPosition {
   longitude: number;
 }
 
-interface MapMarks {
+interface Route {
   id: number;
   name: string;
-  img: string | null;
-  lat: number;
-  lng: number;
+  photo: string;
+  boardingPoints: {
+    id: number;
+    name: string;
+  }[];
+  landingPoints: {
+    id: number;
+    name: string;
+  }[];
+  passagers: {
+    id: number;
+    name: string;
+  }[];
 }
 
-const MyMap: React.FC = () => {
+const MyMap: React.FC<any> = ({ routeInfo }: any) => {
   const [GPSPosition, setGPSPosition] = useState<GPSPosition | null>(null);
 
   const mapRef = useRef<HTMLElement>();
   const [map, setMap] = useState<GoogleMap | null>(null);
-  const [mapMarks, setMapMarks] = useState<MapMarks[] | []>([]);
+  const [mapMarks, setMapMarks] = useState<string[]>([]);
+  const [userMark, setUserMarks] = useState<string>();
 
   // ATUALIZAR A POSIÇÃO
   function getCurrentPosition() {}
 
-  // ADICIONAR MARCADOR
-  async function addMark() {
+  // MOVER O MAPA
+  async function moveMap() {
     if (map) {
-      const markerId = await map.addMarker({
+      const move = await map.setCamera({
         coordinate: {
-          lat: GPSPosition!.latitude - 0.0000001,
-          lng: GPSPosition!.longitude - 0.000002,
+          lat: GPSPosition!.latitude,
+          lng: GPSPosition!.longitude,
         },
-        title: "Pedro",
+        animate: true,
       });
-
-      console.log({ markerId });
     }
   }
 
   // CRIA O MAPA
-  // useEffect(() => {
-  //   async function createMap() {
-  //     if (!mapRef.current || !GPSPosition) return;
+  useEffect(() => {
+    async function createMap() {
+      if (!mapRef.current || !GPSPosition || map) return;
+      const newMap = await GoogleMap.create({
+        id: "driver-map",
+        element: mapRef.current,
+        apiKey: "AIzaSyA63Z8Kvc8xUGTLgl_mWcRQWTEfJZoUQXE",
+        config: {
+          disableDefaultUI: true,
+          zoom: 16,
+          clickableIcons: false,
+          disableDoubleClickZoom: true,
+          center: {
+            lat: GPSPosition.latitude,
+            lng: GPSPosition.longitude,
+          },
+          styles: [
+            {
+              featureType: "poi",
+              stylers: [{ visibility: "off" }], // Oculta marcadores de POIs (pontos de interesse)
+            },
+            {
+              featureType: "transit",
+              stylers: [{ visibility: "off" }], // Oculta estações de transporte público
+            },
+          ],
+        },
+      });
 
-  //     if (!map) {
-  //       console.log({
-  //         lat: GPSPosition!.latitude,
-  //         lng: GPSPosition!.longitude,
-  //       });
+      await newMap.addMarker({
+        coordinate: {
+          lat: GPSPosition.latitude,
+          lng: GPSPosition.longitude,
+        },
+        // iconUrl: landing.photo ?? "https://img.icons8.com/stickers/50/map-pin.png",
+        iconSize: new google.maps.Size(16, 16), // Tamanho total do ícone
+        iconOrigin: new google.maps.Point(0, 0), // Ponto de origem da imagem
+        iconAnchor: new google.maps.Point(8, 16), // Define a âncora na base do ícone
+      });
 
-  //       setMap(
-  //         await GoogleMap.create({
-  //           id: "my-cool-map",
-  //           element: mapRef.current,
-  //           apiKey: "AIzaSyA63Z8Kvc8xUGTLgl_mWcRQWTEfJZoUQXE",
-  //           config: {
-  //             disableDefaultUI: true,
-  //             center: {
-  //               lat: GPSPosition!.latitude,
-  //               lng: GPSPosition!.longitude,
-  //             },
-  //             zoom: 15,
-  //           },
-  //         })
-  //       );
-  //     }
-  //   }
+      setMap(newMap);
+    }
 
-  //   createMap();
-  // }, [GPSPosition]);
+    createMap();
+  }, [GPSPosition]);
 
   // CRIA O GPS
   useEffect(() => {
@@ -86,6 +110,51 @@ const MyMap: React.FC = () => {
     createGPS();
   }, []);
 
+  // ADICIONAR MARCADOR
+  async function addMark(mark: any) {
+    if (map) {
+      if (mapMarks.length) {
+        await map.removeMarkers(mapMarks);
+      }
+      const newMarks = await map.addMarkers(mark);
+
+      console.log({ routeInfo, mapMarks, newMarks });
+
+      setMapMarks([...newMarks]);
+    }
+  }
+
+  // ADICIONA OS MARCADORES
+  useEffect(() => {
+    if (map) {
+      const boardingMarkers = routeInfo.boardingPoints.map((landing: any) => {
+        return {
+          coordinate: {
+            lat: parseFloat(landing.map.split("#")[0]),
+            lng: parseFloat(landing.map.split("#")[1]),
+          },
+          iconUrl: landing.photo ?? "https://img.icons8.com/stickers/50/map-pin.png",
+          iconSize: new google.maps.Size(32, 32), // Tamanho total do ícone
+          iconOrigin: new google.maps.Point(0, 0), // Ponto de origem da imagem
+          iconAnchor: new google.maps.Point(16, 32), // Define a âncora na base do ícone
+        };
+      });
+      const landingMarkers = routeInfo.landingPoints.map((landing: any) => {
+        return {
+          coordinate: {
+            lat: parseFloat(landing.map.split("#")[0]),
+            lng: parseFloat(landing.map.split("#")[1]),
+          },
+          iconUrl: landing.photo ?? "https://img.icons8.com/stickers/50/map-pin.png",
+          iconSize: new google.maps.Size(32, 32), // Tamanho total do ícone
+          iconOrigin: new google.maps.Point(0, 0), // Ponto de origem da imagem
+          iconAnchor: new google.maps.Point(16, 32), // Define a âncora na base do ícone
+        };
+      });
+      addMark([...boardingMarkers, ...landingMarkers]);
+    }
+  }, [map, routeInfo]);
+
   return (
     <div className="component-wrapper">
       <capacitor-google-map
@@ -96,8 +165,6 @@ const MyMap: React.FC = () => {
           height: 400,
         }}
       ></capacitor-google-map>
-
-      {/* <button onClick={createMap}>Create Map</button> */}
     </div>
   );
 };
