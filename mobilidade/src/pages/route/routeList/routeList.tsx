@@ -41,28 +41,25 @@ const RouteList: React.FC = () => {
 
   const [routesList, setRoutesList] = useState<Route[]>([]);
   const [modalShow, setModalShow] = useState(false);
-  const [routeName, setRouteName] = useState<string | number>("")
+  const [routeName, setRouteName] = useState<string | number>("");
 
   async function createRoute() {
     try {
       const response = await fetch(`http://localhost:3000/route`, {
         method: "POST",
-        mode: 'cors',
+        mode: "cors",
         body: JSON.stringify({ routeName, userId: userInfo.userId }),
-        headers: { 'Content-Type': 'application/json' }
+        headers: { "Content-Type": "application/json" },
       });
 
       const listReturn = await response.json();
 
       if (listReturn.codStatus == 200) {
-        setUpdatePage(prev => !prev)
-        setModalShow(false)
+        setUpdatePage((prev) => !prev);
+        setModalShow(false);
+        setRouteName("");
       }
-
-    } catch (error) {
-
-    }
-
+    } catch (error) {}
   }
 
   useEffect(() => {
@@ -107,7 +104,11 @@ const RouteList: React.FC = () => {
       <IonContent fullscreen>
         <IonItem>
           <p>Rotas</p>
-          <IonFabButton id="route-list-add-route-icon" size="small" onClick={() => setModalShow(true)}>
+          <IonFabButton
+            id="route-list-add-route-icon"
+            size="small"
+            onClick={() => setModalShow(true)}
+          >
             <IonIcon icon={add}></IonIcon>
           </IonFabButton>
         </IonItem>
@@ -131,13 +132,30 @@ const RouteList: React.FC = () => {
           })}
         </div>
 
-        <IonModal isOpen={modalShow} initialBreakpoint={.50} breakpoints={[.50]} onWillDismiss={() => setModalShow(false)}>
+        <IonModal
+          isOpen={modalShow}
+          initialBreakpoint={0.5}
+          breakpoints={[0.5]}
+          onWillDismiss={() => {
+            setModalShow(false);
+            setRouteName("");
+          }}
+        >
           <div className="route-config-delete-modal">
             <p id="route-list-add-route-text">Digite o nome da rota:</p>
-            <IonInput fill="outline" color="dark" value={routeName} onIonInput={(e) => setRouteName(e.target.value!)} ></IonInput>
+            <input
+              type="text"
+              name="routeName"
+              value={routeName}
+              onChange={(e) => setRouteName(e.target.value!)}
+            />
             <div className="route-config-delete-modal-buttons">
-              <IonButton color="primary" expand="full" onClick={() => createRoute()}>CRIAR</IonButton>
-              <IonButton color="medium" expand="full" onClick={() => setModalShow(false)}>VOLTAR</IonButton>
+              <IonButton color="primary" expand="full" onClick={() => createRoute()}>
+                CRIAR
+              </IonButton>
+              <IonButton color="medium" expand="full" onClick={() => setModalShow(false)}>
+                VOLTAR
+              </IonButton>
             </div>
           </div>
         </IonModal>

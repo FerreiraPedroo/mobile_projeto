@@ -80,8 +80,8 @@ async function selectRoute(routeId) {
 }
 async function routeList(userId) {
   const conn = await connect();
-
-  QRCode.toDataURL("I am a pony!", function (err, url) {
+  console.log({userId});
+  QRCode.toDataURL("resp-add", function (err, url) {
     console.log(url);
   });
 

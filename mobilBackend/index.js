@@ -247,7 +247,7 @@ app.get("/route/:routeId", async (req, res, next) => {
       landingPoints: routeLandingPoint,
       passagers: routePassager,
     };
-    console.log(routeInfo)
+    console.log(routeInfo);
     return res.status(200).send({ codStatus: 200, message: "OK", data: routeInfo });
   } catch (error) {
     return res.status(error.codStatus || 422).send({
@@ -526,6 +526,34 @@ app.get("/responsable/:responsableId", async (req, res, next) => {
     const { responsableResult, routeRespPassagerResult } = await db.selectResponsable(
       responsableId
     );
+
+    const responsableInfo = {
+      id: responsableResult.id,
+      name: responsableResult.name,
+      email: responsableResult.email,
+      passagers: routeRespPassagerResult.map((passager) => {
+        return {
+          id: passager.id,
+          name: passager.name,
+        };
+      }),
+    };
+
+    return res.status(200).send({ codStatus: 200, message: "OK", data: responsableInfo });
+  } catch (error) {
+    return res.status(error.codStatus || 422).send({
+      codStatus: error.codStatus || 500,
+      message: error.message || "[ROT]: Erro ao obter a rota.",
+      error: error.error,
+    });
+  }
+});
+
+app.post("/responsable/:responsableId", async (req, res, next) => {
+  const { responsableId, driverId } = req.params;
+
+  try {
+    const responsableAdded = await db.addResponsable(responsableId, driverId);
 
     const responsableInfo = {
       id: responsableResult.id,

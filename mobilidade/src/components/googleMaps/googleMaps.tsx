@@ -1,7 +1,6 @@
 import { GoogleMap } from "@capacitor/google-maps";
 import { Geolocation } from "@capacitor/geolocation";
 import { useEffect, useRef, useState } from "react";
-import { options } from "ionicons/icons";
 
 interface GPSPosition {
   latitude: number;
@@ -32,23 +31,20 @@ const MyMap: React.FC<any> = ({ routeInfo }: any) => {
   const mapRef = useRef<HTMLElement>();
   const [map, setMap] = useState<GoogleMap | null>(null);
   const [mapMarks, setMapMarks] = useState<string[]>([]);
-  const [userMark, setUserMarks] = useState<string>();
+  const [userDriverMark, setDriverMark] = useState<string>();
 
-  // ATUALIZAR A POSIÇÃO
-  function getCurrentPosition() {}
-
-  // MOVER O MAPA
-  async function moveMap() {
-    if (map) {
-      const move = await map.setCamera({
-        coordinate: {
-          lat: GPSPosition!.latitude,
-          lng: GPSPosition!.longitude,
-        },
-        animate: true,
+  // CRIA O GPS
+  useEffect(() => {
+    async function createGPS() {
+      const coordinates = await Geolocation.getCurrentPosition();
+      setGPSPosition({
+        latitude: coordinates.coords.latitude,
+        longitude: coordinates.coords.longitude,
       });
+      console.log("Current position:", coordinates);
     }
-  }
+    createGPS();
+  }, []);
 
   // CRIA O MAPA
   useEffect(() => {
@@ -59,9 +55,11 @@ const MyMap: React.FC<any> = ({ routeInfo }: any) => {
         element: mapRef.current,
         apiKey: "AIzaSyA63Z8Kvc8xUGTLgl_mWcRQWTEfJZoUQXE",
         config: {
-          disableDefaultUI: true,
           zoom: 16,
+          zoomControl: false,
+          disableDefaultUI: true,
           clickableIcons: false,
+          gestureHandling: "none",
           disableDoubleClickZoom: true,
           center: {
             lat: GPSPosition.latitude,
@@ -80,51 +78,50 @@ const MyMap: React.FC<any> = ({ routeInfo }: any) => {
         },
       });
 
-      await newMap.addMarker({
+      const driveMark = await newMap.addMarker({
         coordinate: {
           lat: GPSPosition.latitude,
           lng: GPSPosition.longitude,
         },
-        // iconUrl: landing.photo ?? "https://img.icons8.com/stickers/50/map-pin.png",
         iconSize: new google.maps.Size(16, 16), // Tamanho total do ícone
         iconOrigin: new google.maps.Point(0, 0), // Ponto de origem da imagem
         iconAnchor: new google.maps.Point(8, 16), // Define a âncora na base do ícone
       });
 
       setMap(newMap);
+      setDriverMark(driveMark);
     }
 
     createMap();
   }, [GPSPosition]);
 
-  // CRIA O GPS
-  useEffect(() => {
-    async function createGPS() {
-      const coordinates = await Geolocation.getCurrentPosition();
-      setGPSPosition({
-        latitude: coordinates.coords.latitude,
-        longitude: coordinates.coords.longitude,
+  // ATUALIZAR POSIÇÃO DO MOTORISTA
+  async function moveMap() {
+    if (map) {
+      const move = await map.setCamera({
+        coordinate: {
+          lat: GPSPosition!.latitude,
+          lng: GPSPosition!.longitude,
+        },
+        animate: true,
       });
-      console.log("Current position:", coordinates);
     }
-    createGPS();
-  }, []);
+  }
 
-  // ADICIONAR MARCADOR
+  // ATUALIZAR A POSIÇÃO 
+  function getCurrentPosition() {}
+
+  // ADICIONAR MARCADORES
   async function addMark(mark: any) {
     if (map) {
       if (mapMarks.length) {
         await map.removeMarkers(mapMarks);
       }
       const newMarks = await map.addMarkers(mark);
-
-      console.log({ routeInfo, mapMarks, newMarks });
-
+      // console.log({ routeInfo, mapMarks, newMarks });
       setMapMarks([...newMarks]);
     }
   }
-
-  // ADICIONA OS MARCADORES
   useEffect(() => {
     if (map) {
       const boardingMarkers = routeInfo.boardingPoints.map((landing: any) => {

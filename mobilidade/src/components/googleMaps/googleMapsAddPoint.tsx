@@ -40,15 +40,15 @@ const MapAddPoint: React.FC<any> = (props: any) => {
             lat: GPSPosition!.latitude,
             lng: GPSPosition!.longitude,
           },
-          gestureHandling: "none",
-          zoomControl: false,
+          // gestureHandling: "none",
+          // zoomControl: false,
           zoom: 16,
           // disableDefaultUI: true,
           mapTypeControl: false, // desativa o tipo de mapa
           streetViewControl: false, // desativa a visualização do street
           fullscreenControl: false, // desativa o modo tela cheia
           clickableIcons: false,
-          disableDoubleClickZoom: true,
+          // disableDoubleClickZoom: true,
           styles: [
             {
               featureType: "poi",

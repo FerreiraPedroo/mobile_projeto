@@ -164,28 +164,22 @@ const PointList: React.FC = () => {
 
         <IonModal
           isOpen={modalShow}
-          initialBreakpoint={1}
-          breakpoints={[1]}
-          onWillDismiss={() => setModalShow(false)}
+          // initialBreakpoint={1}
+          // breakpoints={[1]}
+          onWillDismiss={() => {
+            setModalShow(false);
+            setPointName("");
+          }}
         >
-          {/* <MapAddPoint setPointCoordinate={setPointCoordinate}></MapAddPoint> */}
-
           <div className="route-config-delete-modal">
-            {/* <p id="route-list-add-route-text">Selecione no mapa um ponto:</p>
-            <IonInput
-              fill="outline"
-              color="dark"
-              readonly={true}
-              value={pointName}
-              onIonInput={(e) => setPointName(e.target.value!)}
-            ></IonInput> */}
+            <MapAddPoint setPointCoordinate={setPointCoordinate}></MapAddPoint>
             <p id="route-list-add-route-text">Digite o nome do ponto de parada:</p>
-            <IonInput
-              fill="outline"
-              color="dark"
+            <input
+              type="text"
+              name="pointName"
               value={pointName}
-              onIonInput={(e) => setPointName(e.target.value!)}
-            ></IonInput>
+              onChange={(e) => setPointName(e.target.value!)}
+            />
             <div className="route-config-delete-modal-buttons">
               <IonButton color="primary" expand="full" onClick={() => createPoint()}>
                 CRIAR
