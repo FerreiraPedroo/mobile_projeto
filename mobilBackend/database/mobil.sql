@@ -80,7 +80,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mobil`.`responsable_passager`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mobil`.`responsable_passager` (
+CREATE TABLE IF NOT EXISTS `mobil`.`passager` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `user_responsable_id` INT NOT NULL,
   `name` VARCHAR(90) NOT NULL,
@@ -91,9 +91,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `route`.`passager`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mobil`.`route_responsable_passager` (
+CREATE TABLE IF NOT EXISTS `mobil`.`route_passagers` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `responsable_passager_id` INT NOT NULL,
+  `passager_id` INT NOT NULL,
   `route_id` INT NOT NULL,
   `boarding_point_id` INT NULL,
   `landing_point_id` INT NULL,

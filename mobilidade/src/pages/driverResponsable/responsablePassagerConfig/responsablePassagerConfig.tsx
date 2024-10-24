@@ -1,9 +1,8 @@
 import {
-  IonAccordion,
-  IonAccordionGroup,
   IonButton,
   IonButtons,
   IonContent,
+  IonFabButton,
   IonHeader,
   IonIcon,
   IonItem,
@@ -19,25 +18,32 @@ import { RouteComponentProps } from "react-router";
 import { useContext, useEffect, useState } from "react";
 import { ContextAppInfo } from "../../../services/context/context";
 
-import { personCircleOutline, trashSharp } from "ionicons/icons";
+import { add, personCircleOutline, trashSharp } from "ionicons/icons";
 
 import loading from "../../../assets/img/loading.gif";
 
-import "./responsableConfig.css";
+import "./responsablePassagerConfig.css";
 
 interface RouteConfig {
   id: number;
   name: string;
-  email: string;
-  passagers: {
+  photo: string;
+  boardingPoints: {
     id: number;
     name: string;
-  }[];
+    maps: string;
+  }[],
+  blandingPoints: {
+    id: number;
+    name: string;
+    maps: string;
+  }[],
 }
 
 interface RouteConfigParams
   extends RouteComponentProps<{
     responsableId: string;
+    passagerId: string;
   }> { }
 
 interface ModalInfoInterface {
@@ -46,12 +52,13 @@ interface ModalInfoInterface {
   route: string;
 }
 
-const ResponsableConfig: React.FC<RouteConfigParams> = ({ match }) => {
-  const responsableId = match.params.responsableId;
+const ResponsablePassagerConfig: React.FC<RouteConfigParams> = ({ match }) => {
+  const { responsableId, passagerId } = match.params;
+
   const router = useIonRouter();
 
   const { userInfo, updatePage, setUpdatePage } = useContext(ContextAppInfo);
-  const [responsableInfo, setResponsableInfo] = useState<RouteConfig | null>(null);
+  const [passagerInfo, setPassagerInfo] = useState<RouteConfig | null>(null);
   const [modalDeletePassagerShow, setModalDeletePassagerShow] = useState(false);
   const [modalDeletePassagerInfo, setModalDeletePassagerInfo] = useState<ModalInfoInterface>();
 
@@ -87,7 +94,7 @@ const ResponsableConfig: React.FC<RouteConfigParams> = ({ match }) => {
   useEffect(() => {
     async function getResponsable() {
       try {
-        const response = await fetch(`http://localhost:3000/responsable/${responsableId}`, {
+        const response = await fetch(`http://localhost:3000/responsable/${responsableId}/passager/${passagerId}`, {
           method: "GET",
           mode: "cors",
           headers: {
@@ -98,12 +105,12 @@ const ResponsableConfig: React.FC<RouteConfigParams> = ({ match }) => {
         const routeDataReturn = await response.json();
 
         if (routeDataReturn.codStatus == 200) {
-          setResponsableInfo(routeDataReturn.data);
+          setPassagerInfo(routeDataReturn.data);
         } else {
           throw "Erro";
         }
       } catch (error) {
-        setResponsableInfo(null);
+        setPassagerInfo(null);
       }
     }
 
@@ -121,52 +128,43 @@ const ResponsableConfig: React.FC<RouteConfigParams> = ({ match }) => {
         </IonToolbar>
       </IonHeader>
 
-      {responsableInfo ? (
+      {passagerInfo ? (
         <IonContent fullscreen>
-          <IonItem id="route-config-route">Responsável</IonItem>
+          <IonItem id="route-config-route">Passageiro</IonItem>
           <div id="route-config-name-box">
-            <p id="route-config-name">{responsableInfo.name}</p>
-            <IonButton
-              color="danger"
-              className="route-config-button-trash"
-              onClick={() =>
-                openDeletePassagerModal(responsableInfo.id, responsableInfo.name, "responsable")
-              }
-            >
-              <IonIcon icon={trashSharp}></IonIcon>
-            </IonButton>
+            <p id="route-config-name">{passagerInfo.name}</p>
           </div>
           <div id="route-config-container">
-            {/* <IonAccordionGroup expand="inset" mode={"md"}>
-              <IonAccordion value="first"> */}
             <IonItem slot="header" color="light">
-              <IonLabel>Passageiros</IonLabel>
+              <IonLabel>Ponto de embarque</IonLabel>
+              {passagerInfo && passagerInfo.boardingPoints.length == 0 &&
+                (<IonFabButton id="open-modal" size="small" onClick={() => ""}>
+                  <IonIcon icon={add}></IonIcon>
+                </IonFabButton>)
+              }
             </IonItem>
-
-            {responsableInfo &&
-              responsableInfo.passagers.map((passager) => (
-                <div key={passager.id} className="route-config-point" slot="content" onClick={() => router.push(`/responsable/${responsableId}/passager/${passager.id}`)}>
+            {passagerInfo &&
+              passagerInfo.boardingPoints.map((point) => (
+                <div key={point.id} className="route-config-point" slot="content">
                   <IonIcon
                     icon={personCircleOutline}
                     className={"route-config-icon"}
                     size="large"
                   ></IonIcon>
-                  <p className="route-config-point-name">{passager.name}</p>
+                  <p className="route-config-point-name">{point.name}</p>
                   <div className="route-config-point-delete">
-                    {/* <IonButton
+                    <IonButton
                       color="danger"
                       className="route-config-button-trash"
                       onClick={() =>
-                        openDeletePassagerModal(passager.id, passager.name, "responsable-passager")
+                        openDeletePassagerModal(point.id, point.name, "boarding")
                       }
                     >
                       <IonIcon icon={trashSharp}></IonIcon>
-                    </IonButton> */}
+                    </IonButton>
                   </div>
                 </div>
               ))}
-            {/* </IonAccordion>
-            </IonAccordionGroup> */}
           </div>
 
           <IonModal
@@ -218,4 +216,4 @@ const ResponsableConfig: React.FC<RouteConfigParams> = ({ match }) => {
   );
 };
 
-export { ResponsableConfig };
+export { ResponsablePassagerConfig };
