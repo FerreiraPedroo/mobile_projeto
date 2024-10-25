@@ -9,7 +9,6 @@ import {
   IonFabButton,
   IonHeader,
   IonIcon,
-  IonInput,
   IonItem,
   IonMenuButton,
   IonModal,
@@ -17,10 +16,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { FormEvent, useContext, useEffect, useState } from "react";
-import { GoogleMap } from "@capacitor/google-maps";
-const apiKey = "YOUR_API_KEY_HERE";
-const dateActual = new Date();
+import { useContext, useEffect, useState } from "react";
 
 import { ContextAppInfo } from "../../../services/context/context";
 import routeImg from "../../../assets/img/route-map.png";
@@ -31,8 +27,6 @@ interface Route {
   id: number;
   name: string;
   photo: string;
-  boardingPointsAmount: number;
-  landingPointsAmount: number;
   passagerAmount: number;
 }
 
@@ -42,13 +36,14 @@ const RouteList: React.FC = () => {
   const [routesList, setRoutesList] = useState<Route[]>([]);
   const [modalShow, setModalShow] = useState(false);
   const [routeName, setRouteName] = useState<string | number>("");
+  const [routeStartTime, setRouteStartTime] = useState<string | number>("");
 
   async function createRoute() {
     try {
       const response = await fetch(`http://localhost:3000/route`, {
         method: "POST",
         mode: "cors",
-        body: JSON.stringify({ routeName, userId: userInfo.userId }),
+        body: JSON.stringify({ routeName, routeStartTime, userId: userInfo.userId }),
         headers: { "Content-Type": "application/json" },
       });
 
@@ -58,6 +53,7 @@ const RouteList: React.FC = () => {
         setUpdatePage((prev) => !prev);
         setModalShow(false);
         setRouteName("");
+        setRouteStartTime("")
       }
     } catch (error) {}
   }
@@ -123,8 +119,6 @@ const RouteList: React.FC = () => {
                 </IonCardHeader>
 
                 <IonCardContent className="route-card-point">
-                  <div>Pontos de Embarque: {route.boardingPointsAmount}</div>
-                  <div>Pontos de Desembarque: {route.landingPointsAmount}</div>
                   <div>Passageiros: {route.passagerAmount}</div>
                 </IonCardContent>
               </IonCard>
@@ -148,6 +142,13 @@ const RouteList: React.FC = () => {
               name="routeName"
               value={routeName}
               onChange={(e) => setRouteName(e.target.value!)}
+            />
+            <p id="route-list-add-route-text">Digite o horário de inicio:</p>
+            <input
+              type="time"
+              name="routeStartTime"
+              value={routeStartTime}
+              onChange={(e) => setRouteStartTime(e.target.value!)}
             />
             <div className="route-config-delete-modal-buttons">
               <IonButton color="primary" expand="full" onClick={() => createRoute()}>

@@ -1,4 +1,4 @@
-capacitor-google-map {
+/* capacitor-google-map {
   display: inline-block;
   width: 275px;
   height: 400px;
@@ -30,7 +30,7 @@ capacitor-google-map {
 .home-card-title {
   font-size: 1.3rem;
   font-weight: 500;
-  color: white;
+
 }
 
 .home-card-header {
@@ -44,7 +44,6 @@ capacitor-google-map {
   flex-grow: 1;
   text-align: end;
   font-size: 1.2rem;
-  color: white;
 }
 
 .home-photo {
@@ -64,4 +63,4 @@ capacitor-google-map {
   justify-content: center;
   place-items: center;
   font-size: 1.5em;
-}
+} */

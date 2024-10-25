@@ -130,7 +130,7 @@ const PointList: React.FC = () => {
         <IonItem>
           <p>Pontos de parada</p>
           <IonFabButton
-            id="route-list-add-route-icon"
+            id="point-list-add-route-icon"
             size="small"
             onClick={() => setModalShow(true)}
           >
@@ -138,20 +138,19 @@ const PointList: React.FC = () => {
           </IonFabButton>
         </IonItem>
 
-        <div id="route-container">
+        <div id="point-container">
           {pointsList.map((point, key) => {
             return (
-              <IonCard key={key}>
+              <IonCard key={key} className="point-card-container">
                 <div className="point-config">
                   <div>
-                    <IonCardHeader class="route-card-header">
-                      <img className="route-photo" src={pointImg}></img>
+                    <IonCardHeader class="point-card-header">
+                      <img className="point-photo" src={pointImg}></img>
                       <IonCardTitle>{point.name}</IonCardTitle>
                     </IonCardHeader>
                   </div>
                   <IonButton
                     color="danger"
-                    className="route-config-button-trash"
                     onClick={() => deletePointModalOpen(point)}
                   >
                     <IonIcon icon={trashSharp}></IonIcon>
@@ -171,16 +170,16 @@ const PointList: React.FC = () => {
             setPointName("");
           }}
         >
-          <div className="route-config-delete-modal">
+          <div className="point-config-delete-modal">
             <MapAddPoint setPointCoordinate={setPointCoordinate}></MapAddPoint>
-            <p id="route-list-add-route-text">Digite o nome do ponto de parada:</p>
+            <p id="point-list-add-route-text">Digite o nome do ponto de parada:</p>
             <input
               type="text"
               name="pointName"
               value={pointName}
               onChange={(e) => setPointName(e.target.value!)}
             />
-            <div className="route-config-delete-modal-buttons">
+            <div className="point-config-delete-modal-buttons">
               <IonButton color="primary" expand="full" onClick={() => createPoint()}>
                 CRIAR
               </IonButton>
@@ -198,10 +197,10 @@ const PointList: React.FC = () => {
           onWillDismiss={() => setModalDeletePointShow(false)}
         >
           {modalDeletePointInfo ? (
-            <div className="route-config-delete-modal">
+            <div className="point-config-delete-modal">
               <p>Deseja realmente excluir o ponto de parada ?</p>
-              <div className="route-config-delete-item-name">{modalDeletePointInfo.name}</div>
-              <div className="route-config-delete-modal-buttons">
+              <div className="point-config-delete-item-name">{modalDeletePointInfo.name}</div>
+              <div className="point-config-delete-modal-buttons">
                 <IonButton
                   color="danger"
                   expand="full"

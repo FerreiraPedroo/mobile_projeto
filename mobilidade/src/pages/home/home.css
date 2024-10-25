@@ -17,8 +17,6 @@ capacitor-google-map {
 
 #day-router-title{
   font-size: 1.4rem;
-  
-
 }
 
 #home-container {
@@ -29,8 +27,9 @@ capacitor-google-map {
 .home-card-title {
   font-size: 1.3rem;
   font-weight: 500;
-  color: white;
 }
+
+
 
 .home-card-header {
   display: flex;
@@ -43,7 +42,6 @@ capacitor-google-map {
   flex-grow: 1;
   text-align: end;
   font-size: 1.2rem;
-  color: white;
 } 
 
 .home-photo {
@@ -66,3 +64,6 @@ capacitor-google-map {
 }
 
 
+* {
+  /* border: 1px solid red; */
+}

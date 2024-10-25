@@ -5,7 +5,10 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonContent,
+  IonFabButton,
   IonHeader,
+  IonIcon,
+  IonItem,
   IonMenuButton,
   IonPage,
   IonTitle,
@@ -21,7 +24,7 @@ interface Route {
   boarding_point_amount: number;
   landing_point_amount: number;
   passager_amount: number;
-  starthour: string;
+  start_time: string;
 }
 
 import { ContextAppInfo } from "../../services/context/context";
@@ -39,7 +42,6 @@ const Home: React.FC = () => {
   const [routeList, setRouteList] = useState<Route[] | null>(null);
 
   useEffect(() => {
-
     async function getDayRouteList(userId: number) {
       try {
         const response = await fetch(`http://localhost:3000/day-route-list/${userId}`, {
@@ -79,45 +81,37 @@ const Home: React.FC = () => {
         </IonToolbar>
       </IonHeader>
 
-      <IonContent fullscreen>
+      <IonItem>
+        <p>Rotas de hoje</p>
         <div id="day-container">
-        {dateActual.toISOString().split("T")[0].split("-").reverse().join("/")}
+          {dateActual.toISOString().split("T")[0].split("-").reverse().join("/")}
         </div>
+      </IonItem>
 
-        {routeList ?
-          <>
-            <IonTitle id="day-router-title">Rotas de hoje</IonTitle>
-            <div id="home-container">
-              {routeList.map((route, key) => {
-                return (
-                  <IonCard key={key} routerLink={`/route/${route.id}`}>
-                    <IonCardHeader class="home-card-header">
-                      <img className="home-photo" src={routeImg}></img>
-                      <IonCardTitle class="home-card-title">{route.name}</IonCardTitle>
-                      <div className="home-card-start">
-                        INICIO<br />{route.starthour}
-                      </div>
-                    </IonCardHeader>
+      <IonContent>
+        {routeList ? (
+          <div id="home-container">
+            {routeList.map((route, key) => {
+              return (
+                <IonCard key={key} routerLink={`/route/${route.id}`}>
+                  <IonCardHeader class="home-card-header">
+                    <img className="home-photo" src={routeImg}></img>
+                    <IonCardTitle class="home-card-title">{route.name}</IonCardTitle>
+                  </IonCardHeader>
 
-                    <IonCardContent className="home-card-point">
-                      <div>
-                        Pontos de Embarque: {route.boarding_point_amount}
-                      </div>
-                      <div>
-                        Pontos de Desembarque: {route.landing_point_amount}
-                      </div>
-                      <div>Passageiros: {route.passager_amount}</div>
-                    </IonCardContent>
-                  </IonCard>
-                );
-              })
-              }
-            </div>
-          </>
-          : <div id="home-loading">
+                  <IonCardContent className="home-card-point">
+                    <div>Horário de inicio: {route.start_time ?? "—"}</div>
+                    <div>Passageiros: {route.passager_amount}</div>
+                  </IonCardContent>
+                </IonCard>
+              );
+            })}
+          </div>
+        ) : (
+          <div id="home-loading">
             <img src={loading}></img>
           </div>
-        }
+        )}
       </IonContent>
     </IonPage>
   );

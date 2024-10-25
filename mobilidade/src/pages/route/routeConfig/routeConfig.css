@@ -1,5 +1,4 @@
 #route-config-route {
-  height: auto;
   width: 100%;
   font-size: 1.3rem;
   margin: 0px;
@@ -7,7 +6,6 @@
 
 #route-config-loading {
   width: 100%;
-  height: 100%;
   display: flex;
   justify-content: center;
   place-items: center;
@@ -18,7 +16,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0px 16px;
+  padding: 4px 16px;
 }
 
 #route-config-name {
@@ -29,34 +27,15 @@
   margin: -2px;
 }
 
-.route-config-point {
-  width: 100%;
-  min-height: 50px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 12px;
-  gap:8px;
-  border: 1px solid silver;
-}
-
-.route-config-point-name {
-  font-size: 1.1rem;
-  font-weight: normal;
-}
-
-.route-config-point-delete {
-  font-size: 1.1rem;
-  font-weight: normal;
-}
 
 .route-config-point:last-child {
   border-radius: 0 0 4px 4px;
 }
 
 .route-config-button-trash {
-  padding: 0px;
-  margin: 0px
+  padding: 4px 0;
+  margin: 0px;
+  font-size: 16px;
 }
 
 #route-config-point-empty {
@@ -66,13 +45,13 @@
   text-align: center;
 }
 
-.route-config-delete-modal{
+.route-config-delete-modal {
   padding: 20px 8px 8px 8px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-.route-config-delete-modal p{
+.route-config-delete-modal p {
   font-size: 1.2rem;
   font-weight: 600;
   text-align: center;
@@ -81,7 +60,7 @@
   border-bottom: 1px solid blue;
 }
 
-.route-config-delete-item-name{
+.route-config-delete-item-name {
   font-size: 1.3rem;
   font-weight: 600;
   text-align: center;
@@ -91,19 +70,37 @@
   border-bottom: 1px solid blue;
 }
 
-.route-config-delete-modal p span{
+.route-config-delete-modal p span {
   color: red;
 }
-.route-config-delete-modal-buttons{
+.route-config-delete-modal-buttons {
   display: flex;
   flex-direction: column;
   padding: 0px 16px;
   gap: 8px;
 }
 
-.route-config-icon{
-  width: 48px;
-  margin: 0 12px;
+.route-confg-card-container {
+  margin: 12px;
+  padding: 0px;
+}
+
+.route-config {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 12px;
+}
+
+.route-config-icon {
+  width: 32px;
   margin: 0;
   padding: 0;
+}
+
+.route-config-card-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
 }

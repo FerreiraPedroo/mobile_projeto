@@ -15,20 +15,24 @@ p {
   font-size: 1.5em;
 }
 
-* {
-  /* border: 1px solid red; */
+.route-home-card-container{
+  margin: 6px 6px;
+  padding: 0px;
+}
+.route-home {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 12px;
+  margin: 0;
+  padding:0;
 }
 
-.route-home-add-point {
-  width: 100%;
-  min-height: 50px;
+.route-home-card-header {
   display: flex;
-  font-size: 1.1rem;
-  justify-content: start;
+  flex-direction: row;
   align-items: center;
-  padding: 8px 12px;
-  border: 1px solid silver;
-}
-.route-home-add-point:last-child {
-  border-radius: 0 0 4px 4px;
+  gap: 8px;
+  margin:0;
+  padding:12px;
 }

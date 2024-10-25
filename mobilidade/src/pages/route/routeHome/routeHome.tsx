@@ -1,9 +1,14 @@
 import {
   IonAccordion,
   IonAccordionGroup,
+  IonButton,
   IonButtons,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
   IonContent,
   IonHeader,
+  IonIcon,
   IonItem,
   IonLabel,
   IonMenuButton,
@@ -22,14 +27,6 @@ interface Route {
   id: number;
   name: string;
   photo: string;
-  boardingPoints: {
-    id: number;
-    name: string;
-  }[];
-  landingPoints: {
-    id: number;
-    name: string;
-  }[];
   passagers: {
     id: number;
     name: string;
@@ -44,6 +41,7 @@ import { ContextAppInfo } from "../../../services/context/context";
 
 import "./routeHome.css";
 import { MyMap } from "../../../components/googleMaps/googleMaps";
+import { personCircleOutline } from "ionicons/icons";
 
 const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
   const { userInfo, updatePage, setUpdatePage } = useContext(ContextAppInfo);
@@ -95,38 +93,33 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
           <MyMap routeInfo={routeInfo}></MyMap>
 
           <div>
-            <IonAccordionGroup expand="inset" mode={"md"}>
-              <IonAccordion value="first">
-                <IonItem slot="header" color="light">
-                  <IonLabel>Passageiros</IonLabel>
-                </IonItem>
-                {routeInfo.passagers.map((point) => (
-                  <div key={point.id} className="route-home-add-point" slot="content">
-                    {point.name}
+            <IonItem slot="header" color="light">
+              <IonLabel>Passageiros</IonLabel>
+            </IonItem>
+            {routeInfo.passagers.map((point) => (
+              <IonCard key={point.name} className="route-home-card-container">
+                <div className="route-home">
+                  <div>
+                    <IonCardHeader class="route-home-card-header">
+                      <IonIcon
+                        icon={personCircleOutline}
+                        size="large"
+                      ></IonIcon>
+                      <IonCardTitle>{point.name}</IonCardTitle>
+                    </IonCardHeader>
                   </div>
-                ))}
-              </IonAccordion>
-              <IonAccordion value="second">
-                <IonItem slot="header" color="light">
-                  <IonLabel>Pontos de desembarque</IonLabel>
-                </IonItem>
-                {routeInfo.boardingPoints.map((point) => (
-                  <div key={point.id} className="route-home-add-point" slot="content">
-                    {point.name}
-                  </div>
-                ))}
-              </IonAccordion>
-              <IonAccordion value="third">
-                <IonItem slot="header" color="light">
-                  <IonLabel>Pontos de desembarque</IonLabel>
-                </IonItem>
-                {routeInfo.landingPoints.map((point) => (
-                  <div key={point.id} className="route-home-add-point" slot="content">
-                    {point.name}
-                  </div>
-                ))}
-              </IonAccordion>
-            </IonAccordionGroup>
+
+                  {/* <IonButton
+                    color="danger"
+                    className=""
+                    onClick={() => ""}
+                  >
+                    <IonIcon icon={"trashSharp"}></IonIcon>
+                  </IonButton> */}
+                </div>
+              </IonCard>
+
+            ))}
           </div>
         </IonContent>
       ) : (

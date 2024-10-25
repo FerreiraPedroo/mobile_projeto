@@ -11,14 +11,6 @@ interface Route {
   id: number;
   name: string;
   photo: string;
-  boardingPoints: {
-    id: number;
-    name: string;
-  }[];
-  landingPoints: {
-    id: number;
-    name: string;
-  }[];
   passagers: {
     id: number;
     name: string;
@@ -124,31 +116,31 @@ const MyMap: React.FC<any> = ({ routeInfo }: any) => {
   }
   useEffect(() => {
     if (map) {
-      const boardingMarkers = routeInfo.boardingPoints.map((landing: any) => {
-        return {
-          coordinate: {
-            lat: parseFloat(landing.map.split("#")[0]),
-            lng: parseFloat(landing.map.split("#")[1]),
-          },
-          iconUrl: landing.photo ?? "https://img.icons8.com/stickers/50/map-pin.png",
-          iconSize: new google.maps.Size(32, 32), // Tamanho total do ícone
-          iconOrigin: new google.maps.Point(0, 0), // Ponto de origem da imagem
-          iconAnchor: new google.maps.Point(16, 32), // Define a âncora na base do ícone
-        };
-      });
-      const landingMarkers = routeInfo.landingPoints.map((landing: any) => {
-        return {
-          coordinate: {
-            lat: parseFloat(landing.map.split("#")[0]),
-            lng: parseFloat(landing.map.split("#")[1]),
-          },
-          iconUrl: landing.photo ?? "https://img.icons8.com/stickers/50/map-pin.png",
-          iconSize: new google.maps.Size(32, 32), // Tamanho total do ícone
-          iconOrigin: new google.maps.Point(0, 0), // Ponto de origem da imagem
-          iconAnchor: new google.maps.Point(16, 32), // Define a âncora na base do ícone
-        };
-      });
-      addMark([...boardingMarkers, ...landingMarkers]);
+      // const boardingMarkers = routeInfo.boardingPoints.map((landing: any) => {
+      //   return {
+      //     coordinate: {
+      //       lat: parseFloat(landing.map.split("#")[0]),
+      //       lng: parseFloat(landing.map.split("#")[1]),
+      //     },
+      //     iconUrl: landing.photo ?? "https://img.icons8.com/stickers/50/map-pin.png",
+      //     iconSize: new google.maps.Size(32, 32), // Tamanho total do ícone
+      //     iconOrigin: new google.maps.Point(0, 0), // Ponto de origem da imagem
+      //     iconAnchor: new google.maps.Point(16, 32), // Define a âncora na base do ícone
+      //   };
+      // });
+      // const landingMarkers = routeInfo.landingPoints.map((landing: any) => {
+      //   return {
+      //     coordinate: {
+      //       lat: parseFloat(landing.map.split("#")[0]),
+      //       lng: parseFloat(landing.map.split("#")[1]),
+      //     },
+      //     iconUrl: landing.photo ?? "https://img.icons8.com/stickers/50/map-pin.png",
+      //     iconSize: new google.maps.Size(32, 32), // Tamanho total do ícone
+      //     iconOrigin: new google.maps.Point(0, 0), // Ponto de origem da imagem
+      //     iconAnchor: new google.maps.Point(16, 32), // Define a âncora na base do ícone
+      //   };
+      // });
+      // addMark([...boardingMarkers, ...landingMarkers]);
     }
   }, [map, routeInfo]);
 
