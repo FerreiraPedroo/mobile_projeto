@@ -5,9 +5,7 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonContent,
-  IonFabButton,
   IonHeader,
-  IonIcon,
   IonItem,
   IonMenuButton,
   IonPage,
@@ -21,10 +19,12 @@ interface Route {
   id: number;
   name: string;
   photo: string;
-  boarding_point_amount: number;
-  landing_point_amount: number;
   passager_amount: number;
-  start_time: string;
+  status: {
+    status: string;
+    start_time: string;
+    end_time: string;
+  }
 }
 
 import { ContextAppInfo } from "../../services/context/context";
@@ -84,7 +84,7 @@ const Home: React.FC = () => {
       <IonItem>
         <p>Rotas de hoje</p>
         <div id="day-container">
-          {dateActual.toISOString().split("T")[0].split("-").reverse().join("/")}
+          {dateActual.toLocaleString()}
         </div>
       </IonItem>
 
@@ -97,10 +97,11 @@ const Home: React.FC = () => {
                   <IonCardHeader class="home-card-header">
                     <img className="home-photo" src={routeImg}></img>
                     <IonCardTitle class="home-card-title">{route.name}</IonCardTitle>
+                    <IonCardTitle class={`home-card-status-${route.status ? route.status.status ?? "" : ""}`}>{route.status ? route.status.status ?? "—" : "—"}</IonCardTitle>
                   </IonCardHeader>
 
                   <IonCardContent className="home-card-point">
-                    <div>Horário de inicio: {route.start_time ?? "—"}</div>
+                    <div>Horário de inicio: {route.status ? route.status.start_time ?? "—": "—"}</div>
                     <div>Passageiros: {route.passager_amount}</div>
                   </IonCardContent>
                 </IonCard>

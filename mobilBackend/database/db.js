@@ -17,45 +17,13 @@ async function selectRoute(routeId) {
   const conn = await connect();
   const [routeResults] = await conn.query(`SELECT * FROM route WHERE id=${routeId}`);
 
-  // // BOARDING //////////////////////////////////////////////////////////////////////////////////////////////////////
-  // const [boadingPointsResult] = await conn.query(
-  //   `SELECT point_id FROM route_points WHERE route_id=${routeId} AND type="boarding"`
-  // );
+  // ROUTE STATUS
+  const [routeStatus] = await conn.query(`SELECT * FROM route_status WHERE route_id=${routeId}`);
 
-  // const boardingPointsId = boadingPointsResult.length
-  //   ? boadingPointsResult.reduce((prev, curr, idx) => {
-  //     if (idx == 0) return curr.point_id;
-  //     return prev + ", " + curr.point_id;
-  //   }, "")
-  //   : null;
-
-  // let boardingPointsInfo = [];
-  // if (boardingPointsId) {
-  //   const [boardingPointsResult] = await conn.query(
-  //     `SELECT id, name, maps, photo, name FROM point WHERE id IN ( ${boardingPointsId} )`
-  //   );
-  //   boardingPointsInfo = boardingPointsResult;
-  // }
-
-  // // LANDING //////////////////////////////////////////////////////////////////////////////////////////////////////
-  // const [landingPointResult] = await conn.query(
-  //   `SELECT point_id FROM route_points WHERE route_id=${routeId} AND type="landing"`
-  // );
-
-  // const landingPointsIds = landingPointResult.length
-  //   ? landingPointResult.reduce((prev, curr, idx) => {
-  //     if (idx == 0) return curr.point_id;
-  //     return prev + ", " + curr.point_id;
-  //   }, "")
-  //   : null;
-
-  // let landingPointsInfo = [];
-  // if (landingPointsIds) {
-  //   const [landingPointsResults] = await conn.query(
-  //     `SELECT id, name, maps, photo FROM point WHERE id IN( ${landingPointsIds} )`
-  //   );
-  //   landingPointsInfo = landingPointsResults;
-  // }
+  const routeInfo = {
+    ...routeResults[0],
+    status: routeStatus[0]
+  }
 
   // PASSAGER //////////////////////////////////////////////////////////////////////////////////////////////////////
   const [routeRespPassagerResult] = await conn.query(
@@ -63,9 +31,9 @@ async function selectRoute(routeId) {
   );
   const respPassagerIds = routeRespPassagerResult.length
     ? routeRespPassagerResult.reduce((prev, curr, idx) => {
-        if (idx == 0) return curr.passager_id;
-        return prev + ", " + curr.passager_id;
-      }, "")
+      if (idx == 0) return curr.passager_id;
+      return prev + ", " + curr.passager_id;
+    }, "")
     : null;
 
   let respPassagerInfo = [];
@@ -76,32 +44,24 @@ async function selectRoute(routeId) {
     respPassagerInfo = passagerResults;
   }
 
-  return { route: routeResults[0], respPassagerInfo };
+  return { route: routeInfo, respPassagerInfo };
 }
 async function routeList(userId) {
   const conn = await connect();
-  console.log({ userId });
-  QRCode.toDataURL("resp-add", function (err, url) {
-    console.log(url);
-  });
+
+  // QRCode.toDataURL("resp-add", function (err, url) {
+  //   console.log(url);
+  // });
 
   const [routes] = await conn.query(`SELECT * FROM route WHERE user_id=${userId}`);
 
   const routeIds = routes.length
     ? routes.reduce((prev, curr, idx) => {
-        if (idx == 0) return curr.id;
-        return prev + ", " + curr.id;
-      }, "")
+      if (idx == 0) return curr.id;
+      return prev + ", " + curr.id;
+    }, "")
     : null;
 
-  // // BOARDING
-  // const [boardingPointRows] = await conn.query(
-  //   `SELECT route_id FROM route_points WHERE route_id in (${routeIds}) AND type="boarding"`
-  // );
-  // // LANDING
-  // const [landingPointRows] = await conn.query(
-  //   `SELECT route_id FROM route_points WHERE route_id in (${routeIds}) AND type="landing"`
-  // );
   // PASSAGER
   const [routeRespPassagerRows] = await conn.query(
     `SELECT route_id FROM route_passagers WHERE route_id in (${routeIds})`
@@ -109,7 +69,47 @@ async function routeList(userId) {
 
   return { routes, routeRespPassagerRows };
 }
-async function routeCreate(userId, routeName, routeStartTime, day) {
+async function routeDayList(userId) {
+  const conn = await connect();
+
+  // QRCode.toDataURL("resp-add", function (err, url) {
+  //   console.log(url);
+  // });
+
+  const [routes] = await conn.query(`SELECT * FROM route WHERE user_id=${userId}`);
+
+  const routeIds = routes.length
+    ? routes.reduce((prev, curr, idx) => {
+      if (idx == 0) return curr.id;
+      return prev + ", " + curr.id;
+    }, "")
+    : null;
+
+  // TODAY DATE
+  let routeDay = new Date().toLocaleString().split(", ")[0];
+
+  // ROUTE DAY
+  const [routeDayStatusRows] = await conn.query(
+    `SELECT * FROM route_status WHERE route_id in (${routeIds}) AND date='${routeDay}'`
+  );
+
+  const routeDayStatusIds = routeDayStatusRows.map((routeDay) => routeDay.route_id)
+  const routesDayInfo = routes.filter((route) => routeDayStatusIds.find((routeId) => routeId == route.id));
+
+  // PASSAGER
+  const [routeRespPassagerRows] = await conn.query(
+    `SELECT route_id FROM route_passagers WHERE route_id in (${routeDayStatusIds})`
+  );
+
+  const routesInfoDayWithStatus = routesDayInfo.map((routeDay) => {
+    routeDay["status"] = routeDayStatusRows.find((routeStatus) => routeStatus.route_id == routeDay.id) ?? null;
+    return routeDay;
+  })
+
+  return { routes: routesInfoDayWithStatus, routeRespPassagerRows };
+}
+
+async function routeCreate(userId, routeName) {
   const conn = await connect();
   const [route] = await conn.query(
     `SELECT * FROM route WHERE name='${routeName}' AND user_id='${userId}'`
@@ -119,15 +119,8 @@ async function routeCreate(userId, routeName, routeStartTime, day) {
     throw { codStatus: 422, message: "Esta rota existente.", error: "" };
   }
 
-  let routeDay = null;
-  if (day) {
-    routeDay = new Date(day);
-  } else {
-    routeDay = Date.now();
-  }
-
   const [routeResult] = await conn.query(
-    `INSERT INTO route (name, user_id, start_time, day) VALUES ('${routeName}',${userId}, '${routeStartTime}', ${routeDay})`
+    `INSERT INTO route (name, user_id) VALUES ('${routeName}',${userId})`
   );
 
   return routeResult;
@@ -149,9 +142,9 @@ async function routeDelete(routeId, userId, type) {
   if (routePassagerResults.length) {
     routePassagerIds = routePassagerResults.length
       ? routePassagerResults.reduce((prev, curr, idx) => {
-          if (idx == 0) return curr.id;
-          return prev + ", " + curr.id;
-        }, "")
+        if (idx == 0) return curr.id;
+        return prev + ", " + curr.id;
+      }, "")
       : null;
   }
 
@@ -163,9 +156,9 @@ async function routeDelete(routeId, userId, type) {
   if (routePointsResult.length) {
     routePointIds = routePointsResult.length
       ? routePointsResult.reduce((prev, curr, idx) => {
-          if (idx == 0) return curr.id;
-          return prev + ", " + curr.id;
-        }, "")
+        if (idx == 0) return curr.id;
+        return prev + ", " + curr.id;
+      }, "")
       : null;
   }
 
@@ -199,9 +192,9 @@ async function passagerList(userId, routeId, type) {
 
   const responsableResultIds = responsables.length
     ? responsables.reduce((prev, curr, idx) => {
-        if (idx == 0) return curr.id;
-        return prev + ", " + curr.id;
-      }, "")
+      if (idx == 0) return curr.id;
+      return prev + ", " + curr.id;
+    }, "")
     : null;
 
   // PASSAGER EXIST ////////////////////////////////////////////////////////////////////////////////////////////
@@ -210,14 +203,13 @@ async function passagerList(userId, routeId, type) {
   );
   const respPassagerIds = routeRespPassagerResult.length
     ? routeRespPassagerResult.reduce((prev, curr, idx) => {
-        if (idx == 0) return curr.passager_id;
-        return prev + ", " + curr.passager_id;
-      }, "")
+      if (idx == 0) return curr.passager_id;
+      return prev + ", " + curr.passager_id;
+    }, "")
     : null;
 
   const [responsablePassagers] = await conn.query(
-    `SELECT * FROM passager WHERE user_responsable_id IN (${responsableResultIds}) ${
-      respPassagerIds ? "AND id NOT IN (" + respPassagerIds + ")" : ""
+    `SELECT * FROM passager WHERE user_responsable_id IN (${responsableResultIds}) ${respPassagerIds ? "AND id NOT IN (" + respPassagerIds + ")" : ""
     }`
   );
 
@@ -282,14 +274,13 @@ async function userPointList(userId, routeId, type) {
   );
   const routePointIds = routePoint.length
     ? routePoint.reduce((prev, curr, idx) => {
-        if (idx == 0) return curr.point_id;
-        return prev + ", " + curr.point_id;
-      }, "")
+      if (idx == 0) return curr.point_id;
+      return prev + ", " + curr.point_id;
+    }, "")
     : null;
 
   const [pointResult] = await conn.query(
-    `SELECT id, name, photo FROM point WHERE user_id=${userId} ${
-      routePointIds ? `AND id NOT IN (${routePointIds})` : ""
+    `SELECT id, name, photo FROM point WHERE user_id=${userId} ${routePointIds ? `AND id NOT IN (${routePointIds})` : ""
     }`
   );
 
@@ -441,7 +432,7 @@ async function respRouteList(userId, day) {
   );
   const routeIds = new Set(
     routeRespPass.map((route) => {
-      console.log(route.route_id);
+      // console.log(route.route_id);
 
       return route.route_id;
     })
@@ -456,7 +447,7 @@ async function respRouteList(userId, day) {
 
  */
 
-  console.log("OK", routeIds);
+  // console.log("OK", routeIds);
 
   if (!routeIds.length) {
     return { routes: [], boardingPointRows: [], landingPointRows: [], routeRespPassagerRows: [] };
@@ -562,8 +553,6 @@ async function responsablePassagerSelect(responsableId, passagerId) {
     return prev;
   }, []);
 
-  console.log({ routePassagersPointIds });
-
   let boardingPoints = [];
   if (routePassagersPointIds.boardingPoints) {
     const [pointsFind] = await conn.query(
@@ -642,6 +631,7 @@ async function selectResponsable(responsableId) {
 export {
   selectRoute,
   routeList,
+  routeDayList,
   pointList,
   routePointAdd,
   getUserByEmail,

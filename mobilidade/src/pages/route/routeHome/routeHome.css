@@ -15,17 +15,18 @@ p {
   font-size: 1.5em;
 }
 
-.route-home-card-container{
+.route-home-card-container {
   margin: 6px 6px;
   padding: 0px;
 }
+
 .route-home {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding-right: 12px;
   margin: 0;
-  padding:0;
+  padding: 0;
 }
 
 .route-home-card-header {
@@ -33,6 +34,34 @@ p {
   flex-direction: row;
   align-items: center;
   gap: 8px;
-  margin:0;
-  padding:12px;
+  margin: 0;
+  padding: 12px;
+}
+
+#route-home-status-box {
+  width: 230px;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+#route-home-status-button-container {
+  display: flex;
+  justify-content: end;
+  padding: 0px 12px;
+}
+
+.route-home-status- {
+  font-weight: 600;
+  color: blue;
+}
+
+.route-home-status-andamento {
+  font-weight: 600;
+  color: red;
+}
+
+.route-home-status-finalizado {
+  font-weight: 600;
+  color: green;
 }

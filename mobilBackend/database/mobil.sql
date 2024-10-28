@@ -29,8 +29,7 @@ CREATE TABLE IF NOT EXISTS `mobil`.`user` (
   `driver_id` INT NULL,
   `token` LONGTEXT NULL,
 `recovery_password` VARCHAR(128) NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);
+  PRIMARY KEY (`id`));
 
 
 -- -----------------------------------------------------
@@ -42,10 +41,22 @@ CREATE TABLE IF NOT EXISTS `mobil`.`route` (
   `user_id` INT NOT NULL,
   `photo` VARCHAR(128) NULL,
   `day` VARCHAR(90) NOT NULL,
-  `start_time` VARCHAR(90) NULL DEFAULT NULL ,
-  `end_time` VARCHAR(90) NULL DEFAULT NULL ,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
+
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `route`.`status`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mobil`.`route_status` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `route_id` INT NOT NULL,
+  `status` VARCHAR(20) NULL DEFAULT NULL,
+  `date` VARCHAR(90) NOT NULL,
+  `start_time` VARCHAR(12) NULL DEFAULT NULL,
+  `end_time` VARCHAR(12) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
 
@@ -58,10 +69,8 @@ CREATE TABLE IF NOT EXISTS `mobil`.`point` (
   `name` VARCHAR(90) NOT NULL,
   `maps` VARCHAR(45) NULL,
   `photo` VARCHAR(128) NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB
-COMMENT = '							';
 
 
 -- -----------------------------------------------------
@@ -72,8 +81,7 @@ CREATE TABLE IF NOT EXISTS `mobil`.`route_points` (
   `route_id` INT NOT NULL,
   `point_id` INT NOT NULL,
   `type` VARCHAR(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
 
@@ -84,8 +92,7 @@ CREATE TABLE IF NOT EXISTS `mobil`.`passager` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `user_responsable_id` INT NOT NULL,
   `name` VARCHAR(90) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
@@ -97,8 +104,21 @@ CREATE TABLE IF NOT EXISTS `mobil`.`route_passagers` (
   `route_id` INT NOT NULL,
   `boarding_point_id` INT NULL,
   `landing_point_id` INT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `route`.`passager`.`status`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mobil`.`route_passager_status` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `passager_id` INT NOT NULL,
+  `route_id` INT NOT NULL,
+  `status` INT NULL,
+  `date` VARCHAR(90) NOT NULL,
+  `boarding_time` INT NULL,
+  `landing_time` INT NULL,
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
 

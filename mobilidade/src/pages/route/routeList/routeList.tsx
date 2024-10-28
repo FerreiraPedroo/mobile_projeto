@@ -36,24 +36,22 @@ const RouteList: React.FC = () => {
   const [routesList, setRoutesList] = useState<Route[]>([]);
   const [modalShow, setModalShow] = useState(false);
   const [routeName, setRouteName] = useState<string | number>("");
-  const [routeStartTime, setRouteStartTime] = useState<string | number>("");
 
   async function createRoute() {
     try {
       const response = await fetch(`http://localhost:3000/route`, {
         method: "POST",
         mode: "cors",
-        body: JSON.stringify({ routeName, routeStartTime, userId: userInfo.userId }),
+        body: JSON.stringify({ routeName, userId: userInfo.userId }),
         headers: { "Content-Type": "application/json" },
       });
 
       const listReturn = await response.json();
 
       if (listReturn.codStatus == 200) {
-        setUpdatePage((prev) => !prev);
         setModalShow(false);
         setRouteName("");
-        setRouteStartTime("")
+        setUpdatePage((prev) => !prev);
       }
     } catch (error) {}
   }
@@ -142,13 +140,6 @@ const RouteList: React.FC = () => {
               name="routeName"
               value={routeName}
               onChange={(e) => setRouteName(e.target.value!)}
-            />
-            <p id="route-list-add-route-text">Digite o horário de inicio:</p>
-            <input
-              type="time"
-              name="routeStartTime"
-              value={routeStartTime}
-              onChange={(e) => setRouteStartTime(e.target.value!)}
             />
             <div className="route-config-delete-modal-buttons">
               <IonButton color="primary" expand="full" onClick={() => createRoute()}>

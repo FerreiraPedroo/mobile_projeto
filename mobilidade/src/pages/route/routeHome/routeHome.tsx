@@ -13,12 +13,13 @@ import {
   IonLabel,
   IonMenuButton,
   IonPage,
+  IonText,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
 
 import { RouteComponentProps } from "react-router";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 
 import "./routeHome.css";
 import loading from "../../../assets/img/loading.gif";
@@ -31,11 +32,17 @@ interface Route {
     id: number;
     name: string;
   }[];
+  status: {
+    status: string;
+    date: string;
+    start_time: string;
+    end_time: string;
+  }
 }
 interface RouteHomeParams
   extends RouteComponentProps<{
     routeId: string;
-  }> {}
+  }> { }
 
 import { ContextAppInfo } from "../../../services/context/context";
 
@@ -46,6 +53,11 @@ import { personCircleOutline } from "ionicons/icons";
 const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
   const { userInfo, updatePage, setUpdatePage } = useContext(ContextAppInfo);
   const [routeInfo, setRouteInfo] = useState<Route | null>(null);
+
+  const startRoute = useCallback(() => {
+  },[])
+  const finishRoute = useCallback(() => {
+  },[])
 
   useEffect(() => {
     async function getRoute(routeId: string) {
@@ -88,8 +100,17 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
         <IonContent fullscreen>
           <IonItem>
             <p>{routeInfo.name}</p>
+            <div id="route-home-status-box">
+              <IonText class={`route-home-status-${routeInfo.status ? routeInfo.status.status ?? "" : ""}`}>
+                {routeInfo.status ? routeInfo.status.status ?? "Inicio" : "Inicio"}
+              </IonText>
+              <IonText>{routeInfo.status ? routeInfo.status.start_time ?? "--:--:--" : "--:--:--"}</IonText>
+            </div>
           </IonItem>
-
+          <div id="route-home-status-button-container">
+            {routeInfo.status.status == null && <IonButton color="secondary" onClick={startRoute}>INICIAR ROTA</IonButton>}
+            {routeInfo.status.status == "andamento" && <IonButton color="danger" onClick={finishRoute}>FINALIZAR ROTA</IonButton>}
+          </div>
           <MyMap routeInfo={routeInfo}></MyMap>
 
           <div>
@@ -126,8 +147,9 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
         <div id="route-home-loading">
           <img src={loading}></img>
         </div>
-      )}
-    </IonPage>
+      )
+      }
+    </IonPage >
   );
 };
 

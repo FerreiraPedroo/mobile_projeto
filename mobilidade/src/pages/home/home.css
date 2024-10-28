@@ -25,6 +25,7 @@ capacitor-google-map {
 }
 
 .home-card-title {
+  width: 100%;
   font-size: 1.3rem;
   font-weight: 500;
 }
@@ -63,6 +64,19 @@ capacitor-google-map {
   font-size: 1.5em;
 }
 
+
+.home-card-status-{
+  font-weight: 600;
+  color: blue;
+}
+.home-card-status-andamento{
+  font-weight: 600;
+  color: red;
+}
+.home-card-status-finalizado{
+  font-weight: 600;
+  color: green;
+}
 
 * {
   /* border: 1px solid red; */

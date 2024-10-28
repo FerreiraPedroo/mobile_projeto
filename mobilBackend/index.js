@@ -124,15 +124,9 @@ app.get("/day-route-list/:userId", async (req, res, next) => {
 
   try {
     if (userId) {
-      const routeListData = await db.routeList(userId);
+      const routeListData = await db.routeDayList(userId);
 
       const routeInfo = routeListData.routes.map((route) => {
-        // const boardingPoints = routeListData.boardingPointRows.filter(
-        //   (point) => point.route_id == route.id
-        // );
-        // const landingPoints = routeListData.landingPointRows.filter(
-        //   (point) => point.route_id == route.id
-        // );
         const passagers = routeListData.routeRespPassagerRows.filter(
           (point) => point.route_id == route.id
         );
@@ -141,10 +135,9 @@ app.get("/day-route-list/:userId", async (req, res, next) => {
           id: route.id,
           name: route.name,
           photo: route.photo,
-          // boarding_point_amount: boardingPoints.length,
-          // landing_point_amount: landingPoints.length,
           start_time: route.start_time,
           passager_amount: passagers.length,
+          status: route.status
         };
       });
 
@@ -213,24 +206,6 @@ app.get("/route/:routeId", async (req, res, next) => {
       throw { codStatus: 422, message: "Rota não encontrada." };
     }
 
-    // const routeBoardingPoint = routeData.boardingPointsInfo.map((point) => {
-    //   return {
-    //     id: point.id,
-    //     name: point.name,
-    //     map: point.maps,
-    //     photo: point.phto,
-    //   };
-    // });
-
-    // const routeLandingPoint = routeData.landingPointsInfo.map((point) => {
-    //   return {
-    //     id: point.id,
-    //     name: point.name,
-    //     map: point.maps,
-    //     photo: point.phto,
-    //   };
-    // });
-
     const routePassager = routeData.respPassagerInfo.map((passager) => {
       return {
         id: passager.id,
@@ -244,11 +219,10 @@ app.get("/route/:routeId", async (req, res, next) => {
       photo: routeData.route.photo,
       start_time: routeData.route.start_time,
       end_time: routeData.route.end_time,
-      // boardingPoints: routeBoardingPoint,
-      // landingPoints: routeLandingPoint,
       passagers: routePassager,
+      status: routeData.route.status
     };
-    console.log(routeInfo);
+  
     return res.status(200).send({ codStatus: 200, message: "OK", data: routeInfo });
   } catch (error) {
     return res.status(error.codStatus || 422).send({
@@ -259,10 +233,10 @@ app.get("/route/:routeId", async (req, res, next) => {
   }
 });
 app.post("/route", async (req, res, next) => {
-  const { routeName, routeStartTime, userId, day } = req.body;
+  const { routeName, userId } = req.body;
 
   try {
-    const routeData = await db.routeCreate(userId, routeName, routeStartTime, day);
+    const routeData = await db.routeCreate(userId, routeName);
 
     if (!routeData) {
       throw { codStatus: 422, message: "Não foi possivel criar a rota." };

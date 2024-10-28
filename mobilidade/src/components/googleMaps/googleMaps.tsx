@@ -151,7 +151,7 @@ const MyMap: React.FC<any> = ({ routeInfo }: any) => {
         style={{
           display: "flex",
           width: "100%",
-          height: 400,
+          height: 300,
         }}
       ></capacitor-google-map>
     </div>
