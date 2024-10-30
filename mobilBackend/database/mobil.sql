@@ -40,7 +40,6 @@ CREATE TABLE IF NOT EXISTS `mobil`.`route` (
   `name` VARCHAR(45) NOT NULL,
   `user_id` INT NOT NULL,
   `photo` VARCHAR(128) NULL,
-  `day` VARCHAR(90) NOT NULL,
 
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;

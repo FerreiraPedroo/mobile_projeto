@@ -175,7 +175,7 @@ app.get("/route-list/:userId", async (req, res, next) => {
           id: route.id,
           name: route.name,
           photo: route.photo,
-          // boardingPointsAmount,
+          day: route.day,
           // landingPointsAmount,
           passagerAmount,
         };
@@ -263,6 +263,33 @@ app.delete("/route/:routeId/:userId/:type", async (req, res, next) => {
     return res.status(error.codStatus || 422).send({
       codStatus: error.codStatus || 422,
       message: error.message || "[ROT]: Erro ao excluir a rota.",
+      error: error.error,
+    });
+  }
+});
+app.get("/route/calendar/:routeId/:year/:month", async (req, res, next) => {
+  const { routeId, year, month } = req.params;
+
+  try {
+    const {routeStatus} = await db.selectRouteCalendar(routeId, year, month);
+
+    if (!routeStatus) {
+      throw { codStatus: 422, message: "Calendario não encontrado." };
+    }
+
+    const routeCalendarInfo = routeStatus.map((status) => {
+      return {
+        id: status.id,
+        date: status.date,
+        start_time: status.start_time,
+      };
+    });
+  
+    return res.status(200).send({ codStatus: 200, message: "OK", data: routeCalendarInfo });
+  } catch (error) {
+    return res.status(error.codStatus || 422).send({
+      codStatus: error.codStatus || 500,
+      message: error.message || "[ROT]: Erro ao obter a rota.",
       error: error.error,
     });
   }
