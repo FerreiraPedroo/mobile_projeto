@@ -100,8 +100,12 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
   const [routeCalendar, setRouteCalendar] = useState([]);
   const [actualDate, setActualDate] = useState<string>("");
 
+  const [showCalendarButtons, setShowCalendarButtons] = useState(false);
+
   async function openCalendarAddModal(routeParam: string, data: string) {
-    setModalCalendarInfo({ route: routeParam, data });
+    const adjustedDate = data.split("T")[0].split("-").reverse().join("-");
+
+    setModalCalendarInfo({ route: routeParam, data: adjustedDate });
     setAddCalendarModalShow(true);
   }
   async function openAddModal(itemType: string, routeParam: string) {
@@ -157,6 +161,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
 
       if (addReturn.codStatus == 200) {
         setModalShow(false);
+        setAddCalendarModalShow(false);
         setUpdatePage((prev) => !prev);
       }
     } catch (error) {}
@@ -224,12 +229,14 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
       if (routeDataReturn.codStatus == 200) {
         const statusDays = routeDataReturn.data.map((status: any) => {
           return {
-            date: status.date,
-            textColor: "rgb(68, 10, 184)",
-            backgroundColor: "rgb(211, 200, 229)",
+            id: status.id,
+            date: status.date.split("T")[0],
+            textColor: "#09721b",
+            backgroundColor: "#c8e5d0",
           };
         });
         setRouteCalendar(statusDays);
+        setShowCalendarButtons(false);
       } else {
         throw "Erro";
       }
@@ -291,8 +298,15 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
 
   const handleDateChange = (event: any) => {
     const date = event.detail.value;
+    const findDate = routeCalendar.find((day: any) => day.date == date.split("T")[0]);
+    if (findDate) {
+      setShowCalendarButtons(true);
+    } else if (showCalendarButtons) {
+      setShowCalendarButtons(false);
+    }
     setActualDate(date);
-    console.log(date);
+
+    console.log({ date, findDate });
   };
 
   return (
@@ -329,7 +343,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
               </IonItem>
               <div slot="content">
                 <IonDatetime
-                  presentation="date-time"
+                  presentation="date"
                   onIonChange={handleDateChange}
                   locale="pt-BR"
                   // value={String(new Date().toISOString())}
@@ -339,6 +353,30 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
                   <span slot="time-label">Horário da rota</span>
                 </IonDatetime>
                 <div id="route-config-calendar-buttons">
+                  {showCalendarButtons ? (
+                    <IonButton
+                      disabled={!actualDate}
+                      color="danger"
+                      onClick={() => {
+                        const findDate: any = routeCalendar.find(
+                          (day: any) => day.date == actualDate.split("T")[0]
+                        );
+
+                        openDeleteModal(
+                          "type",
+                          "A o dia da rota",
+                          findDate!.id,
+                          actualDate.split("T")[0].split("-").reverse().join("-"),
+                          "calendar-remove"
+                        );
+                      }}
+                    >
+                      REMOVER
+                    </IonButton>
+                  ) : (
+                    ""
+                  )}
+
                   <IonButton
                     disabled={!actualDate}
                     color="primary"
@@ -420,9 +458,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
                     <br />
                     <br />
                   </p>
-                  <div className="route-config-delete-item-name">
-                    {modalCalendarInfo.data.split("T").join(" ")}
-                  </div>
+                  <div className="route-config-delete-item-name">{modalCalendarInfo.data}</div>
                   <br />
                   <div className="route-config-delete-modal-buttons">
                     <IonButton

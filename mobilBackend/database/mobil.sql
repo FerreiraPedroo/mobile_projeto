@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `mobil`.`route_status` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `route_id` INT NOT NULL,
   `status` VARCHAR(20) NULL DEFAULT NULL,
-  `date` VARCHAR(90) NOT NULL,
+  `date` DATE NOT NULL,
   `start_time` VARCHAR(12) NULL DEFAULT NULL,
   `end_time` VARCHAR(12) NULL DEFAULT NULL,
   PRIMARY KEY (`id`))
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `mobil`.`point` (
   `maps` VARCHAR(45) NULL,
   `photo` VARCHAR(128) NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------

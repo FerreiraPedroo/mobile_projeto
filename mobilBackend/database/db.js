@@ -87,15 +87,14 @@ async function routeDayList(userId) {
     : null;
 
   // TODAY DATE
-  let routeDay = new Date().toLocaleDateString("pt-BR");
-  console.log({ routeDay });
+  let routeDay = new Date().toLocaleDateString("pt-BR").split("/").reverse().join("-");
 
   // ROUTE DAY
   const [routeDayStatusRows] = await conn.query(
     `SELECT * FROM route_status WHERE route_id in (${routeIds}) AND date='${routeDay}'`
   );
+
   const routeDayStatusIds = routeDayStatusRows.map((routeDayId) => routeDayId.route_id);
-  console.log({ routeDayStatusRows, routeIds });
 
   const routesDayInfo = routes.filter((route) =>
     routeDayStatusIds.find((routeId) => routeId == route.id)
@@ -122,17 +121,64 @@ async function routeDayList(userId) {
 async function selectRouteCalendar(routeId, year, month) {
   const conn = await connect();
 
-  const dateMonth = new Date(year, month - 1);
+  const dateMonth = new Date(year, month);
   const firstDay = new Date(dateMonth.getFullYear(), dateMonth.getMonth(), 1).toISOString();
   const lastDay = new Date(dateMonth.getFullYear(), dateMonth.getMonth() + 1, 0).toISOString();
-
+  
   // ROUTE STATUS
   const [routeStatus] = await conn.query(
     `SELECT * FROM route_status WHERE route_id=${routeId} AND date BETWEEN date('${
-      firstDay.split("T")[0]}') AND date('${lastDay.split("T")[0]}')`
+      firstDay.split("T")[0]
+    }') AND date('${lastDay.split("T")[0]}')`
   );
 
   return { routeStatus };
+}
+async function addRouteCalendar(routeId, dateDay) {
+  const conn = await connect();
+
+  const dateMonth = dateDay.split("-").reverse().join("-");
+  console.log({ dateDay });
+  console.log({ dateMonth });
+
+  // ROUTE STATUS
+  const [routeStatus] = await conn.query(
+    `SELECT * FROM route_status WHERE route_id=${routeId} AND date='${dateMonth}'`
+  );
+
+  console.log({ routeStatus }, !routeStatus.length);
+
+  if (!routeStatus.length) {
+    const [routeStatusInserted] = await conn.query(
+      `INSERT INTO route_status (route_id, status , date) VALUES (${routeId}, 'ATIVO', '${dateMonth}')`
+    );
+    console.log({ routeStatusInserted });
+  } else {
+    return "EXISTS";
+  }
+
+  return "OK";
+}
+async function removeRouteCalendar(routeId, dateDayId) {
+  const conn = await connect();
+
+  // ROUTE STATUS
+  const [routeStatus] = await conn.query(
+    `SELECT * FROM route_status WHERE id='${dateDayId}'`
+  );
+
+  console.log({ routeStatus }, !routeStatus.length);
+
+  if (routeStatus.length) {
+    const [routeStatusDeleted] = await conn.query(
+      `DELETE FROM route_status WHERE id='${dateDayId}'`
+    );
+    console.log({ routeStatusDeleted });
+  } else {
+    return "NOT EXISTS";
+  }
+
+  return "OK";
 }
 
 async function routeCreate(userId, routeName) {
@@ -681,4 +727,6 @@ export {
   pointDelete,
   responsablePassagerSelect,
   selectRouteCalendar,
+  addRouteCalendar,
+  removeRouteCalendar
 };

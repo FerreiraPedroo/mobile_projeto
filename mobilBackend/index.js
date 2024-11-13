@@ -267,6 +267,7 @@ app.delete("/route/:routeId/:userId/:type", async (req, res, next) => {
     });
   }
 });
+// RETORNA O CALENDARIO DE UMA ROTA, QUE ESTÁ DENTRO DA CONFIGURAÇÃO DA ROTA.
 app.get("/route/calendar/:routeId/:year/:month", async (req, res, next) => {
   const { routeId, year, month } = req.params;
 
@@ -294,6 +295,47 @@ app.get("/route/calendar/:routeId/:year/:month", async (req, res, next) => {
     });
   }
 });
+// ADICIONA NA ROTA O DIA NA DATA DO CALENDARIO.
+app.post("/calendar-add/:routeId/:dateDay", async (req, res, next) => {
+  const { routeId, dateDay } = req.params;
+
+  try {
+    const routeStatus = await db.addRouteCalendar(routeId, dateDay);
+
+    if (routeStatus == "EXISTS") {
+      throw { codStatus: 422, message: "Esta rota já esta adicionada neste dia." };
+    }
+  
+    return res.status(200).send({ codStatus: 200, message: "OK", data: routeStatus });
+  } catch (error) {
+    return res.status(error.codStatus || 422).send({
+      codStatus: error.codStatus || 500,
+      message: error.message || "[ROT]: Erro ao adicionar o dia a rota.",
+      error: error.error,
+    });
+  }
+});
+// REMOVE DA ROTA O DIA NA DATA DO CALENDARIO.
+app.delete("/calendar-remove/:routeId/:dateDayId/:type", async (req, res, next) => {
+  const { routeId, dateDayId } = req.params;
+
+  try {
+    const routeStatus = await db.removeRouteCalendar(routeId, dateDayId);
+
+    if (routeStatus == "NOT EXISTS") {
+      throw { codStatus: 422, message: "Esse dia não está na rota." };
+    }
+  
+    return res.status(200).send({ codStatus: 200, message: "OK", data: routeStatus });
+  } catch (error) {
+    return res.status(error.codStatus || 422).send({
+      codStatus: error.codStatus || 500,
+      message: error.message || "[ROT]: Erro ao adicionar o dia a rota.",
+      error: error.error,
+    });
+  }
+});
+
 /////////////////////////////////////////////////////////////////////////////
 
 // POINTS /////////////////////////////////////////////////////////////////
