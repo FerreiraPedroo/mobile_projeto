@@ -97,29 +97,20 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
         <IonContent fullscreen>
           <IonItem>
             <p>{routeInfo.name}</p>
-            <div id="route-home-status-box">
-              <IonText
-                class={`route-home-status-${routeInfo.status ? routeInfo.status.status ?? "" : ""}`}
-              >
-                {routeInfo.status ? routeInfo.status.status ?? "Inicio" : "Inicio"}
-              </IonText>
-              <IonText>
-                {routeInfo.status ? routeInfo.status.start_time ?? "--:--:--" : "--:--:--"}
-              </IonText>
+            <div id="route-home-status-button-container">
+              {routeInfo.status.status == "NAO_INICIADO" && (
+                <IonButton color="secondary" size="default" onClick={startRoute}>
+                  INICIAR ROTA
+                </IonButton>
+              )}
+              {routeInfo.status.status == "ANDAMENTO" && (
+                <IonButton color="danger" onClick={finishRoute}>
+                  FINALIZAR ROTA
+                </IonButton>
+              )}
             </div>
           </IonItem>
-          <div id="route-home-status-button-container">
-            {routeInfo.status.status == null && (
-              <IonButton color="secondary" onClick={startRoute}>
-                INICIAR ROTA
-              </IonButton>
-            )}
-            {routeInfo.status.status == "andamento" && (
-              <IonButton color="danger" onClick={finishRoute}>
-                FINALIZAR ROTA
-              </IonButton>
-            )}
-          </div>
+
           <MyMap routeInfo={routeInfo}></MyMap>
 
           <div>
@@ -129,20 +120,10 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
             {routeInfo.passagers.map((point) => (
               <IonCard key={point.name} className="route-home-card-container">
                 <div className="route-home">
-                  <div>
-                    <IonCardHeader class="route-home-card-header">
-                      <IonIcon icon={personCircleOutline} size="large"></IonIcon>
-                      <IonCardTitle>{point.name}</IonCardTitle>
-                    </IonCardHeader>
-                  </div>
-
-                  {/* <IonButton
-                    color="danger"
-                    className=""
-                    onClick={() => ""}
-                  >
-                    <IonIcon icon={"trashSharp"}></IonIcon>
-                  </IonButton> */}
+                  <IonCardHeader class="route-home-card-header">
+                    <IonIcon icon={personCircleOutline} size="large"></IonIcon>
+                    <IonCardTitle>{point.name}</IonCardTitle>
+                  </IonCardHeader>
                 </div>
               </IonCard>
             ))}

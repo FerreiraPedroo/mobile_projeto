@@ -21,10 +21,12 @@ import { useContext, useEffect, useState } from "react";
 
 import { ContextAppInfo } from "../../../services/context/context";
 
-import pointImg from "../../../assets/img/point.png";
 import { add, trashSharp } from "ionicons/icons";
-import "./pointList.css";
+
+import pointImg from "../../../assets/img/point.png";
 import { MapAddPoint } from "../../../components/googleMaps/googleMapsAddPoint";
+
+import "./pointList.css";
 
 interface Point {
   id: number;

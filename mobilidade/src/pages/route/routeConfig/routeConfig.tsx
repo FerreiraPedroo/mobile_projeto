@@ -51,18 +51,15 @@ interface RouteConfig {
     name: string;
   }[];
 }
-
 interface RouteConfigParams
   extends RouteComponentProps<{
     routeId: string;
   }> {}
-
 interface ModalInfoInterface {
   type: string;
   route: string;
   data: null | [{ id: number; name: string }] | [];
 }
-
 interface ModalDeleteInfoInterface {
   type: string;
   typeName: string;
@@ -76,6 +73,7 @@ interface CalendarConfig {
 
 const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
   const router = useIonRouter();
+  const { userInfo, updatePage, setUpdatePage } = useContext(ContextAppInfo);
 
   const [modalDeleteInfo, setModalDeleteInfo] = useState<ModalDeleteInfoInterface>({
     type: "",
@@ -94,8 +92,6 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
   const [addCalendarModalShow, setAddCalendarModalShow] = useState(false);
   const [modalDeleteShow, setModalDeleteShow] = useState(false);
   const [modalShow, setModalShow] = useState(false);
-
-  const { userInfo, updatePage, setUpdatePage } = useContext(ContextAppInfo);
 
   const [routeCalendar, setRouteCalendar] = useState([]);
   const [actualDate, setActualDate] = useState<string>("");
@@ -364,7 +360,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
 
                         openDeleteModal(
                           "type",
-                          "A o dia da rota",
+                          "O dia da rota",
                           findDate!.id,
                           actualDate.split("T")[0].split("-").reverse().join("-"),
                           "calendar-remove"
@@ -406,34 +402,23 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
                   <IonLabel>Adicionar</IonLabel>
                 </IonItem>
                 {routeInfo &&
-                  routeInfo.passagers.map((point) => (
-                    <IonCard key={point.name} className="route-confg-card-container">
+                  routeInfo.passagers.map((passager) => (
+                    <IonCard
+                      key={passager.name}
+                      className="route-confg-card-container"
+                      onClick={() =>
+                        router.push(`/route-config/${match.params.routeId}/${passager.id}`)
+                      }
+                    >
                       <div className="route-config">
-                        <div>
-                          <IonCardHeader class="route-config-card-header">
-                            <IonIcon
-                              icon={personCircleOutline}
-                              className={"route-config-icon"}
-                              size="large"
-                            ></IonIcon>
-                            <IonCardTitle>{point.name}</IonCardTitle>
-                          </IonCardHeader>
-                        </div>
-
-                        <IonButton
-                          color="danger"
-                          onClick={() =>
-                            openDeleteModal(
-                              "passager",
-                              "Passageiro",
-                              point.id,
-                              point.name,
-                              "passager"
-                            )
-                          }
-                        >
-                          <IonIcon icon={trashSharp}></IonIcon>
-                        </IonButton>
+                        <IonCardHeader class="route-config-card-header">
+                          <IonIcon
+                            icon={personCircleOutline}
+                            className={"route-config-icon"}
+                            size="large"
+                          ></IonIcon>
+                          <IonCardTitle>{passager.name}</IonCardTitle>
+                        </IonCardHeader>
                       </div>
                     </IonCard>
                   ))}

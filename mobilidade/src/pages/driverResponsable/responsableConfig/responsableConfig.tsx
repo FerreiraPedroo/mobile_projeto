@@ -3,6 +3,9 @@ import {
   IonAccordionGroup,
   IonButton,
   IonButtons,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
   IonContent,
   IonHeader,
   IonIcon,
@@ -38,7 +41,7 @@ interface RouteConfig {
 interface RouteConfigParams
   extends RouteComponentProps<{
     responsableId: string;
-  }> { }
+  }> {}
 
 interface ModalInfoInterface {
   id: number;
@@ -58,7 +61,8 @@ const ResponsableConfig: React.FC<RouteConfigParams> = ({ match }) => {
   async function handleDelete(id: number, route: string) {
     try {
       const response = await fetch(
-        `http://localhost:3000/${route}/${userInfo.userId}/${responsableId}${route == "responsable-passager" ? "/" + id : ""
+        `http://localhost:3000/${route}/${userInfo.userId}/${responsableId}${
+          route == "responsable-passager" ? "/" + id : ""
         }`,
         {
           method: "DELETE",
@@ -74,9 +78,9 @@ const ResponsableConfig: React.FC<RouteConfigParams> = ({ match }) => {
       if (deleteReturn.codStatus == 200) {
         setModalDeletePassagerShow(false);
         setUpdatePage((prev) => !prev);
-        router.push("/responsables")
+        router.push("/responsables");
       }
-    } catch (error) { }
+    } catch (error) {}
   }
 
   async function openDeletePassagerModal(id: number, name: string, route: string) {
@@ -137,36 +141,26 @@ const ResponsableConfig: React.FC<RouteConfigParams> = ({ match }) => {
             </IonButton>
           </div>
           <div id="route-config-container">
-            {/* <IonAccordionGroup expand="inset" mode={"md"}>
-              <IonAccordion value="first"> */}
             <IonItem slot="header" color="light">
               <IonLabel>Passageiros</IonLabel>
             </IonItem>
 
             {responsableInfo &&
               responsableInfo.passagers.map((passager) => (
-                <div key={passager.id} className="route-config-point" slot="content" onClick={() => router.push(`/responsable/${responsableId}/passager/${passager.id}`)}>
-                  <IonIcon
-                    icon={personCircleOutline}
-                    className={"route-config-icon"}
-                    size="large"
-                  ></IonIcon>
-                  <p className="route-config-point-name">{passager.name}</p>
-                  <div className="route-config-point-delete">
-                    {/* <IonButton
-                      color="danger"
-                      className="route-config-button-trash"
-                      onClick={() =>
-                        openDeletePassagerModal(passager.id, passager.name, "responsable-passager")
-                      }
-                    >
-                      <IonIcon icon={trashSharp}></IonIcon>
-                    </IonButton> */}
+                <IonCard
+                  key={passager.name}
+                  className="responsable-config-card-container"
+                >
+                  <div className="responsable-config-home">
+                    <div>
+                      <IonCardHeader class="responsable-config-home-card-header">
+                        <IonIcon icon={locationOutline} size="large"></IonIcon>
+                        <IonCardTitle>{passager.name}</IonCardTitle>
+                      </IonCardHeader>
+                    </div>
                   </div>
-                </div>
+                </IonCard>
               ))}
-            {/* </IonAccordion>
-            </IonAccordionGroup> */}
           </div>
 
           <IonModal

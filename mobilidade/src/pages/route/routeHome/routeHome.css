@@ -37,31 +37,3 @@ p {
   margin: 0;
   padding: 12px;
 }
-
-#route-home-status-box {
-  width: 230px;
-  display: flex;
-  gap: 12px;
-  justify-content: space-between;
-}
-
-#route-home-status-button-container {
-  display: flex;
-  justify-content: end;
-  padding: 0px 12px;
-}
-
-.route-home-status- {
-  font-weight: 600;
-  color: blue;
-}
-
-.route-home-status-andamento {
-  font-weight: 600;
-  color: red;
-}
-
-.route-home-status-finalizado {
-  font-weight: 600;
-  color: green;
-}

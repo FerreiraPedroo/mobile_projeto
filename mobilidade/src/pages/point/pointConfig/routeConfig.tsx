@@ -27,10 +27,9 @@ import { ContextAppInfo } from "../../../services/context/context";
 import { add, locationOutline, personCircleOutline, trashSharp } from "ionicons/icons";
 
 import loading from "../../../assets/img/loading.gif";
-import routePoint from "../../../assets/img/point.png";
+
 
 import "./routeConfig.css";
-import { OverlayEventDetail } from "@ionic/core";
 
 
 interface RouteConfig {

@@ -44,7 +44,7 @@ import { ResponsableConfig } from "./pages/driverResponsable/responsableConfig/r
 
 import { RespHome } from "./pages/resp/home/respHome";
 import { ResponsableList } from "./pages/driverResponsable/responsableList/responsableList";
-import { ResponsablePassagerConfig } from "./pages/driverResponsable/responsablePassagerConfig/responsablePassagerConfig";
+import { ResponsablePassagerConfig } from "./pages/route/routePassagerConfig/routePassagerConfig";
 
 setupIonicReact();
 
@@ -62,9 +62,9 @@ const App: React.FC = () => {
             <Route path="/routes" exact={true} component={RouteList} />
             <Route path="/route/:routeId" exact={true} component={RouteHome} />
             <Route path="/route-config/:routeId" exact={true} component={RouteConfig} />
+            <Route path="/route-config/:routeId/:passagerId" exact={true} component={ResponsablePassagerConfig} />
             <Route path="/responsables" exact={true} component={ResponsableList} />
             <Route path="/responsable/:responsableId" exact={true} component={ResponsableConfig} />
-            <Route path="/responsable/:responsableId/passager/:passagerId" exact={true} component={ResponsablePassagerConfig} />
             <Route path="/points" exact={true} component={PointList} />
 
             <Route path="/resp-home" exact={true} component={RespHome} />
