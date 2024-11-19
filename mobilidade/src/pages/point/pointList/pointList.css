@@ -37,9 +37,71 @@
   width: 48px;
 }
 
-#point-list-add-route-text {
-  border: 0;
-  font-size: 1.3rem;
-  font-weight: normal;
-  padding: 12px;
+.point-delete-modal {
+  padding: 20px 8px 8px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
+.point-delete-modal p {
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 18px 6px;
+  margin: 0px;
+  border-bottom: 1px solid blue;
+}
+
+.point-config-delete-item-name {
+  font-size: 1.3rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 8px;
+  padding-bottom: 12px;
+  color: red;
+  border-bottom: 1px solid blue;
+}
+
+.point-config-delete-modal-buttons {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 16px;
+}
+
+.point-config-delete-buttons{
+  width: 30%;
+}
+
+/* ADICIONAR PONTO DE PARADA*/
+.point-config-add-modal{
+  padding: 20px 8px 8px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.point-config-add-modal p {
+  font-size: 1.3rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 18px 6px;
+  margin: 0px;
+}
+
+#point-config-input-name{
+  width: 90%;
+  margin: 8px 12px;
+}
+
+.point-config-add-modal-buttons {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 16px;
+}
+
+.point-config-add-buttons{
+  width: 30%;
+}
+

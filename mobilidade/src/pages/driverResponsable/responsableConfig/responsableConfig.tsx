@@ -1,6 +1,4 @@
 import {
-  IonAccordion,
-  IonAccordionGroup,
   IonButton,
   IonButtons,
   IonCard,
@@ -22,7 +20,7 @@ import { RouteComponentProps } from "react-router";
 import { useContext, useEffect, useState } from "react";
 import { ContextAppInfo } from "../../../services/context/context";
 
-import { personCircleOutline, trashSharp } from "ionicons/icons";
+import { personOutline, trashSharp } from "ionicons/icons";
 
 import loading from "../../../assets/img/loading.gif";
 
@@ -154,7 +152,7 @@ const ResponsableConfig: React.FC<RouteConfigParams> = ({ match }) => {
                   <div className="responsable-config-home">
                     <div>
                       <IonCardHeader class="responsable-config-home-card-header">
-                        <IonIcon icon={locationOutline} size="large"></IonIcon>
+                        <IonIcon icon={personOutline} size="large"></IonIcon>
                         <IonCardTitle>{passager.name}</IonCardTitle>
                       </IonCardHeader>
                     </div>

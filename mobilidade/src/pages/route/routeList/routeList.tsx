@@ -133,19 +133,31 @@ const RouteList: React.FC = () => {
             setRouteName("");
           }}
         >
-          <div className="route-config-delete-modal">
-            <p id="route-list-add-route-text">Digite o nome da rota:</p>
+          <div className="route-config-add-modal">
+            <p>Digite o nome da rota:</p>
             <input
+              id="route-config-input-name"
               type="text"
               name="routeName"
               value={routeName}
               onChange={(e) => setRouteName(e.target.value!)}
             />
-            <div className="route-config-delete-modal-buttons">
-              <IonButton color="primary" expand="full" onClick={() => createRoute()}>
+            <div className="route-config-add-modal-buttons">
+              <IonButton
+                className="point-config-add-buttons"
+                color="primary"
+                expand="full"
+                onClick={() => createRoute()}
+                disabled={!routeName}
+              >
                 CRIAR
               </IonButton>
-              <IonButton color="medium" expand="full" onClick={() => setModalShow(false)}>
+              <IonButton
+                className="point-config-add-buttons"
+                color="medium"
+                expand="full"
+                onClick={() => setModalShow(false)}
+              >
                 VOLTAR
               </IonButton>
             </div>

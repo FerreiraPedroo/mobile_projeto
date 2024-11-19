@@ -295,11 +295,14 @@ const ResponsablePassagerConfig: React.FC<PassagerConfigParams> = ({ match }) =>
             onWillDismiss={() => setModalDeletePassagerShow(false)}
           >
             {modalDeletePassagerInfo ? (
-              <div className="route-config-delete-modal">
+              <div className="passager-config-delete-modal">
                 <p>Deseja realmente excluir o ponto de desembarque:</p>
-                <div className="route-config-delete-item-name">{modalDeletePassagerInfo.name}</div>
-                <div className="route-config-delete-modal-buttons">
+                <div className="passager-config-delete-item-name">
+                  {modalDeletePassagerInfo.name}
+                </div>
+                <div className="passager-config-delete-modal-buttons">
                   <IonButton
+                    className="passager-config-delete-buttons"
                     color="danger"
                     expand="full"
                     onClick={() =>
@@ -309,6 +312,7 @@ const ResponsablePassagerConfig: React.FC<PassagerConfigParams> = ({ match }) =>
                     EXCLUIR
                   </IonButton>
                   <IonButton
+                    className="passager-config-delete-buttons"
                     color="medium"
                     expand="full"
                     onClick={() => setModalDeletePassagerShow(false)}

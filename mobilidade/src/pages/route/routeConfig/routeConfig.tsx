@@ -12,14 +12,12 @@ import {
   IonFabButton,
   IonHeader,
   IonIcon,
-  IonImg,
   IonItem,
   IonLabel,
   IonList,
   IonMenuButton,
   IonModal,
   IonPage,
-  IonText,
   IonTitle,
   IonToolbar,
   useIonRouter,
@@ -28,7 +26,7 @@ import { RouteComponentProps } from "react-router";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { ContextAppInfo } from "../../../services/context/context";
 
-import { add, locationOutline, personCircleOutline, trashSharp } from "ionicons/icons";
+import { add, locationOutline, personOutline, trashSharp } from "ionicons/icons";
 
 import loading from "../../../assets/img/loading.gif";
 
@@ -269,29 +267,6 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
     getRouteCalendar(match.params.routeId, 2024, 10);
   }, [userInfo, updatePage]);
 
-  const d = [
-    {
-      date: "2023-01-05",
-      textColor: "#800080",
-      backgroundColor: "#ffc0cb",
-    },
-    {
-      date: "2023-01-10",
-      textColor: "#09721b",
-      backgroundColor: "#c8e5d0",
-    },
-    {
-      date: "2023-01-20",
-      textColor: "var(--ion-color-secondary-contrast)",
-      backgroundColor: "var(--ion-color-secondary)",
-    },
-    {
-      date: "2023-01-23",
-      textColor: "rgb(68, 10, 184)",
-      backgroundColor: "rgb(211, 200, 229)",
-    },
-  ];
-
   const handleDateChange = (event: any) => {
     const date = event.detail.value;
     const findDate = routeCalendar.find((day: any) => day.date == date.split("T")[0]);
@@ -413,7 +388,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
                       <div className="route-config">
                         <IonCardHeader class="route-config-card-header">
                           <IonIcon
-                            icon={personCircleOutline}
+                            icon={personOutline}
                             className={"route-config-icon"}
                             size="large"
                           ></IonIcon>
@@ -479,7 +454,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
             </IonHeader>
             <IonContent className="ion-padding">
               {modalInfo.data && modalInfo.data.length == 0 ? (
-                <div id="route-config-point-empty">VAZIO</div>
+                <div id="route-config-point-empty">Nenhum passageiro</div>
               ) : (
                 ""
               )}
@@ -493,9 +468,9 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
                       >
                         <IonIcon
                           icon={
-                            modalInfo.type == "passager" ? personCircleOutline : locationOutline
+                            modalInfo.type == "passager" ? personOutline : locationOutline
                           }
-                          className={"route-config-icon"}
+                          className="route-config-icon"
                           size="large"
                         ></IonIcon>
                       </IonAvatar>
@@ -529,6 +504,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
                 <div className="route-config-delete-item-name">{modalDeleteInfo.data.name}</div>
                 <div className="route-config-delete-modal-buttons">
                   <IonButton
+                    className="route-config-delete-buttons"
                     color="danger"
                     expand="full"
                     onClick={() =>
@@ -541,7 +517,12 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
                   >
                     EXCLUIR
                   </IonButton>
-                  <IonButton color="medium" expand="full" onClick={() => setModalDeleteShow(false)}>
+                  <IonButton
+                    className="route-config-delete-buttons"
+                    color="medium"
+                    expand="full"
+                    onClick={() => setModalDeleteShow(false)}
+                  >
                     VOLTAR
                   </IonButton>
                 </div>

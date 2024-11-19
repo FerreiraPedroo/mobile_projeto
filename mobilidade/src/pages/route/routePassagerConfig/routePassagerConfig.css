@@ -45,7 +45,43 @@
   padding: 12px;
 }
 
+/* EXCLUIR PONTO DE PARADA*/
+.passager-config-delete-modal{
+  padding: 20px 8px 8px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
+.passager-config-delete-modal p {
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 16px 6px;
+  margin: 0px;
+}
+
+.passager-config-delete-item-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: center;
+  color: red;
+  padding: 12px;
+  margin: 0px;
+  border-top: 1px solid blue;
+  border-bottom: 1px solid blue;
+}
+
+.passager-config-delete-modal-buttons {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 16px;
+}
+
+.passager-config-delete-buttons{
+  width: 30%;
+}
 
 
 
