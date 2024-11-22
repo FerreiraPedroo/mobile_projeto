@@ -58,7 +58,7 @@ const Login: React.FC = () => {
       });
 
       const loginDataReturn = await response.json();
-      console.log({loginDataReturn})
+
       if (loginDataReturn.codStatus == 200) {
         await changeUserInfo({
           userId: loginDataReturn.data.userId,
@@ -68,9 +68,14 @@ const Login: React.FC = () => {
         });
       } else {
         await changeUserInfo({ userId: null, userName: null, token: null });
+        setLoginError((prev) => {
+          return { ...prev, error: "Erro ao conectar, tente novamente." };
+        });
       }
     } catch (error) {
-      console.log(error);
+      setLoginError((prev) => {
+        return { ...prev, error: "Erro ao conectar, tente novamente." };
+      });
     }
   }
 
@@ -91,10 +96,10 @@ const Login: React.FC = () => {
           const loginDataReturn = await response.json();
 
           if (loginDataReturn.codStatus == 200) {
-            if(userInfo.type == "driver"){
+            if (userInfo.type == "driver") {
               router.push("/home");
             }
-            if(userInfo.type == "responsable"){
+            if (userInfo.type == "responsable") {
               router.push("/resp-home");
             }
           } else {
@@ -115,7 +120,7 @@ const Login: React.FC = () => {
 
   return (
     <IonPage>
-      <IonContent fullscreen>
+      <IonContent>
         <div id="branding-container">
           <img id="login-img" src="./src/assets/img/logo.jpg" />
           <IonText></IonText>
@@ -124,7 +129,7 @@ const Login: React.FC = () => {
 
         <div id="form-container">
           <div className="box-input">
-            <p className="input-label">Usuário</p>
+            <p className="input-label">Email</p>
             <input
               type="text"
               name="user"
@@ -146,21 +151,31 @@ const Login: React.FC = () => {
             />
             <div id="user-error-label-password">{loginError.password}</div>
           </div>
+          <div id="erro-div">{loginError.error}</div>
         </div>
 
         <div id="action-container">
           <div className="box-input">
-            <IonButton color={"primary"} title="ENTRAR" onClick={handleSubmit}>
+            <IonButton id="button-text" color={"primary"} title="ENTRAR" onClick={handleSubmit}>
               ENTRAR
             </IonButton>
           </div>
         </div>
-        <div id="erro-div">{loginError.error}</div>
       </IonContent>
 
-      <IonFooter>
-        <h3>@Mobil 2024</h3>
-      </IonFooter>
+      <div id="register-box">
+        <IonText class="register-text">
+        Não tem registro?
+        </IonText>
+        <IonText class="register-text-2" onClick={() => router.push("/register")} >
+          Registre aqui
+        </IonText>
+
+        <IonFooter>
+          <h3>@Mobil 2024</h3>
+        </IonFooter>
+      </div>
+
     </IonPage>
   );
 };
