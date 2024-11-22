@@ -6,8 +6,43 @@ async function connect() {
   if (global.connection && global.connection.state !== "disconnected") {
     return global.connection;
   }
-  const connection = await mysql.createConnection("mysql://root:root@127.0.0.1:3306/mobil");
+  const connection = await mysql.createConnection("mysql://admin:adminmobil@database-mobil.cxs2my6o0uab.us-west-2.rds.amazonaws.com/mobil");
   global.connection = connection;
+
+
+  async function createTables() {
+    connection.connect(function (err) {
+      if (err) console.log(err);
+      connection.query(
+        `
+  SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+  SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+  SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+  
+  -- -----------------------------------------------------
+  -- Schema mobil
+  -- -----------------------------------------------------
+  
+  -- -----------------------------------------------------
+  -- Schema mobil
+  -- -----------------------------------------------------
+  CREATE SCHEMA IF NOT EXISTS 'mobil' DEFAULT CHARACTER SET utf8 ;
+  USE 'mobil' ;
+  
+  `,
+        function (err, result, fields) {
+          if (err) console.log(err);
+          console.log(result);
+        }
+      );
+    });
+  }
+  await createTables()
+
+
+
+
+
   return connection;
 }
 
