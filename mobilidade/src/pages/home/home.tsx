@@ -44,7 +44,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     async function getDayRouteList(userId: number) {
       try {
-        const response = await fetch(`http://localhost:3000/day-route-list/${userId}`, {
+        const response = await fetch(`http://127.0.0.1:3000/day-route-list/${userId}`, {
           method: "GET",
           mode: "cors",
           headers: {

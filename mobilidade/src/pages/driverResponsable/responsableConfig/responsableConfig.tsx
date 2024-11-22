@@ -59,7 +59,7 @@ const ResponsableConfig: React.FC<RouteConfigParams> = ({ match }) => {
   async function handleDelete(id: number, route: string) {
     try {
       const response = await fetch(
-        `http://localhost:3000/${route}/${userInfo.userId}/${responsableId}${
+        `http://127.0.0.1:3000/${route}/${userInfo.userId}/${responsableId}${
           route == "responsable-passager" ? "/" + id : ""
         }`,
         {
@@ -89,7 +89,7 @@ const ResponsableConfig: React.FC<RouteConfigParams> = ({ match }) => {
   useEffect(() => {
     async function getResponsable() {
       try {
-        const response = await fetch(`http://localhost:3000/responsable/${responsableId}`, {
+        const response = await fetch(`http://127.0.0.1:3000/responsable/${responsableId}`, {
           method: "GET",
           mode: "cors",
           headers: {

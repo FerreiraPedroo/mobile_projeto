@@ -39,7 +39,7 @@ const RouteList: React.FC = () => {
 
   async function createRoute() {
     try {
-      const response = await fetch(`http://localhost:3000/route`, {
+      const response = await fetch(`http://127.0.0.1:3000/route`, {
         method: "POST",
         mode: "cors",
         body: JSON.stringify({ routeName, userId: userInfo.userId }),
@@ -60,7 +60,7 @@ const RouteList: React.FC = () => {
     if (userInfo.userId) {
       async function getRoutes(userId: number) {
         try {
-          const response = await fetch(`http://localhost:3000/route-list/${userId}`, {
+          const response = await fetch(`http://127.0.0.1:3000/route-list/${userId}`, {
             method: "GET",
             mode: "cors",
             headers: {

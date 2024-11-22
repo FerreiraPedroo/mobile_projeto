@@ -83,7 +83,7 @@ const ResponsablePassagerConfig: React.FC<PassagerConfigParams> = ({ match }) =>
   async function handleDelete(pointId: number, route: string) {
     try {
       const response = await fetch(
-        `http://localhost:3000/passager/${passagerId}/route/${routeId}/type/${route}`,
+        `http://127.0.0.1:3000/passager/${passagerId}/route/${routeId}/type/${route}`,
         {
           method: "DELETE",
           mode: "cors",
@@ -113,7 +113,7 @@ const ResponsablePassagerConfig: React.FC<PassagerConfigParams> = ({ match }) =>
     setModalInfo({ type: "", route: "", data: null });
 
     try {
-      const response = await fetch(`http://localhost:3000/point-list/${userInfo.userId}`, {
+      const response = await fetch(`http://127.0.0.1:3000/point-list/${userInfo.userId}`, {
         method: "GET",
         mode: "cors",
         headers: {
@@ -134,7 +134,7 @@ const ResponsablePassagerConfig: React.FC<PassagerConfigParams> = ({ match }) =>
   async function routeAddItem(typeParam: string, itemId: number) {
     try {
       const response = await fetch(
-        `http://localhost:3000/passager/${routeId}/${passagerId}/${itemId}/type/${typeParam}`,
+        `http://127.0.0.1:3000/passager/${routeId}/${passagerId}/${itemId}/type/${typeParam}`,
         {
           method: "POST",
           mode: "cors",
@@ -157,7 +157,7 @@ const ResponsablePassagerConfig: React.FC<PassagerConfigParams> = ({ match }) =>
     async function getResponsable() {
       try {
         const response = await fetch(
-          `http://localhost:3000/route/${routeId}/passager/${passagerId}`,
+          `http://127.0.0.1:3000/route/${routeId}/passager/${passagerId}`,
           {
             method: "GET",
             mode: "cors",

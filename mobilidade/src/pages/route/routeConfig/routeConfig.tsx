@@ -108,7 +108,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/${routeParam}/${userInfo.userId}/${match.params.routeId}/${itemType}`,
+        `http://127.0.0.1:3000/${routeParam}/${userInfo.userId}/${match.params.routeId}/${itemType}`,
         {
           method: "GET",
           mode: "cors",
@@ -141,7 +141,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
   async function routeAddNewItem(routeParam: string, data: string) {
     try {
       const response = await fetch(
-        `http://localhost:3000/${routeParam}/${match.params.routeId}/${data}`,
+        `http://127.0.0.1:3000/${routeParam}/${match.params.routeId}/${data}`,
         {
           method: "POST",
           mode: "cors",
@@ -163,7 +163,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
   async function routeAddItem(typeParam: string, routeParam: string, itemID: number) {
     try {
       const response = await fetch(
-        `http://localhost:3000/${routeParam}/${match.params.routeId}/${itemID}/${typeParam}`,
+        `http://127.0.0.1:3000/${routeParam}/${match.params.routeId}/${itemID}/${typeParam}`,
         {
           method: "POST",
           mode: "cors",
@@ -184,7 +184,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
   async function routeItemDelete(type: string, itemID: number, routeParam: string) {
     try {
       const response = await fetch(
-        `http://localhost:3000/${routeParam}/${match.params.routeId}/${itemID}/${type}`,
+        `http://127.0.0.1:3000/${routeParam}/${match.params.routeId}/${itemID}/${type}`,
         {
           method: "DELETE",
           mode: "cors",
@@ -208,7 +208,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
   const getRouteCalendar = useCallback(async (routeId: string, year: number, month: number) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/route/calendar/${routeId}/${year}/${month}`,
+        `http://127.0.0.1:3000/route/calendar/${routeId}/${year}/${month}`,
         {
           method: "GET",
           mode: "cors",
@@ -242,7 +242,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
   useEffect(() => {
     async function getRoute(routeId: string) {
       try {
-        const response = await fetch(`http://localhost:3000/route/${routeId}`, {
+        const response = await fetch(`http://127.0.0.1:3000/route/${routeId}`, {
           method: "GET",
           mode: "cors",
           headers: {

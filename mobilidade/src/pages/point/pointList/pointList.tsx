@@ -48,7 +48,7 @@ const PointList: React.FC = () => {
 
   async function createPoint() {
     try {
-      const response = await fetch(`http://localhost:3000/point`, {
+      const response = await fetch(`http://127.0.0.1:3000/point`, {
         method: "POST",
         mode: "cors",
         body: JSON.stringify({ pointName, pointMaps: pointCoordinate, userId: userInfo.userId }),
@@ -72,7 +72,7 @@ const PointList: React.FC = () => {
 
   async function deletePoint(pointId: number) {
     try {
-      const response = await fetch(`http://localhost:3000/point/${pointId}/${userInfo.userId}`, {
+      const response = await fetch(`http://127.0.0.1:3000/point/${pointId}/${userInfo.userId}`, {
         method: "DELETE",
         mode: "cors",
         headers: {
@@ -93,7 +93,7 @@ const PointList: React.FC = () => {
     if (userInfo.userId) {
       async function getPoints(userId: number) {
         try {
-          const response = await fetch(`http://localhost:3000/point-list/${userId}`, {
+          const response = await fetch(`http://127.0.0.1:3000/point-list/${userId}`, {
             method: "GET",
             mode: "cors",
             headers: {

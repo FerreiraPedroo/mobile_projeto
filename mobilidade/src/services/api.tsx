@@ -4,7 +4,7 @@ interface Data {
 }
 
 export async function apiCheckLoginToken(data: Data) {
-    const response = await fetch("https://localhost/check-login", {
+    const response = await fetch("http://127.0.0.1:3000/check-login", {
         method: "POST",
         body: JSON.stringify(data),
     });

@@ -64,7 +64,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mobil`.`point` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `user_id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
   `name` VARCHAR(90) NOT NULL,
   `maps` VARCHAR(45) NULL,
   `photo` VARCHAR(128) NULL,

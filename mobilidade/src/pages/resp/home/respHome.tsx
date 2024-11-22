@@ -44,7 +44,7 @@ const RespHome: React.FC = () => {
       try {
         const day = dateActual.toISOString().split("T")[0];
 
-        const response = await fetch(`http://localhost:3000/resp-day-route-list/${userId}/${day}`, {
+        const response = await fetch(`http://127.0.0.1:3000/resp-day-route-list/${userId}/${day}`, {
           method: "GET",
           mode: "cors",
           headers: {

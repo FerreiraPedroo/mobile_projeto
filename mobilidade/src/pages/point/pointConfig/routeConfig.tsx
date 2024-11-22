@@ -84,7 +84,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
     setModalInfo({ type: itemType, route: routeParam, data: null });
 
     try {
-      const response = await fetch(`http://localhost:3000/${routeParam}/${userInfo.userId}/${match.params.routeId}/${itemType}`, {
+      const response = await fetch(`http://127.0.0.1:3000/${routeParam}/${userInfo.userId}/${match.params.routeId}/${itemType}`, {
         method: "GET",
         mode: 'cors',
         headers: {
@@ -108,7 +108,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
   }
   async function routeAddItem(typeParam: string, routeParam: string, itemID: number) {
     try {
-      const response = await fetch(`http://localhost:3000/${routeParam}/${match.params.routeId}/${itemID}/${typeParam}`, {
+      const response = await fetch(`http://127.0.0.1:3000/${routeParam}/${match.params.routeId}/${itemID}/${typeParam}`, {
         method: "POST",
         mode: 'cors',
         headers: {
@@ -129,7 +129,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
   }
   async function routeItemDelete(type: string, itemID: number, routeParam: string) {
     try {
-      const response = await fetch(`http://localhost:3000/${routeParam}/${match.params.routeId}/${itemID}/${type}`, {
+      const response = await fetch(`http://127.0.0.1:3000/${routeParam}/${match.params.routeId}/${itemID}/${type}`, {
         method: "DELETE",
         mode: 'cors',
         headers: {
@@ -155,7 +155,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
     async function getRoute(routeId: string) {
 
       try {
-        const response = await fetch(`http://localhost:3000/route/${routeId}`, {
+        const response = await fetch(`http://127.0.0.1:3000/route/${routeId}`, {
           method: "GET",
           mode: 'cors',
           headers: {

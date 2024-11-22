@@ -58,7 +58,7 @@ const Login: React.FC = () => {
       });
 
       const loginDataReturn = await response.json();
-
+      console.log({loginDataReturn})
       if (loginDataReturn.codStatus == 200) {
         await changeUserInfo({
           userId: loginDataReturn.data.userId,
@@ -78,7 +78,7 @@ const Login: React.FC = () => {
     if (userInfo.token != null) {
       async function checkToken() {
         try {
-          const response = await fetch(`http://localhost:3000/check-login`, {
+          const response = await fetch(`http://127.0.0.1:3000/check-login`, {
             method: "POST",
             mode: "cors",
             headers: {

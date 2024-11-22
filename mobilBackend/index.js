@@ -19,6 +19,8 @@ app.use(
   })
 );
 
+
+
 app.post("/check-login", async (req, res, next) => {
   const { token } = req.body;
   try {
@@ -83,7 +85,7 @@ app.get("/day-route-list/:userId", async (req, res, next) => {
           photo: route.photo,
           start_time: route.start_time,
           passager_amount: passagers.length,
-          status: route.status
+          status: route.status,
         };
       });
 
@@ -104,8 +106,7 @@ app.get("/route-list/:userId", async (req, res, next) => {
 
   try {
     if (userId) {
-      const { routes, routeRespPassagerRows } =
-        await db.routeList(userId);
+      const { routes, routeRespPassagerRows } = await db.routeList(userId);
 
       const routesInfo = routes.map((route) => {
         // const boardingPointsAmount = boardingPointRows.filter(
@@ -166,9 +167,9 @@ app.get("/route/:routeId", async (req, res, next) => {
       start_time: routeData.route.start_time,
       end_time: routeData.route.end_time,
       passagers: routePassager,
-      status: routeData.route.status
+      status: routeData.route.status,
     };
-  
+
     return res.status(200).send({ codStatus: 200, message: "OK", data: routeInfo });
   } catch (error) {
     return res.status(error.codStatus || 422).send({
@@ -218,7 +219,7 @@ app.get("/route/calendar/:routeId/:year/:month", async (req, res, next) => {
   const { routeId, year, month } = req.params;
 
   try {
-    const {routeStatus} = await db.selectRouteCalendar(routeId, year, month);
+    const { routeStatus } = await db.selectRouteCalendar(routeId, year, month);
 
     if (!routeStatus) {
       throw { codStatus: 422, message: "Calendario não encontrado." };
@@ -231,7 +232,7 @@ app.get("/route/calendar/:routeId/:year/:month", async (req, res, next) => {
         start_time: status.start_time,
       };
     });
-  
+
     return res.status(200).send({ codStatus: 200, message: "OK", data: routeCalendarInfo });
   } catch (error) {
     return res.status(error.codStatus || 422).send({
@@ -251,7 +252,7 @@ app.post("/calendar-add/:routeId/:dateDay", async (req, res, next) => {
     if (routeStatus == "EXISTS") {
       throw { codStatus: 422, message: "Esta rota já esta adicionada neste dia." };
     }
-  
+
     return res.status(200).send({ codStatus: 200, message: "OK", data: routeStatus });
   } catch (error) {
     return res.status(error.codStatus || 422).send({
@@ -271,7 +272,7 @@ app.delete("/calendar-remove/:routeId/:dateDayId/:type", async (req, res, next) 
     if (routeStatus == "NOT EXISTS") {
       throw { codStatus: 422, message: "Esse dia não está na rota." };
     }
-  
+
     return res.status(200).send({ codStatus: 200, message: "OK", data: routeStatus });
   } catch (error) {
     return res.status(error.codStatus || 422).send({
@@ -514,8 +515,6 @@ app.post("/passager/:routeId/:passagerId/:pointId/type/:type", async (req, res, 
 //     });
 //   }
 // });
-
-
 
 /////////////////////////////////////////////////////////////////////////////
 
