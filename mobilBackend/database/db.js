@@ -537,7 +537,7 @@ async function createUser(email, password, name, userType) {
   const conn = await connect();
 
   const [user] = await conn.query(`SELECT * FROM user WHERE email='${email}'`);
-
+  console.log({user})
   if (user.length) {
     throw { codStatus: 422, message: "Email ja cadastrado.", error: "" };
   }

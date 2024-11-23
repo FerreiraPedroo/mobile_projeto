@@ -1,15 +1,10 @@
-import { useContext, useState } from "react";
-import { useIonRouter } from "@ionic/react";
-import { ContextAppInfo } from "../../services/context/context";
+import { useState } from "react";
 import { IonButton, IonContent, IonFooter, IonPage, IonText } from "@ionic/react";
 
 import "./registerUser.css";
 
 const Register: React.FC = () => {
-  const router = useIonRouter();
-  const { userInfo, changeUserInfo } = useContext(ContextAppInfo);
-
-  const [register, setRegister] = useState({ user: "", password: "", name: "", userType: "" });
+  const [register, setRegister] = useState({ user: "", password: "", name: "", userType: "responsable" });
   const [registerError, setRegisterError] = useState({
     user: "",
     password: "",
@@ -19,6 +14,8 @@ const Register: React.FC = () => {
   });
 
   const handleInput = (e: any) => {
+    console.log(e.target.name)
+    console.log(e.target.value)
     const errorClean = { [e.target.name]: "", ["data" + e.target.name]: "", error: "" };
 
     if (!e.target.value && e.target.name == "user") {
@@ -33,6 +30,11 @@ const Register: React.FC = () => {
 
     if (!e.target.value && e.target.name == "name") {
       errorClean[e.target.name] = "O nome não pode estar vazio.";
+      errorClean["data" + e.target.name] = "erro";
+    }
+
+    if (!e.target.value && e.target.name == "userType") {
+      errorClean[e.target.name] = "Selecione o tipo do usuário.";
       errorClean["data" + e.target.name] = "erro";
     }
 
@@ -70,13 +72,14 @@ const Register: React.FC = () => {
       if (registerDataReturn.codStatus == 200) {
 
       } else {
-
+        setRegisterError((prev) => {
+          return { ...prev, error:registerDataReturn.message };
+        });
       }
     } catch (error) {
       console.log(error);
     }
   }
-
 
   return (
     <IonPage>

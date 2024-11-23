@@ -65,6 +65,26 @@ app.post("/login", async (req, res, next) => {
   }
 });
 
+app.post("/register", async (req, res, next) => {
+  const { user, name, password, userType } = req.body;
+
+  try {
+    const userData = await db.createUser(user, password, name, userType);
+
+    if (!userData) {
+      throw { codStatus: 422, message: "Não foi possivel registrar..." };
+    }
+
+    return res.status(200).send({ codStatus: 200, message: "OK" });
+  } catch (error) {
+    return res.status(error.codStatus || 422).send({
+      codStatus: error.codStatus || 500,
+      message: error.message || "[ROT]: Erro ao criar o usuario.",
+      error: error.error,
+    });
+  }
+});
+
 // ROUTE ////////////////////////////////////////////////////////////////////
 app.get("/day-route-list/:userId", async (req, res, next) => {
   const { userId } = req.params;
