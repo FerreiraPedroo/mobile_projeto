@@ -537,20 +537,16 @@ async function createUser(email, password, name, userType) {
   const conn = await connect();
 
   const [user] = await conn.query(`SELECT * FROM user WHERE email='${email}'`);
-  console.log({user})
+
   if (user.length) {
     throw { codStatus: 422, message: "Email ja cadastrado.", error: "" };
   }
 
   const [createdUser] = await conn.query(
-    `INSERT INTO user ('email','password','name','user_type') VALUES ('${email}','${password}','${name}','${userType}')`
+    `INSERT INTO user (email, password, name, user_type) VALUES ('${email}','${password}','${name}','${userType}')`
   );
 
-  if (!createdUser.length) {
-    throw { codStatus: 422, message: "Não foi possivel criar o usuario.", error: "" };
-  }
-
-  return createdUser[0];
+  return createdUser;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -35,7 +35,7 @@ import "./theme/variables.css";
 import { Splash } from "./pages/splash/splash";
 
 import { Home } from "./pages/home/home";
-import { Login } from "./pages/login/login";
+import { Login } from "./pages/login/Login";
 import { Register } from "./pages/registerUser/registerUser";
 import { RouteList } from "./pages/route/routeList/routeList";
 import { RouteConfig } from "./pages/route/routeConfig/routeConfig";

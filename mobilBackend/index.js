@@ -225,7 +225,6 @@ app.delete("/route/:routeId/:userId/:type", async (req, res, next) => {
 
     return res.status(200).send({ codStatus: 200, message: "OK" });
   } catch (error) {
-    console.log({ error });
     return res.status(error.codStatus || 422).send({
       codStatus: error.codStatus || 422,
       message: error.message || "[ROT]: Erro ao excluir a rota.",
