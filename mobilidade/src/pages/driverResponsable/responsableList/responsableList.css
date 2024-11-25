@@ -31,3 +31,25 @@
   font-weight: normal;
   padding: 12px;
 }
+
+#route-responsable-add {
+  width: 80%;
+  align-self: center;
+}
+#route-responsable-add-text {
+  padding: 16px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.route-responsable-add-modal-buttons {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 16px;
+}
+
+.route-responsable-add-buttons{
+  width: 30%;
+}

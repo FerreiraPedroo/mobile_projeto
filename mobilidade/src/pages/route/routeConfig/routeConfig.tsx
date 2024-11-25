@@ -229,8 +229,18 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
             backgroundColor: "#c8e5d0",
           };
         });
+        
         setRouteCalendar(statusDays);
-        setShowCalendarButtons(false);
+
+        const newDate = new Date().toISOString().split("T")[0];
+        const findDate = statusDays.find((day: any) => day.date == newDate);
+
+        if(findDate){
+          setShowCalendarButtons(false);
+        }else {
+          setShowCalendarButtons(true);
+        }
+
       } else {
         throw "Erro";
       }
@@ -270,14 +280,13 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
   const handleDateChange = (event: any) => {
     const date = event.detail.value;
     const findDate = routeCalendar.find((day: any) => day.date == date.split("T")[0]);
+
     if (findDate) {
       setShowCalendarButtons(true);
     } else if (showCalendarButtons) {
       setShowCalendarButtons(false);
     }
     setActualDate(date);
-
-    console.log({ date, findDate });
   };
 
   return (
@@ -321,7 +330,6 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
                   size="cover"
                   highlightedDates={routeCalendar}
                 >
-                  <span slot="time-label">Horário da rota</span>
                 </IonDatetime>
                 <div id="route-config-calendar-buttons">
                   {showCalendarButtons ? (
@@ -349,7 +357,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
                   )}
 
                   <IonButton
-                    disabled={!actualDate}
+                    disabled={!actualDate || showCalendarButtons}
                     color="primary"
                     onClick={() => openCalendarAddModal("calendar-add", actualDate)}
                   >

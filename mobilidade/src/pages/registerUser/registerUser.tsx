@@ -22,7 +22,6 @@ const Register: React.FC = () => {
 
   const handleInput = (e: any) => {
     const errorClean = { [e.target.name]: "", ["data" + e.target.name]: "", error: "" };
-
     if (!e.target.value && e.target.name == "user") {
       errorClean[e.target.name] = "O usuario não pode estar vazio.";
       errorClean["data" + e.target.name] = "erro";
@@ -52,7 +51,6 @@ const Register: React.FC = () => {
         !e.target.value
       ) {
         setButtonRegisterDisable(true);
-        console.log({ register });
       } else {
         setButtonRegisterDisable(false);
       }
@@ -66,6 +64,7 @@ const Register: React.FC = () => {
     setRegisterError((prev) => {
       const hasErrors = Object.entries(prev).find(([key, value]) => value != "");
       const hasErrors2 = Object.entries(errorClean).find(([key, value]) => value != "");
+
       if (hasErrors && hasErrors.length) {
         setButtonRegisterDisable(true);
       } else if (hasErrors2 && hasErrors2.length) {
@@ -174,10 +173,10 @@ const Register: React.FC = () => {
               onChange={(e) => handleInput(e)}
               value={register.userType}
             >
-              <option value="responsable" selected>
+              <option defaultValue="responsable">
                 Responsável
               </option>
-              <option value="driver">Motorista</option>
+              <option defaultValue="driver">Motorista</option>
             </select>
             <div id="user-error-label-userType">{registerError.userType}</div>
           </div>

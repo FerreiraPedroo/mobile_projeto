@@ -1,6 +1,5 @@
 import express, { urlencoded } from "express";
 import cors from "cors";
-import QRCode from "qrcode";
 
 import { validateTokenJWT } from "./helpers/jwt.js";
 import { loginUserService } from "./service/loginUserService.js";
@@ -385,7 +384,7 @@ app.post("/point", async (req, res, next) => {
   } catch (error) {
     return res.status(error.codStatus || 422).send({
       codStatus: error.codStatus || 500,
-      message: error.message || "[ROT]: Erro ao criar a rota.",
+      message: error.message || "[ROT]: Erro ao o ponto de parada.",
       error: error.error,
     });
   }
@@ -401,7 +400,7 @@ app.delete("/point/:pointId/:userId", async (req, res, next) => {
     console.log({ error });
     return res.status(error.codStatus || 422).send({
       codStatus: error.codStatus || 422,
-      message: error.message || "[ROT]: Erro ao excluir a rota.",
+      message: error.message || "[ROT]: Erro ao excluir o ponto de parada.",
       error: error.error,
     });
   }
@@ -534,6 +533,8 @@ app.post("/passager/:routeId/:passagerId/:pointId/type/:type", async (req, res, 
 //   }
 // });
 
+/** */
+
 /////////////////////////////////////////////////////////////////////////////
 
 // RESPONSABLE //////////////////////////////////////////////////////////////
@@ -578,29 +579,100 @@ app.get("/resp-day-route-list/:userId/:day", async (req, res, next) => {
   }
 });
 
-app.get("/qrcode/:responsableId", async (req, res, next) => {
+app.get("/resp-passager-list/:responsableId", async (req, res, next) => {
   const { responsableId } = req.params;
 
   try {
-    const generateQR = async (text) => {
-      try {
-        return await QRCode.toDataURL(text);
-      } catch (err) {
-        throw { codStatus: 422, error: "Erro ao gerar o QR Code." };
-      }
-    };
+    const { responsablePassagers } = await db.respPassagerList(responsableId);
 
-    const QRCodeInfo = await generateQR(responsableId);
+    const passagerInfo = responsablePassagers.map((passager) => {
+      return {
+        id: passager.id,
+        name: passager.name,
+        photo: passager.photo,
+      };
+    });
 
-    return res.status(200).send({ codStatus: 200, message: "OK", data: QRCodeInfo, responsableId });
+    return res.status(200).send({ codStatus: 200, message: "OK", data: passagerInfo });
   } catch (error) {
     return res.status(error.codStatus || 422).send({
-      codStatus: error.codStatus || 500,
-      message: error.message || "[ROT]: Não foi possivel gerar o QRCode.",
+      codStatus: error.codStatus || 422,
+      message: error.message || "[ROT]: Erro ao obter a lista de passageiros.",
       error: error.error,
     });
   }
 });
+
+app.post("/resp-passager", async (req, res, next) => {
+  const { passagerName, userId } = req.body;
+
+  try {
+    const passagerData = await db.respPassagerCreate(passagerName, userId);
+
+    if (!passagerData) {
+      throw { codStatus: 422, message: "Não foi possivel criar o passageiro.." };
+    }
+
+    return res.status(200).send({ codStatus: 200, message: "OK" });
+  } catch (error) {
+    return res.status(error.codStatus || 422).send({
+      codStatus: error.codStatus || 500,
+      message: error.message || "[ROT]: Erro ao criar o passageiro.",
+      error: error.error,
+    });
+  }
+});
+
+app.delete("/resp-passager/:userId/:passagerId", async (req, res, next) => {
+  const { userId, passagerId } = req.params;
+
+  try {
+    const passagerDeleted = await db.respPassagerDelete(userId, passagerId);
+
+    return res.status(200).send({ codStatus: 200, message: "OK" });
+  } catch (error) {
+
+    return res.status(error.codStatus || 422).send({
+      codStatus: error.codStatus || 422,
+      message: error.message || "[ROT]: Erro ao excluir o passageiro.",
+      error: error.error,
+    });
+  }
+});
+
+app.get("/resp-passager-config/:passagerId", async (req, res, next) => {
+  const { passagerId } = req.params;
+
+  try {
+    const { passager, routeList } = await db.respPassagerConfig(passagerId);
+
+    if (!passager) {
+      throw { codStatus: 422, message: "Não foi possivel carregar os dados passageiro.." };
+    }
+
+    const passagerInfo = {
+      id: passager.id,
+      name: passager.name,
+      photo: passager.photo,
+      routes: routeList.map((route) => {
+        return {
+          name: route.name
+        }
+      })
+    }
+
+    return res.status(200).send({ codStatus: 200, message: "OK", data: passagerInfo });
+  } catch (error) {
+    return res.status(error.codStatus || 422).send({
+      codStatus: error.codStatus || 500,
+      message: error.message || "[ROT]: Erro ao criar o passageiro.",
+      error: error.error,
+    });
+  }
+});
+
+
+/////////////////////////////////////////////////////////////////////////////
 
 // DRIVER RESPONSABLE ///////////////////////////////////////////////////////
 app.get("/responsable-list/:userId", async (req, res, next) => {
@@ -667,25 +739,13 @@ app.get("/responsable/:responsableId", async (req, res, next) => {
   }
 });
 
-app.post("/responsable/:responsableId", async (req, res, next) => {
-  const { responsableId, driverId } = req.params;
+app.post("/responsable-add", async (req, res, next) => {
+  const { userResponsableId, driverId } = req.body;
 
   try {
-    const responsableAdded = await db.addResponsable(responsableId, driverId);
+    const responsableAdded = await db.responsableAddDriver(userResponsableId, driverId);
 
-    const responsableInfo = {
-      id: responsableResult.id,
-      name: responsableResult.name,
-      email: responsableResult.email,
-      passagers: routeRespPassagerResult.map((passager) => {
-        return {
-          id: passager.id,
-          name: passager.name,
-        };
-      }),
-    };
-
-    return res.status(200).send({ codStatus: 200, message: "OK", data: responsableInfo });
+    return res.status(200).send({ codStatus: 200, message: "OK" });
   } catch (error) {
     return res.status(error.codStatus || 422).send({
       codStatus: error.codStatus || 500,
@@ -711,6 +771,7 @@ app.delete("/responsable/:userId/:responsableId", async (req, res, next) => {
     });
   }
 });
+
 
 /////////////////////////////////////////////////////////////////////////////
 

@@ -101,22 +101,3 @@ ion-footer {
   text-align: center;
   height: 20px;
 }
-
-#register-box {
-  width: 100%;
-  height: auto;
-  display: flex;
-  flex-direction: column;
-  place-items: center;
-}
-
-.register-text {
-  font-size: 1.3rem;
-  padding: 0px
-}
-
-.register-text-2 {
-  font-size: 1.3rem;
-  padding: 16px 0 20px 0;
-  color: blue;
-}

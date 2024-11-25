@@ -120,7 +120,7 @@ const Login: React.FC = () => {
 
   return (
     <IonPage>
-      <IonContent>
+      <div className="content">
         <div id="branding-container">
           <img id="login-img" src="./src/assets/img/logo.jpg" />
           <IonText></IonText>
@@ -161,20 +161,21 @@ const Login: React.FC = () => {
             </IonButton>
           </div>
         </div>
-      </IonContent>
+        
+        <div id="register-box">
+          <IonText class="register-text">
+            Não tem registro?
+          </IonText>
+          <IonText class="register-text-2" onClick={() => router.push("/register")} >
+            Registre aqui
+          </IonText>
 
-      <div id="register-box">
-        <IonText class="register-text">
-        Não tem registro?
-        </IonText>
-        <IonText class="register-text-2" onClick={() => router.push("/register")} >
-          Registre aqui
-        </IonText>
-
-        <IonFooter>
-          <h3>@Mobil 2024</h3>
-        </IonFooter>
+          <IonFooter>
+            <h3>@Mobil 2024</h3>
+          </IonFooter>
+        </div>
       </div>
+
 
     </IonPage>
   );

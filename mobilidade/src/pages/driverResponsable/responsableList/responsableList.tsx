@@ -22,7 +22,6 @@ import { useContext, useEffect, useState } from "react";
 import { ContextAppInfo } from "../../../services/context/context";
 import { add, man } from "ionicons/icons";
 
-import routeImg from "../../../assets/img/route-map.png";
 import "./responsableList.css";
 
 interface Responsable {
@@ -37,6 +36,34 @@ const ResponsableList: React.FC = () => {
 
   const [responsableList, setResponsableList] = useState<Responsable[]>([]);
   const [modalShow, setModalShow] = useState(false);
+  const [userResponsable, setUserResponsable] = useState("")
+
+  async function changeResponsable(e: any) {
+    setUserResponsable(e.target.value);
+  }
+
+  async function addResponsable() {
+    try {
+      const response = await fetch(`http://127.0.0.1:3000/responsable-add`, {
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify({ userResponsableId: userResponsable, driverId: userInfo.userId })
+        ,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const routeDataReturn = await response.json();
+      if (routeDataReturn.codStatus == 200) {
+        setUpdatePage((prev) => !prev)
+        setModalShow(false)
+      }
+      throw "Erro";
+    } catch (error) {
+
+    }
+  }
 
   useEffect(() => {
     if (userInfo.userId) {
@@ -113,7 +140,16 @@ const ResponsableList: React.FC = () => {
           onWillDismiss={() => setModalShow(false)}
         >
           <div className="route-config-delete-modal">
+            <div id="route-responsable-add">
+
+              <div id="route-responsable-add-text">Digite o ID do responsável.</div>
+
+              <input type="text" onChange={(e) => changeResponsable(e)} />
+            </div>
             <div className="route-config-delete-modal-buttons">
+              <IonButton color="medium" expand="full" disabled={!userResponsable} onClick={() => addResponsable()}>
+                SALVAR
+              </IonButton>
               <IonButton color="medium" expand="full" onClick={() => setModalShow(false)}>
                 VOLTAR
               </IonButton>
