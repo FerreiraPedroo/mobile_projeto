@@ -252,7 +252,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
   useEffect(() => {
     async function getRoute(routeId: string) {
       try {
-        const response = await fetch(`http://127.0.0.1:3000/route/${routeId}`, {
+        const response = await fetch(`http://127.0.0.1:3000/route-config/${routeId}`, {
           method: "GET",
           mode: "cors",
           headers: {

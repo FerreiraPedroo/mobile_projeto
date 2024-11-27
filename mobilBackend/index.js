@@ -18,7 +18,6 @@ app.use(
   })
 );
 
-
 app.post("/check-login", async (req, res, next) => {
   const { token } = req.body;
   try {
@@ -159,11 +158,11 @@ app.get("/route-list/:userId", async (req, res, next) => {
     });
   }
 });
-app.get("/route/:routeId", async (req, res, next) => {
+app.get("/route-config/:routeId", async (req, res, next) => {
   const { routeId } = req.params;
 
   try {
-    const routeData = await db.selectRoute(routeId);
+    const routeData = await db.selectRouteConfig(routeId);
 
     let routeInfo = null;
 
@@ -175,6 +174,70 @@ app.get("/route/:routeId", async (req, res, next) => {
       return {
         id: passager.id,
         name: passager.name,
+        status: passager.status,
+        boarding_time: passager.boarding_time,
+        landing_time: passager.landing_time,
+      };
+    });
+
+    routeInfo = {
+      id: routeData.route.id,
+      name: routeData.route.name,
+      photo: routeData.route.photo,
+      start_time: routeData.route.start_time,
+      end_time: routeData.route.end_time,
+      passagers: routePassager,
+      status: routeData.route.status,
+    };
+
+    return res.status(200).send({ codStatus: 200, message: "OK", data: routeInfo });
+  } catch (error) {
+    return res.status(error.codStatus || 422).send({
+      codStatus: error.codStatus || 500,
+      message: error.message || "[ROT]: Erro ao obter a rota.",
+      error: error.error,
+    });
+  }
+});
+app.get("/route-status/:routeId/:routeDate/:status", async (req, res, next) => {
+  const { routeId, status, routeDate } = req.params;
+
+  try {
+    const routeData = await db.routeStatus(routeId, routeDate, status);
+
+    if (!routeData) {
+      throw { codStatus: 422, message: "Rota não encontrada." };
+    }
+
+    return res.status(200).send({ codStatus: 200, message: "OK" });
+  } catch (error) {
+    return res.status(error.codStatus || 422).send({
+      codStatus: error.codStatus || 500,
+      message: error.message || "[ROT]: Erro ao obter a rota.",
+      error: error.error,
+    });
+  }
+});
+app.get("/route/:routeId/date/:routeDate", async (req, res, next) => {
+  const { routeId, routeDate } = req.params;
+
+  try {
+    const routeData = await db.selectRoute(routeId, routeDate);
+
+    let routeInfo = null;
+
+    if (!routeData) {
+      throw { codStatus: 422, message: "Rota não encontrada." };
+    }
+
+    const routePassager = routeData.respPassagerInfo.map((passager) => {
+      return {
+        id: passager.id,
+        name: passager.name,
+        status: passager.status,
+        date: passager.date,
+        boarding_time: passager.boarding_time,
+        landing_time: passager.landing_time,
       };
     });
 
@@ -631,7 +694,6 @@ app.delete("/resp-passager/:userId/:passagerId", async (req, res, next) => {
 
     return res.status(200).send({ codStatus: 200, message: "OK" });
   } catch (error) {
-
     return res.status(error.codStatus || 422).send({
       codStatus: error.codStatus || 422,
       message: error.message || "[ROT]: Erro ao excluir o passageiro.",
@@ -656,10 +718,10 @@ app.get("/resp-passager-config/:passagerId", async (req, res, next) => {
       photo: passager.photo,
       routes: routeList.map((route) => {
         return {
-          name: route.name
-        }
-      })
-    }
+          name: route.name,
+        };
+      }),
+    };
 
     return res.status(200).send({ codStatus: 200, message: "OK", data: passagerInfo });
   } catch (error) {
@@ -670,7 +732,6 @@ app.get("/resp-passager-config/:passagerId", async (req, res, next) => {
     });
   }
 });
-
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -771,7 +832,6 @@ app.delete("/responsable/:userId/:responsableId", async (req, res, next) => {
     });
   }
 });
-
 
 /////////////////////////////////////////////////////////////////////////////
 

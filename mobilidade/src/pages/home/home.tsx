@@ -22,6 +22,7 @@ interface Route {
   passager_amount: number;
   status: {
     status: string;
+    date: string;
     start_time: string;
     end_time: string;
   }
@@ -93,7 +94,7 @@ const Home: React.FC = () => {
           <div id="home-container">
             {routeList.map((route, key) => {
               return (
-                <IonCard key={key} routerLink={`/route/${route.id}`}>
+                <IonCard key={key} routerLink={`/route/${route.id}/date/${route.status.date}`}>
                   <IonCardHeader class="home-card-header">
                     <img className="home-photo" src={routeImg}></img>
                     <IonCardTitle class="home-card-title">{route.name}</IonCardTitle>

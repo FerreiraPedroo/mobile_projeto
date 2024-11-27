@@ -64,7 +64,7 @@ const App: React.FC = () => {
             <Route path="/home" exact={true} component={Home} />
             <Route path="/register" exact={true} component={Register} />
             <Route path="/routes" exact={true} component={RouteList} />
-            <Route path="/route/:routeId" exact={true} component={RouteHome} />
+            <Route path="/route/:routeId/date/:date" exact={true} component={RouteHome} />
             <Route path="/route-config/:routeId" exact={true} component={RouteConfig} />
             <Route path="/route-config/:routeId/:passagerId" exact={true} component={ResponsablePassagerConfig} />
             <Route path="/responsables" exact={true} component={ResponsableList} />
