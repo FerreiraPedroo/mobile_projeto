@@ -174,9 +174,6 @@ app.get("/route-config/:routeId", async (req, res, next) => {
       return {
         id: passager.id,
         name: passager.name,
-        status: passager.status,
-        boarding_time: passager.boarding_time,
-        landing_time: passager.landing_time,
       };
     });
 
@@ -184,10 +181,7 @@ app.get("/route-config/:routeId", async (req, res, next) => {
       id: routeData.route.id,
       name: routeData.route.name,
       photo: routeData.route.photo,
-      start_time: routeData.route.start_time,
-      end_time: routeData.route.end_time,
       passagers: routePassager,
-      status: routeData.route.status,
     };
 
     return res.status(200).send({ codStatus: 200, message: "OK", data: routeInfo });
