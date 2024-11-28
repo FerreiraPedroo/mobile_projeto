@@ -56,9 +56,13 @@ async function selectRoute(routeId, routeDate) {
   const conn = await connect();
   const [routeResults] = await conn.query(`SELECT * FROM route WHERE id=${routeId}`);
 
+  const date = new Date(routeDate);
+  const day = date.toISOString().split("T")[0]
+
+  console.log({day})
   // ROUTE STATUS
   const [routeStatus] = await conn.query(
-    `SELECT * FROM route_status WHERE route_id=${routeId} AND date='${routeDate.split("T")[0]}'`
+    `SELECT * FROM route_status WHERE route_id=${routeId} AND date='${day}'`
   );
 
   const routeInfo = {
@@ -227,21 +231,16 @@ async function addRouteCalendar(routeId, dateDay) {
 
   const dateMonth = new Date(dateDay.split("-").reverse().join("-"));
   const date = dateMonth.toISOString().split("T")[0];
+
   // ROUTE STATUS
   const [routeStatus] = await conn.query(
     `SELECT * FROM route_status WHERE route_id=${routeId} AND date=${date}`
   );
 
   if (!routeStatus.length) {
-    const [routeStatusSelect] = await conn.query(
-      `SELECT * FROM route_status WHERE route_id=${routeId} AND date='${date}'`
-    );
-
-    if (!routeStatusSelect.length) {
       const [routeStatusInserted] = await conn.query(
         `INSERT INTO route_status (route_id, status , date) VALUES (${routeId}, 'NÃO INICIADO', '${date}')`
       );
-    }
 
     const [routePassager] = await conn.query(
       `SELECT * FROM route_passagers WHERE route_id=${routeId}`
@@ -252,16 +251,14 @@ async function addRouteCalendar(routeId, dateDay) {
         if (idx != 0) {
           acc += ",";
         }
-        acc += `(${cur.id}, ${routeId}, 0, '${date}')`;
+        acc += `(${cur.passager_id}, ${routeId}, 0, '${date}')`;
         return acc;
       }, "");
-      console.log({ values });
+
       const [routePassagerStatus] = await conn.query(
         `INSERT INTO route_passager_status (passager_id,route_id,status,date) VALUES ${values}`
       );
     }
-  } else {
-    return "EXISTS";
   }
 
   return "OK";
@@ -273,15 +270,9 @@ async function removeRouteCalendar(routeId, dateDayId) {
   const [routeStatus] = await conn.query(`SELECT * FROM route_status WHERE id='${dateDayId}'`);
 
   if (routeStatus.length) {
-    const [routeStatusDeleted] = await conn.query(
-      `DELETE FROM route_status WHERE id='${dateDayId}'`
-    );
-    const [routePassagerStatusDeleted] = await conn.query(
-      `DELETE FROM route_passager_status WHERE route_id=${routeId} AND date='${routeStatus[0].date.toISOString().split("T")[0]}'`
-    );
-
-  } else {
-    return "NOT EXISTS";
+    const date = new Date(routeStatus[0].date);
+    await conn.query(`DELETE FROM route_status WHERE id='${dateDayId}'`);
+    await conn.query(`DELETE FROM route_passager_status WHERE route_id=${routeId} AND date='${date.toISOString().split("T")[0]}'`);
   }
 
   return "OK";

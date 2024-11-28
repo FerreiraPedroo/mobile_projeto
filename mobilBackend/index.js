@@ -323,10 +323,6 @@ app.post("/calendar-add/:routeId/:dateDay", async (req, res, next) => {
   try {
     const routeStatus = await db.addRouteCalendar(routeId, dateDay);
 
-    if (routeStatus == "EXISTS") {
-      throw { codStatus: 422, message: "Esta rota já esta adicionada neste dia." };
-    }
-
     return res.status(200).send({ codStatus: 200, message: "OK", data: routeStatus });
   } catch (error) {
     return res.status(error.codStatus || 422).send({
