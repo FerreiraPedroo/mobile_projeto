@@ -57,9 +57,8 @@ async function selectRoute(routeId, routeDate) {
   const [routeResults] = await conn.query(`SELECT * FROM route WHERE id=${routeId}`);
 
   const date = new Date(routeDate);
-  const day = date.toISOString().split("T")[0]
+  const day = date.toISOString().split("T")[0];
 
-  console.log({day})
   // ROUTE STATUS
   const [routeStatus] = await conn.query(
     `SELECT * FROM route_status WHERE route_id=${routeId} AND date='${day}'`
@@ -132,6 +131,37 @@ async function routeStatus(routeId, routeDate, status) {
   } else if (status == "finish") {
     await conn.query(
       `UPDATE route_status SET status='FINALIZADO' WHERE route_id=${routeId} AND date='${
+        routeDate.split("T")[0]
+      }'`
+    );
+  } else if (status == "reopen") {
+    await conn.query(
+      `UPDATE route_status SET status='EM ANDAMENTO' WHERE route_id=${routeId} AND date='${
+        routeDate.split("T")[0]
+      }'`
+    );
+  }
+
+  return "OK";
+}
+async function routePassagerStatus(passagerId, routeId, routeDate, status) {
+  const conn = await connect();
+  const actualTime = new Date();
+  if (status == "boarding") {
+    await conn.query(
+      `UPDATE route_passager_status SET status=1, boarding_time='${actualTime.toISOString()}' WHERE passager_id=${passagerId} AND route_id=${routeId} AND date='${
+        routeDate.split("T")[0]
+      }'`
+    );
+  } else if (status == "landing") {
+    await conn.query(
+      `UPDATE route_passager_status SET status=2, landing_time='${actualTime.toISOString()}' WHERE passager_id=${passagerId} AND route_id=${routeId} AND date='${
+        routeDate.split("T")[0]
+      }'`
+    );
+  } else if (status == "re-boarding") {
+    await conn.query(
+      `UPDATE route_passager_status SET status=1, landing_time='${actualTime.toISOString()}' WHERE passager_id=${passagerId} AND route_id=${routeId} AND date='${
         routeDate.split("T")[0]
       }'`
     );
@@ -238,9 +268,9 @@ async function addRouteCalendar(routeId, dateDay) {
   );
 
   if (!routeStatus.length) {
-      const [routeStatusInserted] = await conn.query(
-        `INSERT INTO route_status (route_id, status , date) VALUES (${routeId}, 'NÃO INICIADO', '${date}')`
-      );
+    await conn.query(
+      `INSERT INTO route_status (route_id, status , date) VALUES (${routeId}, 'NÃO INICIADO', '${date}')`
+    );
 
     const [routePassager] = await conn.query(
       `SELECT * FROM route_passagers WHERE route_id=${routeId}`
@@ -255,7 +285,7 @@ async function addRouteCalendar(routeId, dateDay) {
         return acc;
       }, "");
 
-      const [routePassagerStatus] = await conn.query(
+      await conn.query(
         `INSERT INTO route_passager_status (passager_id,route_id,status,date) VALUES ${values}`
       );
     }
@@ -272,7 +302,11 @@ async function removeRouteCalendar(routeId, dateDayId) {
   if (routeStatus.length) {
     const date = new Date(routeStatus[0].date);
     await conn.query(`DELETE FROM route_status WHERE id='${dateDayId}'`);
-    await conn.query(`DELETE FROM route_passager_status WHERE route_id=${routeId} AND date='${date.toISOString().split("T")[0]}'`);
+    await conn.query(
+      `DELETE FROM route_passager_status WHERE route_id=${routeId} AND date='${
+        date.toISOString().split("T")[0]
+      }'`
+    );
   }
 
   return "OK";
@@ -401,15 +435,38 @@ async function routePassagerAdd(routeId, passagerId, type) {
   const [passagerRouteExists] = await conn.query(
     `SELECT id FROM route_passagers WHERE route_id=${routeId} AND passager_id=${passagerId}`
   );
+
   if (passagerRouteExists.length) {
-    throw { codStatus: 422, message: `Este passageiro ja esta na rota.`, error: "" };
+    return "OK";
   }
 
-  const [passagerRouteAdded] = await conn.query(
+  const [routeDaysExists] = await conn.query(
+    `SELECT * FROM route_status WHERE route_id=${routeId}`
+  );
+
+  if (routeDaysExists.length) {
+    const values = routeDaysExists.reduce((acc, cur, idx) => {
+      if (idx != 0) {
+        acc += ",";
+      }
+
+      const date = new Date(cur.date);
+      const day = date.toISOString().split("T")[0];
+
+      acc += `(${passagerId}, ${routeId}, 0, '${day}')`;
+      return acc;
+    }, "");
+
+    await conn.query(
+      `INSERT INTO route_passager_status (passager_id,route_id,status,date) VALUES ${values}`
+    );
+  }
+
+  await conn.query(
     `INSERT INTO route_passagers (passager_id, route_id) VALUES (${passagerId},${routeId})`
   );
 
-  return passagerRouteAdded;
+  return "OK";
 }
 async function routePassagerSelect(routeId, passagerId) {
   const conn = await connect();
@@ -464,6 +521,19 @@ async function routePassagerSelect(routeId, passagerId) {
   }
 
   return { passager: passager[0], boardingPoints, landingPoints };
+}
+async function routePassagerDelete(passagerId, routeId) {
+  const conn = await connect();
+
+  // UPDATE & DELETE ////////////////////////////////////////////////////////////////////
+  await conn.query(
+    `DELETE FROM route_passager_status WHERE passager_id=${passagerId} AND route_id=${routeId}`
+  );
+  await conn.query(
+    `DELETE FROM route_passagers WHERE passager_id=${passagerId} AND route_id=${routeId}`
+  );
+
+  return "OK";
 }
 
 // ROUTE PASSAGER POINTS
@@ -909,6 +979,7 @@ export {
   selectRoute,
   selectRouteConfig,
   routeStatus,
+  routePassagerStatus,
   routeList,
   routeDayList,
   pointList,
@@ -930,6 +1001,7 @@ export {
   responsableDelete,
   pointDelete,
   routePassagerSelect,
+  routePassagerDelete,
   selectRouteCalendar,
   addRouteCalendar,
   removeRouteCalendar,

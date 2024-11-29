@@ -212,6 +212,25 @@ app.get("/route-status/:routeId/:routeDate/:status", async (req, res, next) => {
     });
   }
 });
+app.get("/route-passager-status/:passagerId/:routeId/:routeDate/:status", async (req, res, next) => {
+  const { passagerId, routeId, routeDate, status } = req.params;
+
+  try {
+    const routeData = await db.routePassagerStatus(passagerId, routeId, routeDate, status);
+
+    if (!routeData) {
+      throw { codStatus: 422, message: "Rota não encontrada." };
+    }
+
+    return res.status(200).send({ codStatus: 200, message: "OK" });
+  } catch (error) {
+    return res.status(error.codStatus || 422).send({
+      codStatus: error.codStatus || 500,
+      message: error.message || "[ROT]: Erro ao obter a rota.",
+      error: error.error,
+    });
+  }
+});
 app.get("/route/:routeId/date/:routeDate", async (req, res, next) => {
   const { routeId, routeDate } = req.params;
 
@@ -226,7 +245,7 @@ app.get("/route/:routeId/date/:routeDate", async (req, res, next) => {
 
     const routePassager = routeData.respPassagerInfo.map((passager) => {
       return {
-        id: passager.id,
+        id: passager.passager_id,
         name: passager.name,
         status: passager.status,
         date: passager.date,
@@ -489,7 +508,7 @@ app.post("/passager/:routeId/:passagerId/:type", async (req, res, next) => {
   const { routeId, passagerId, type } = req.params;
 
   try {
-    const routePointData = await db.routePassagerAdd(routeId, passagerId, type);
+    await db.routePassagerAdd(routeId, passagerId, type);
 
     return res.status(200).send({ codStatus: 200, message: "OK" });
   } catch (error) {
@@ -500,7 +519,7 @@ app.post("/passager/:routeId/:passagerId/:type", async (req, res, next) => {
     });
   }
 });
-app.delete("/passager/:passagerId/route/:routeId/type/:type", async (req, res, next) => {
+app.delete("/passager/:passagerId/route/:routeId/type-point/:type", async (req, res, next) => {
   const { passagerId, routeId, type } = req.params;
 
   try {
@@ -515,11 +534,11 @@ app.delete("/passager/:passagerId/route/:routeId/type/:type", async (req, res, n
     });
   }
 });
-app.delete("/passager/:routeId/:passagrId/", async (req, res, next) => {
-  const { userId, responsableId } = req.params;
+app.delete("/passager/:passagerId/route/:routeId", async (req, res, next) => {
+  const { passagerId, routeId } = req.params;
 
   try {
-    const responsableDeleted = await db.responsableDelete(userId, responsableId);
+    await db.routePassagerDelete(passagerId, routeId);
 
     return res.status(200).send({ codStatus: 200, message: "OK" });
   } catch (error) {
@@ -531,30 +550,6 @@ app.delete("/passager/:routeId/:passagrId/", async (req, res, next) => {
     });
   }
 });
-
-// app.get("/passager/point/:userId/:routeId/:type", async (req, res, next) => {
-//   const { userId, routeId, type } = req.params;
-
-//   try {
-//     const pointListData = await db.userPointList(userId, routeId, type);
-
-//     const pointsInfo = pointListData.map((point) => {
-//       return {
-//         id: point.id,
-//         name: point.name,
-//         photo: point.photo,
-//       };
-//     });
-
-//     return res.status(200).send({ codStatus: 200, message: "OK", data: pointsInfo });
-//   } catch (error) {
-//     return res.status(error.codStatus || 422).send({
-//       codStatus: error.codStatus || 422,
-//       message: error.message || "[ROT]: Erro ao obter a lista de pontos.",
-//       error: error.error,
-//     });
-//   }
-// });
 app.post("/passager/:routeId/:passagerId/:pointId/type/:type", async (req, res, next) => {
   const { routeId, passagerId, pointId, type } = req.params;
 
@@ -570,23 +565,6 @@ app.post("/passager/:routeId/:passagerId/:pointId/type/:type", async (req, res, 
     });
   }
 });
-// app.delete("/passager/:routeId/:passagerId/:pointId/:type", async (req, res, next) => {
-//   const { routeId, pointId, type } = req.params;
-
-//   try {
-//     const routePointData = await db.routePointDelete(routeId, pointId, type);
-
-//     return res.status(200).send({ codStatus: 200, message: "OK" });
-//   } catch (error) {
-//     return res.status(error.codStatus || 422).send({
-//       codStatus: error.codStatus || 422,
-//       message: error.message || "[ROT]: Erro ao obter a lista de pontos.",
-//       error: error.error,
-//     });
-//   }
-// });
-
-/** */
 
 /////////////////////////////////////////////////////////////////////////////
 

@@ -5,14 +5,12 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonContent,
-  IonDatetime,
   IonHeader,
   IonIcon,
   IonItem,
   IonLabel,
   IonMenuButton,
   IonPage,
-  IonText,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -58,15 +56,15 @@ import { personCircleOutline } from "ionicons/icons";
 const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
   const { userInfo, updatePage, setUpdatePage } = useContext(ContextAppInfo);
   const [routeInfo, setRouteInfo] = useState<Route | null>(null);
-
   console.log({ routeInfo });
-
+  console.log({updatePage});
   const [finishModal, setFinishModal] = useState(false);
 
-  const startRoute = useCallback(async () => {
+  // STATUS DA ROTA
+  const changeStatusRoute = useCallback(async (status: string) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:3000/route-status/${match.params.routeId}/${match.params.date}/start`,
+        `http://127.0.0.1:3000/route-status/${match.params.routeId}/${match.params.date}/${status}`,
         {
           method: "GET",
           mode: "cors",
@@ -87,6 +85,32 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
     } catch (error) {}
   }, []);
 
+  // STATUS DOS PASSAGEIROS
+  const changeStatusPassager = useCallback(async (passagerId: number, status: string) => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:3000/route-passager-status/${passagerId}/${match.params.routeId}/${match.params.date.split("T")[0]}/${status}`,
+        {
+          method: "GET",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const routeDataReturn = await response.json();
+
+      if (routeDataReturn.codStatus == 200) {
+        setUpdatePage((prev) => !prev);
+        return;
+      }
+
+      throw "Erro";
+    } catch (error) {}
+  }, []);
+
+  // VERIFICAR SE TODOS OS PASSAGEIROS
   const passagerVerify = useCallback(() => {
     if (routeInfo) {
       const isPassagerLanding = routeInfo.passagers.filter((passager) => passager.status != 2);
@@ -95,8 +119,6 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
       }
     }
   }, []);
-
-  const finishRoute = useCallback(() => {}, []);
 
   useEffect(() => {
     async function getRoute(routeId: string) {
@@ -144,13 +166,26 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
             <p>{routeInfo.name}</p>
             <div id="route-home-status-button-container">
               {routeInfo.status.status == "NÃO INICIADO" && (
-                <IonButton color="secondary" size="default" onClick={startRoute}>
+                <IonButton
+                  color="secondary"
+                  size="default"
+                  onClick={() => changeStatusRoute("start")}
+                >
                   INICIAR ROTA
                 </IonButton>
               )}
               {routeInfo.status.status == "EM ANDAMENTO" && (
-                <IonButton color="danger" onClick={finishRoute}>
+                <IonButton
+                  color="danger"
+                  size="default"
+                  onClick={() => changeStatusRoute("finish")}
+                >
                   FINALIZAR ROTA
+                </IonButton>
+              )}
+              {routeInfo.status.status == "FINALIZADO" && (
+                <IonButton color="light" size="default" onClick={() => changeStatusRoute("reopen")}>
+                  REABRIR ROTA
                 </IonButton>
               )}
             </div>
@@ -172,21 +207,36 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
 
                   <div className="route-home-passager-buttons">
                     {passager.status == 0 ? (
-                      <IonButton color="primary" size="default" onClick={startRoute}>
+                      <IonButton
+                        color="primary"
+                        size="default"
+                        onClick={() => changeStatusPassager(passager.id, "boarding")}
+                        disabled={routeInfo.status.status != "EM ANDAMENTO"}
+                      >
                         EMBARCAR
                       </IonButton>
                     ) : (
                       ""
                     )}
                     {passager.status == 1 ? (
-                      <IonButton color="primary" size="default" onClick={startRoute}>
+                      <IonButton
+                        color="primary"
+                        size="default"
+                        onClick={() => changeStatusPassager(passager.id, "landing")}
+                        disabled={routeInfo.status.status != "EM ANDAMENTO"}
+                      >
                         DESEMBARCAR
                       </IonButton>
                     ) : (
                       ""
                     )}
-                    {passager.status == 2? (
-                      <IonButton color="light" size="default" onClick={startRoute}>
+                    {passager.status == 2 ? (
+                      <IonButton
+                        color="light"
+                        size="default"
+                        onClick={() => changeStatusPassager(passager.id, "re-boarding")}
+                        disabled={routeInfo.status.status != "EM ANDAMENTO"}
+                      >
                         REEMBARCAR
                       </IonButton>
                     ) : (

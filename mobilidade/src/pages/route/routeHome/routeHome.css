@@ -39,7 +39,7 @@ p {
 }
 
 .route-home-passager-buttons {
-  margin-right: 16px;
+  margin: 16px;
 }
 
 .route-home-passager-points {
@@ -48,4 +48,8 @@ p {
   font-size: 1rem;
   gap: 4px;
   padding: 0 12px 12px 12px;
+}
+
+#route-home-status-button-container{
+  padding: 12px 4px 8px 4px;
 }

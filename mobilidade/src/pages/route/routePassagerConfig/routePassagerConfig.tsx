@@ -1,5 +1,4 @@
 import {
-  IonAvatar,
   IonButton,
   IonButtons,
   IonCard,
@@ -57,13 +56,19 @@ interface ModalInfoInterface {
   route: string;
 }
 
+interface ModalDelPassInfoInterface {
+  passagerId: string | number;
+  routeId: string | number;
+  name: string;
+}
+
 interface ModalAddPointInfoInterface {
   type: string;
   route: string;
   data: null | [{ id: number; name: string }] | [];
 }
 
-const ResponsablePassagerConfig: React.FC<PassagerConfigParams> = ({ match }) => {
+const RoutePassagerConfig: React.FC<PassagerConfigParams> = ({ match }) => {
   const { routeId, passagerId } = match.params;
 
   const router = useIonRouter();
@@ -73,6 +78,10 @@ const ResponsablePassagerConfig: React.FC<PassagerConfigParams> = ({ match }) =>
   const [modalDeletePassagerShow, setModalDeletePassagerShow] = useState(false);
   const [modalDeletePassagerInfo, setModalDeletePassagerInfo] = useState<ModalInfoInterface>();
 
+  const [modalDeleteRoutePassagerShow, setModalDeleteRoutePassagerShow] = useState(false);
+  const [modalDeleteRoutePassagerInfo, setModalDeleteRoutePassagerInfo] =
+    useState<ModalDelPassInfoInterface>();
+
   const [modalInfo, setModalInfo] = useState<ModalAddPointInfoInterface>({
     type: "",
     route: "",
@@ -80,10 +89,15 @@ const ResponsablePassagerConfig: React.FC<PassagerConfigParams> = ({ match }) =>
   });
   const [modalShow, setModalShow] = useState(false);
 
+  
+  async function openDeletePassagerModal(id: number, name: string, route: string) {
+    setModalDeletePassagerShow(true);
+    setModalDeletePassagerInfo({ id, name, route });
+  }
   async function handleDelete(pointId: number, route: string) {
     try {
       const response = await fetch(
-        `http://127.0.0.1:3000/passager/${passagerId}/route/${routeId}/type/${route}`,
+        `http://127.0.0.1:3000/passager/${passagerId}/route/${routeId}/type-point/${route}`,
         {
           method: "DELETE",
           mode: "cors",
@@ -103,10 +117,33 @@ const ResponsablePassagerConfig: React.FC<PassagerConfigParams> = ({ match }) =>
     } catch (error) {}
   }
 
-  async function openDeletePassagerModal(id: number, name: string, route: string) {
-    setModalDeletePassagerShow(true);
-    setModalDeletePassagerInfo({ id, name, route });
+  async function openDeleteRoutePassagerModal(passagerId: number, routeId: string, name: string) {
+    setModalDeleteRoutePassagerShow(true);
+    setModalDeleteRoutePassagerInfo({ passagerId, routeId, name });
   }
+  async function handleRoutePassagerDelete(passagerId: number, route: string) {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:3000/passager/${passagerId}/route/${routeId}`,
+        {
+          method: "DELETE",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const deleteReturn = await response.json();
+
+      if (deleteReturn.codStatus == 200) {
+        setModalDeleteRoutePassagerShow(false);
+        setUpdatePage((prev) => !prev);
+        router.push(`/route-config/${routeId}`);
+      }
+    } catch (error) {}
+  }
+
 
   async function openAddModal(type: string) {
     setModalShow(true);
@@ -200,15 +237,9 @@ const ResponsablePassagerConfig: React.FC<PassagerConfigParams> = ({ match }) =>
             <p id="passager-config-name">{passagerInfo.name}</p>
             <IonButton
               color="danger"
-              // onClick={() =>
-              //   openDeleteModal(
-              //     "passager",
-              //     "Passageiro",
-              //     passager.id,
-              //     passager.name,
-              //     "passager"
-              //   )
-              // }
+              onClick={() =>
+                openDeleteRoutePassagerModal(passagerInfo.id, routeId, passagerInfo.name)
+              }
             >
               <IonIcon icon={trashSharp}></IonIcon>
             </IonButton>
@@ -289,6 +320,47 @@ const ResponsablePassagerConfig: React.FC<PassagerConfigParams> = ({ match }) =>
           </div>
 
           <IonModal
+            isOpen={modalDeleteRoutePassagerShow}
+            initialBreakpoint={0.5}
+            breakpoints={[0.5]}
+            onWillDismiss={() => setModalDeletePassagerShow(false)}
+          >
+            {modalDeleteRoutePassagerInfo ? (
+              <div className="passager-config-delete-modal">
+                <p>Deseja realmente excluir da rota o passageiro:</p>
+                <div className="passager-config-delete-item-name">
+                  {modalDeleteRoutePassagerInfo.name}
+                </div>
+                <div className="passager-config-delete-modal-buttons">
+                  <IonButton
+                    className="passager-config-delete-buttons"
+                    color="danger"
+                    expand="full"
+                    onClick={() =>
+                      handleRoutePassagerDelete(
+                        modalDeleteRoutePassagerInfo.passagerId,
+                        modalDeleteRoutePassagerInfo.routeId
+                      )
+                    }
+                  >
+                    EXCLUIR
+                  </IonButton>
+                  <IonButton
+                    className="passager-config-delete-buttons"
+                    color="medium"
+                    expand="full"
+                    onClick={() => setModalDeletePassagerShow(false)}
+                  >
+                    VOLTAR
+                  </IonButton>
+                </div>
+              </div>
+            ) : (
+              ""
+            )}
+          </IonModal>
+
+          <IonModal
             isOpen={modalDeletePassagerShow}
             initialBreakpoint={0.5}
             breakpoints={[0.5]}
@@ -296,7 +368,10 @@ const ResponsablePassagerConfig: React.FC<PassagerConfigParams> = ({ match }) =>
           >
             {modalDeletePassagerInfo ? (
               <div className="passager-config-delete-modal">
-                <p>Deseja realmente excluir o ponto de desembarque:</p>
+                <p>
+                  Deseja realmente excluir o ponto de
+                  {modalDeletePassagerInfo.route == "boarding" ? "embarque" : "desembarque"}:
+                </p>
                 <div className="passager-config-delete-item-name">
                   {modalDeletePassagerInfo.name}
                 </div>
@@ -378,4 +453,4 @@ const ResponsablePassagerConfig: React.FC<PassagerConfigParams> = ({ match }) =>
   );
 };
 
-export { ResponsablePassagerConfig };
+export { RoutePassagerConfig };
