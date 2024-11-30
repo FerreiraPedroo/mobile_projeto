@@ -70,39 +70,72 @@ async function selectRoute(routeId, routeDate) {
   };
 
   // PASSAGER //////////////////////////////////////////////////////////////////////////////////////////////////////
-  const [routeRespPassagerResult] = await conn.query(
-    `SELECT passager_id FROM route_passagers WHERE route_id=${routeId}`
+  const [routePassagerResult] = await conn.query(
+    `SELECT * FROM route_passagers WHERE route_id=${routeId}`
   );
 
-  let respPassagerIds = "";
-  let respPassagerInfo = [];
-  if (routeRespPassagerResult.length) {
-    // REDUZ OS IDS DOS PASSAGEIROS
-    respPassagerIds = routeRespPassagerResult.reduce((prev, curr, idx) => {
+  let routePassagerIds = "";
+  let routePassagerInfo = [];
+
+  if (routePassagerResult.length) {
+    const routePassagerPointsIds = routePassagerResult.reduce((prev, curr, idx) => {
+      if (curr.boarding_point_id) {
+        const exists = prev.find((value) => value === curr.boarding_point_id);
+        if (!exists) {
+          prev.push(curr.boarding_point_id);
+        }
+      }
+
+      if (curr.landing_point_id) {
+        const exists = prev.find((value) => value === curr.landing_point_id);
+        if (!exists) {
+          prev.push(curr.landing_point_id);
+        }
+      }
+
+      return prev;
+    }, []);
+    const passagerPoints = routePassagerPointsIds.join(",");
+    const [pointsResults] = await conn.query(`SELECT * FROM point WHERE id IN(${passagerPoints})`);
+
+    // PASSAGEIROS IDS
+    routePassagerIds = routePassagerResult.reduce((prev, curr, idx) => {
       if (idx == 0) return curr.passager_id;
       return prev + ", " + curr.passager_id;
     }, "");
-
     // PASSAGEIROS DA ROTA NO DIA
     const [passagerResults] = await conn.query(
-      `SELECT * FROM passager WHERE id IN(${respPassagerIds})`
+      `SELECT * FROM passager WHERE id IN(${routePassagerIds})`
     );
-
     // STATUS DOS PASSAGEIROS NO DIA
     const [passagerStatusResults] = await conn.query(
-      `SELECT * FROM route_passager_status WHERE route_id=${routeId} AND passager_id IN (${respPassagerIds}) AND date='${
+      `SELECT * FROM route_passager_status WHERE route_id=${routeId} AND passager_id IN (${routePassagerIds}) AND date='${
         routeInfo.status.date.toISOString().split("T")[0]
       }'`
     );
 
-    respPassagerInfo = passagerResults.map((passager) => {
+    routePassagerInfo = passagerResults.map((passager) => {
       const passagerStatus = passagerStatusResults.find(
         (passStatus) => passStatus.passager_id == passager.id
       );
+
+      const passagerRoute = routePassagerResult.find(
+        (passRoute) => passRoute.passager_id == passager.id
+      );
+
+      let passagerBoardingPoint = pointsResults.find(
+        (point) => point.id == passagerRoute.boarding_point_id
+      );
+      let passagerLandingPoint = pointsResults.find(
+        (point) => point.id == passagerRoute.landing_point_id
+      );
+
       if (passagerStatus) {
         return {
           ...passager,
           ...passagerStatus,
+          boarding_point: passagerBoardingPoint ? passagerBoardingPoint.name : "-",
+          landing_point: passagerLandingPoint ? passagerLandingPoint.name : "-",
         };
       } else {
         return {
@@ -112,7 +145,7 @@ async function selectRoute(routeId, routeDate) {
     });
   }
 
-  return { route: routeInfo, respPassagerInfo };
+  return { route: routeInfo, routePassagerInfo };
 }
 async function routeStatus(routeId, routeDate, status) {
   const conn = await connect();

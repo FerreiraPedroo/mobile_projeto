@@ -51,13 +51,13 @@ import { ContextAppInfo } from "../../../services/context/context";
 
 import "./routeHome.css";
 import { MyMap } from "../../../components/googleMaps/googleMaps";
-import { personCircleOutline } from "ionicons/icons";
+import { enterOutline, exitOutline, personCircleOutline } from "ionicons/icons";
 
 const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
   const { userInfo, updatePage, setUpdatePage } = useContext(ContextAppInfo);
   const [routeInfo, setRouteInfo] = useState<Route | null>(null);
   console.log({ routeInfo });
-  console.log({updatePage});
+  console.log({ updatePage });
   const [finishModal, setFinishModal] = useState(false);
 
   // STATUS DA ROTA
@@ -89,7 +89,9 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
   const changeStatusPassager = useCallback(async (passagerId: number, status: string) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:3000/route-passager-status/${passagerId}/${match.params.routeId}/${match.params.date.split("T")[0]}/${status}`,
+        `http://127.0.0.1:3000/route-passager-status/${passagerId}/${match.params.routeId}/${
+          match.params.date.split("T")[0]
+        }/${status}`,
         {
           method: "GET",
           mode: "cors",
@@ -245,9 +247,15 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
                   </div>
                 </div>
 
-                <div className="route-home-passager-points">
-                  <div>PONTO EMBARQUE: {passager.boarding_point ?? "-"}</div>
-                  <div>PONTO DESEMBARQUE: {passager.landing_point ?? "-"}</div>
+                <div className="route-home-passager-points-conteiner">
+                  <div className="route-home-passager-points-box">
+                    <IonIcon className="point-icon" icon={enterOutline} color="dark" />:{" "}
+                    {passager.boarding_point ?? "-"}
+                  </div>
+                  <div className="route-home-passager-points-box">
+                    <IonIcon className="point-icon" icon={exitOutline} color="dark" />:{" "}
+                    {passager.landing_point ?? "-"}
+                  </div>
                 </div>
               </IonCard>
             ))}

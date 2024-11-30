@@ -102,7 +102,6 @@ const Home: React.FC = () => {
                   </IonCardHeader>
 
                   <IonCardContent className="home-card-point">
-                    <div>Horário de inicio: {route.status ? route.status.start_time ?? "—": "—"}</div>
                     <div>Passageiros: {route.passager_amount}</div>
                   </IonCardContent>
                 </IonCard>

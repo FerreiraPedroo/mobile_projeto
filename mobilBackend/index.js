@@ -243,7 +243,7 @@ app.get("/route/:routeId/date/:routeDate", async (req, res, next) => {
       throw { codStatus: 422, message: "Rota não encontrada." };
     }
 
-    const routePassager = routeData.respPassagerInfo.map((passager) => {
+    const routePassager = routeData.routePassagerInfo.map((passager) => {
       return {
         id: passager.passager_id,
         name: passager.name,
@@ -251,6 +251,8 @@ app.get("/route/:routeId/date/:routeDate", async (req, res, next) => {
         date: passager.date,
         boarding_time: passager.boarding_time,
         landing_time: passager.landing_time,
+        boarding_point: passager.boarding_point,
+        landing_point: passager.landing_point,
       };
     });
 
