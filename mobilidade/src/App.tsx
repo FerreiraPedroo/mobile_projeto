@@ -1,4 +1,11 @@
-import { IonApp, IonRoute, IonRouterOutlet, IonSplitPane, setupIonicReact } from "@ionic/react";
+import {
+  IonApp,
+  IonRoute,
+  IonRouterOutlet,
+  IonSplitPane,
+  setupIonicReact,
+  useIonRouter,
+} from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import { Redirect, Route } from "react-router-dom";
 import Menu from "./components/Menu";
@@ -48,11 +55,13 @@ import { RespHome } from "./pages/resp/home/respHome";
 import { RespPassagerList } from "./pages/resp/passager/passagerList";
 import { RoutePassagerConfig } from "./pages/route/routePassagerConfig/routePassagerConfig";
 import { RespPassagerConfig } from "./pages/resp/passagerConfig/passagerConfig";
+import { User } from "./pages/user/user";
+import { ContextAppInfo } from "./services/context/context";
+import { useContext } from "react";
 
 setupIonicReact();
 
 const App: React.FC = () => {
-
   return (
     <IonApp>
       <IonReactRouter>
@@ -63,17 +72,27 @@ const App: React.FC = () => {
             <Route path="/login" exact={true} component={Login} />
             <Route path="/home" exact={true} component={Home} />
             <Route path="/register" exact={true} component={Register} />
+            <Route path="/user" exact={true} component={User} />
+
             <Route path="/routes" exact={true} component={RouteList} />
             <Route path="/route/:routeId/date/:date" exact={true} component={RouteHome} />
             <Route path="/route-config/:routeId" exact={true} component={RouteConfig} />
-            <Route path="/route-config/:routeId/:passagerId" exact={true} component={RoutePassagerConfig} />
+            <Route
+              path="/route-config/:routeId/:passagerId"
+              exact={true}
+              component={RoutePassagerConfig}
+            />
             <Route path="/responsables" exact={true} component={ResponsableList} />
             <Route path="/responsable/:responsableId" exact={true} component={ResponsableConfig} />
             <Route path="/points" exact={true} component={PointList} />
 
             <Route path="/resp-home" exact={true} component={RespHome} />
             <Route path="/resp-passagers" exact={true} component={RespPassagerList} />
-            <Route path="/resp-passager-config/:passagerId" exact={true} component={RespPassagerConfig} />
+            <Route
+              path="/resp-passager-config/:passagerId"
+              exact={true}
+              component={RespPassagerConfig}
+            />
             <Redirect to={"/"} />
           </IonRouterOutlet>
         </IonSplitPane>

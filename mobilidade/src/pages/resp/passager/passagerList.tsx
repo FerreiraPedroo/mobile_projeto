@@ -2,7 +2,6 @@ import {
   IonButton,
   IonButtons,
   IonCard,
-  IonCardContent,
   IonCardHeader,
   IonCardTitle,
   IonContent,
@@ -19,6 +18,7 @@ import {
 import { useContext, useEffect, useState } from "react";
 
 import { ContextAppInfo } from "../../../services/context/context";
+import { UserConfig } from "../../../components/userConfig/userConfig";
 import { add, personOutline } from "ionicons/icons";
 import "./passagerList.css";
 
@@ -91,6 +91,9 @@ const RespPassagerList: React.FC = () => {
             <IonMenuButton />
           </IonButtons>
           <IonTitle>{"Mobil"}</IonTitle>
+          <div slot="end">
+            <UserConfig />
+          </div>
         </IonToolbar>
       </IonHeader>
 

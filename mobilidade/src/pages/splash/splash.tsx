@@ -29,7 +29,11 @@ const Splash: React.FC = () => {
 
           const loginDataReturn = await response.json();
           if (loginDataReturn.codStatus == 200) {
-            router.push("/home");
+            if(userInfo.type == "driver"){
+              router.push("/home");
+            } else {
+              router.push("/resp-home");
+            }
             return;
           }
         } catch (error) {

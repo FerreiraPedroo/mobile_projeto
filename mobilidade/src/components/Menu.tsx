@@ -8,14 +8,20 @@ import {
   IonMenu,
   IonMenuToggle,
   IonNote,
-} from '@ionic/react';
+} from "@ionic/react";
 
-import { useContext } from 'react';
-import { useLocation } from 'react-router-dom';
-import { ContextAppInfo } from '../services/context/context';
+import { useCallback, useContext } from "react";
+import { useLocation } from "react-router-dom";
+import { ContextAppInfo } from "../services/context/context";
 
-import { homeOutline, locationOutline, manOutline, mapOutline } from 'ionicons/icons';
-import './Menu.css';
+import {
+  homeOutline,
+  locationOutline,
+  manOutline,
+  mapOutline,
+  personCircleOutline,
+} from "ionicons/icons";
+import "./Menu.css";
 
 interface AppPage {
   url: string;
@@ -26,44 +32,44 @@ interface AppPage {
 
 const appDriverPages: AppPage[] = [
   {
-    title: 'Inicio',
-    url: '/home',
+    title: "Inicio",
+    url: "/home",
     iosIcon: homeOutline,
-    mdIcon: homeOutline
+    mdIcon: homeOutline,
   },
   {
-    title: 'Rotas',
-    url: '/routes',
+    title: "Rotas",
+    url: "/routes",
     iosIcon: mapOutline,
-    mdIcon: mapOutline
+    mdIcon: mapOutline,
   },
   {
-    title: 'Pontos de parada',
-    url: '/points',
+    title: "Pontos de parada",
+    url: "/points",
     iosIcon: locationOutline,
-    mdIcon: locationOutline
+    mdIcon: locationOutline,
   },
   {
-    title: 'Responsável',
-    url: '/responsables',
+    title: "Responsável",
+    url: "/responsables",
     iosIcon: manOutline,
-    mdIcon: manOutline
-  }
+    mdIcon: manOutline,
+  },
 ];
 
 const appResponsablePages: AppPage[] = [
   {
-    title: 'Inicio',
-    url: '/resp-home',
+    title: "Inicio",
+    url: "/resp-home",
     iosIcon: homeOutline,
-    mdIcon: homeOutline
+    mdIcon: homeOutline,
   },
   {
-    title: 'Passageiros',
-    url: '/resp-passagers',
+    title: "Passageiros",
+    url: "/resp-passagers",
     iosIcon: manOutline,
-    mdIcon: manOutline
-  }
+    mdIcon: manOutline,
+  },
 ];
 
 const Menu: React.FC = () => {
@@ -77,28 +83,51 @@ const Menu: React.FC = () => {
           <IonListHeader>Mobil</IonListHeader>
           <IonNote></IonNote>
 
-          {userInfo.type == "driver" && appDriverPages.map((appPage, index) => {
-            return (
-              <IonMenuToggle key={index} autoHide={false}>
-                <IonItem className={location.pathname === appPage.url ? 'selected' : ''} routerLink={appPage.url} routerDirection="none" lines="none" detail={false}>
-                  <IonIcon aria-hidden="true" slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
-                  <IonLabel>{appPage.title}</IonLabel>
-                </IonItem>
-              </IonMenuToggle>
-            );
-          })}
+          {userInfo.type == "driver" &&
+            appDriverPages.map((appPage, index) => {
+              return (
+                <IonMenuToggle key={index} autoHide={false}>
+                  <IonItem
+                    className={location.pathname === appPage.url ? "selected" : ""}
+                    routerLink={appPage.url}
+                    routerDirection="none"
+                    lines="none"
+                    detail={false}
+                  >
+                    <IonIcon
+                      aria-hidden="true"
+                      slot="start"
+                      ios={appPage.iosIcon}
+                      md={appPage.mdIcon}
+                    />
+                    <IonLabel>{appPage.title}</IonLabel>
+                  </IonItem>
+                </IonMenuToggle>
+              );
+            })}
 
-          {userInfo.type == "responsable" && appResponsablePages.map((appPage, index) => {
-            return (
-              <IonMenuToggle key={index} autoHide={false}>
-                <IonItem className={location.pathname === appPage.url ? 'selected' : ''} routerLink={appPage.url} routerDirection="none" lines="none" detail={false}>
-                  <IonIcon aria-hidden="true" slot="start" ios={appPage.iosIcon} md={appPage.mdIcon} />
-                  <IonLabel>{appPage.title}</IonLabel>
-                </IonItem>
-              </IonMenuToggle>
-            );
-          })}
-
+          {userInfo.type == "responsable" &&
+            appResponsablePages.map((appPage, index) => {
+              return (
+                <IonMenuToggle key={index} autoHide={false}>
+                  <IonItem
+                    className={location.pathname === appPage.url ? "selected" : ""}
+                    routerLink={appPage.url}
+                    routerDirection="none"
+                    lines="none"
+                    detail={false}
+                  >
+                    <IonIcon
+                      aria-hidden="true"
+                      slot="start"
+                      ios={appPage.iosIcon}
+                      md={appPage.mdIcon}
+                    />
+                    <IonLabel>{appPage.title}</IonLabel>
+                  </IonItem>
+                </IonMenuToggle>
+              );
+            })}
         </IonList>
       </IonContent>
     </IonMenu>

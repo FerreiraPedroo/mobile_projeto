@@ -1,0 +1,6 @@
+.user-config-button {
+  cursor: pointer;
+}
+.selected {
+  color: var(--ion-color-primary);
+}

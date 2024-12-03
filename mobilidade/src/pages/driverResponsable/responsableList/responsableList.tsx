@@ -126,6 +126,7 @@ const ResponsableList: React.FC = () => {
                 </IonCardHeader>
 
                 <IonCardContent className="route-card-point">
+                  <div>ID: {responsable.id}</div>
                   <div>Passageiros: {responsable.passagerAmount}</div>
                 </IonCardContent>
               </IonCard>

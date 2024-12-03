@@ -11,6 +11,7 @@ import {
   IonLabel,
   IonMenuButton,
   IonPage,
+  IonText,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -203,8 +204,8 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
               <IonCard key={passager.name} className="route-home-card-container">
                 <div className="route-home">
                   <IonCardHeader class="route-home-card-header">
-                    <IonIcon icon={personCircleOutline} size="large"></IonIcon>
-                    <IonCardTitle>{passager.name}</IonCardTitle>
+                    <IonIcon icon={personCircleOutline} size="large"/>
+                    <IonText className="route-home-card-title">{passager.name}</IonText>
                   </IonCardHeader>
 
                   <div className="route-home-passager-buttons">

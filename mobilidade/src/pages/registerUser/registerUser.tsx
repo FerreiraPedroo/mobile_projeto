@@ -198,9 +198,6 @@ const Register: React.FC = () => {
         </div>
       </IonContent>
 
-      <IonFooter>
-        <h3>@Mobil 2024</h3>
-      </IonFooter>
     </IonPage>
   );
 };

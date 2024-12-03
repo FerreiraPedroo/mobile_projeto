@@ -95,8 +95,13 @@ async function selectRoute(routeId, routeDate) {
 
       return prev;
     }, []);
+
     const passagerPoints = routePassagerPointsIds.join(",");
-    const [pointsResults] = await conn.query(`SELECT * FROM point WHERE id IN(${passagerPoints})`);
+
+    let pointsResults = [];
+    if (passagerPoints) {
+      pointsResults = await conn.query(`SELECT * FROM point WHERE id IN(${passagerPoints})`);
+    }
 
     // PASSAGEIROS IDS
     routePassagerIds = routePassagerResult.reduce((prev, curr, idx) => {

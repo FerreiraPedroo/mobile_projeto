@@ -274,7 +274,9 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
 
     getRoute(match.params.routeId);
 
-    getRouteCalendar(match.params.routeId, 2024, 10);
+  const monthActual = new Date().getMonth()
+
+    getRouteCalendar(match.params.routeId, 2024, monthActual);
   }, [userInfo, updatePage]);
 
   const handleDateChange = (event: any) => {

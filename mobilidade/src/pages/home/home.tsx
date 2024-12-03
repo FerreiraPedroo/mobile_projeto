@@ -6,6 +6,7 @@ import {
   IonCardTitle,
   IonContent,
   IonHeader,
+  IonIcon,
   IonItem,
   IonMenuButton,
   IonPage,
@@ -25,13 +26,14 @@ interface Route {
     date: string;
     start_time: string;
     end_time: string;
-  }
+  };
 }
 
 import { ContextAppInfo } from "../../services/context/context";
 
 import loading from "../../assets/img/loading.gif";
 import routeImg from "../../assets/img/route-map.png";
+import { UserConfig } from "../../components/userConfig/userConfig";
 import "./home.css";
 
 const dateActual = new Date();
@@ -79,14 +81,15 @@ const Home: React.FC = () => {
             <IonMenuButton />
           </IonButtons>
           <IonTitle>{"Mobil"}</IonTitle>
+          <div slot="end">
+            <UserConfig />
+          </div>
         </IonToolbar>
       </IonHeader>
 
       <IonItem>
         <p>Rotas de hoje</p>
-        <div id="day-container">
-          {dateActual.toLocaleString()}
-        </div>
+        <div id="day-container">{dateActual.toLocaleString().split(",")[0]}</div>
       </IonItem>
 
       <IonContent>
@@ -94,11 +97,15 @@ const Home: React.FC = () => {
           <div id="home-container">
             {routeList.map((route, key) => {
               return (
-                <IonCard key={key} routerLink={`/route/${route.id}/date/${route.status.date}`}>
+                <IonCard key={key} routerLink={`/route/${route.id}/date/${route.status.date.split("T")[0]}`}>
                   <IonCardHeader class="home-card-header">
                     <img className="home-photo" src={routeImg}></img>
                     <IonCardTitle class="home-card-title">{route.name}</IonCardTitle>
-                    <IonCardTitle class={`home-card-status-${route.status ? route.status.status ?? "" : ""}`}>{route.status ? route.status.status ?? "—" : "—"}</IonCardTitle>
+                    <IonCardTitle
+                      class={`home-card-status-${route.status ? route.status.status ?? "" : ""}`}
+                    >
+                      {route.status ? route.status.status ?? "—" : "—"}
+                    </IonCardTitle>
                   </IonCardHeader>
 
                   <IonCardContent className="home-card-point">

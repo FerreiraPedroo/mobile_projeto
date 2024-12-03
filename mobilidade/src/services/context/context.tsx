@@ -1,4 +1,11 @@
-import React, { createContext, Dispatch, ReactElement, SetStateAction, useLayoutEffect, useState } from "react";
+import React, {
+  createContext,
+  Dispatch,
+  ReactElement,
+  SetStateAction,
+  useLayoutEffect,
+  useState,
+} from "react";
 import { Storage } from "@ionic/storage";
 
 interface IUserInfo {
@@ -12,14 +19,14 @@ interface IUserContext {
   userInfo: IUserInfo;
   changeUserInfo: any;
   updatePage: boolean;
-  setUpdatePage: Dispatch<SetStateAction<boolean>>
+  setUpdatePage: Dispatch<SetStateAction<boolean>>;
 }
 
 const ContextAppInfo = createContext<IUserContext>({
   changeUserInfo: () => null,
   userInfo: { userId: null, userName: null, token: null, type: null },
   updatePage: false,
-  setUpdatePage: () => null
+  setUpdatePage: () => null,
 });
 
 const newStorage = new Storage({
@@ -27,7 +34,12 @@ const newStorage = new Storage({
 });
 
 function AppContext({ children }: { children: ReactElement }) {
-  const [userInfo, setUserInfo] = useState({ userId: null, userName: null, token: null, type: null });
+  const [userInfo, setUserInfo] = useState({
+    userId: null,
+    userName: null,
+    token: null,
+    type: null,
+  });
   const [updatePage, setUpdatePage] = useState(false);
 
   async function changeUserInfo(info: IUserInfo) {

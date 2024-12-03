@@ -29,6 +29,8 @@ import { ContextAppInfo } from "../../../services/context/context";
 import loading from "../../../assets/img/loading.gif";
 import routeImg from "../../../assets/img/route-map.png";
 import "./respHome.css";
+import { UserConfig } from "../../../components/userConfig/userConfig";
+
 
 const dateActual = new Date();
 
@@ -78,6 +80,9 @@ const RespHome: React.FC = () => {
             <IonMenuButton />
           </IonButtons>
           <IonTitle>{"Mobil"}</IonTitle>
+          <div slot="end">
+            <UserConfig />
+          </div>
         </IonToolbar>
       </IonHeader>
 

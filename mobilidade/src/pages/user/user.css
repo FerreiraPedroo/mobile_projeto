@@ -1,0 +1,30 @@
+#user-id {
+  display: flex;
+  align-items: center;
+}
+#user-id div {
+  width: 64px;
+  font-size: 1.3rem;
+
+  font-weight: bold;
+}
+
+#user-info-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#user-img {
+  width: 150px;
+  margin: 0;
+}
+
+.user-label-info {
+  padding-left: 16px;
+  margin: 0;
+}
+.user-label-info2 {
+  padding: 32px 0 0 16px;
+  margin: 0;  
+}
