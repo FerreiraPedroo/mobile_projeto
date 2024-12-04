@@ -35,6 +35,7 @@ import loading from "../../assets/img/loading.gif";
 import routeImg from "../../assets/img/route-map.png";
 import { UserConfig } from "../../components/userConfig/userConfig";
 import "./home.css";
+import { mapOutline } from "ionicons/icons";
 
 const dateActual = new Date();
 
@@ -97,12 +98,16 @@ const Home: React.FC = () => {
           <div id="home-container">
             {routeList.map((route, key) => {
               return (
-                <IonCard key={key} routerLink={`/route/${route.id}/date/${route.status.date.split("T")[0]}`}>
+                <IonCard
+                  color="light"
+                  key={key}
+                  routerLink={`/route/${route.id}/date/${route.status.date.split("T")[0]}`}
+                >
                   <IonCardHeader class="home-card-header">
-                    <img className="home-photo" src={routeImg}></img>
+                    <IonIcon className="home-photo" icon={mapOutline} color="dark" />
                     <IonCardTitle class="home-card-title">{route.name}</IonCardTitle>
                     <IonCardTitle
-                      class={`home-card-status-${route.status ? route.status.status ?? "" : ""}`}
+                      class={`home-card-status-`}
                     >
                       {route.status ? route.status.status ?? "—" : "—"}
                     </IonCardTitle>

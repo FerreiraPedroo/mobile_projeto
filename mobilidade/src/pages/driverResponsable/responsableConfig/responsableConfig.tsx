@@ -146,6 +146,7 @@ const ResponsableConfig: React.FC<RouteConfigParams> = ({ match }) => {
             {responsableInfo &&
               responsableInfo.passagers.map((passager) => (
                 <IonCard
+                  color="light"
                   key={passager.name}
                   className="responsable-config-card-container"
                 >

@@ -34,6 +34,8 @@ interface Route {
     landing_time: string;
     boarding_point: string;
     landing_point: string;
+    boarding_point_maps: string;
+    landing_point_maps: string;
   }[];
   status: {
     status: string;
@@ -52,7 +54,14 @@ import { ContextAppInfo } from "../../../services/context/context";
 
 import "./routeHome.css";
 import { MyMap } from "../../../components/googleMaps/googleMaps";
-import { enterOutline, exitOutline, personCircleOutline } from "ionicons/icons";
+import {
+  caretForwardOutline,
+  enterOutline,
+  exitOutline,
+  personCircleOutline,
+  personOutline,
+  squareOutline,
+} from "ionicons/icons";
 
 const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
   const { userInfo, updatePage, setUpdatePage } = useContext(ContextAppInfo);
@@ -198,13 +207,13 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
 
           <div>
             <IonItem slot="header" color="light">
-              <IonLabel>Passageiros</IonLabel>
+              <IonLabel id="route-home-header-passagers">Passageiros</IonLabel>
             </IonItem>
             {routeInfo.passagers.map((passager) => (
-              <IonCard key={passager.name} className="route-home-card-container">
+              <IonCard key={passager.name} className="route-home-card-container" color="light">
                 <div className="route-home">
                   <IonCardHeader class="route-home-card-header">
-                    <IonIcon icon={personCircleOutline} size="large"/>
+                    <IonIcon className="point-user-icon" icon={personOutline} size="large" />
                     <IonText className="route-home-card-title">{passager.name}</IonText>
                   </IonCardHeader>
 
@@ -212,11 +221,12 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
                     {passager.status == 0 ? (
                       <IonButton
                         color="primary"
-                        size="default"
+                        size="small"
                         onClick={() => changeStatusPassager(passager.id, "boarding")}
                         disabled={routeInfo.status.status != "EM ANDAMENTO"}
                       >
-                        EMBARCAR
+                        <IonIcon className="point-icon" icon={caretForwardOutline} color="light" />
+                        <IonIcon className="point-icon" icon={squareOutline} color="light" />
                       </IonButton>
                     ) : (
                       ""
@@ -224,11 +234,12 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
                     {passager.status == 1 ? (
                       <IonButton
                         color="primary"
-                        size="default"
+                        size="small"
                         onClick={() => changeStatusPassager(passager.id, "landing")}
                         disabled={routeInfo.status.status != "EM ANDAMENTO"}
                       >
-                        DESEMBARCAR
+                        <IonIcon className="point-icon" icon={squareOutline} color="light" />
+                        <IonIcon className="point-icon" icon={caretForwardOutline} color="light" />
                       </IonButton>
                     ) : (
                       ""
@@ -236,18 +247,20 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
                     {passager.status == 2 ? (
                       <IonButton
                         color="light"
-                        size="default"
+                        size="small"
                         onClick={() => changeStatusPassager(passager.id, "re-boarding")}
                         disabled={routeInfo.status.status != "EM ANDAMENTO"}
                       >
-                        REEMBARCAR
+                        <IonIcon className="point-icon" icon={caretForwardOutline} color="medium" />
+                        <IonIcon className="point-icon" icon={squareOutline} color="medium" />
+                        {/* <IonIcon className="point-icon" icon={enterOutline} color="dark" /> */}
                       </IonButton>
                     ) : (
                       ""
                     )}
                   </div>
                 </div>
-
+                <hr/>
                 <div className="route-home-passager-points-conteiner">
                   <div className="route-home-passager-points-box">
                     <IonIcon className="point-icon" icon={enterOutline} color="dark" />:{" "}

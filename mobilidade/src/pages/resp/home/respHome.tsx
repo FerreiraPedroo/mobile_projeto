@@ -31,7 +31,6 @@ import routeImg from "../../../assets/img/route-map.png";
 import "./respHome.css";
 import { UserConfig } from "../../../components/userConfig/userConfig";
 
-
 const dateActual = new Date();
 
 const RespHome: React.FC = () => {
@@ -41,7 +40,6 @@ const RespHome: React.FC = () => {
   const [routeList, setRouteList] = useState<Route[] | null>(null);
 
   useEffect(() => {
-
     async function getDayRouteList(userId: number) {
       try {
         const day = dateActual.toISOString().split("T")[0];
@@ -96,39 +94,37 @@ const RespHome: React.FC = () => {
           <hr />
         </div>
 
-        {routeList ?
+        {routeList ? (
           <>
             <div id="home-container">
               {routeList.map((route, key) => {
                 return (
-                  <IonCard key={key} routerLink={`/route/${route.id}`}>
+                  <IonCard key={key} color="light" routerLink={`/route/${route.id}`}>
                     <IonCardHeader class="home-card-header">
                       <img className="home-photo" src={routeImg}></img>
                       <IonCardTitle class="home-card-title">{route.name}</IonCardTitle>
                       <div className="home-card-start">
-                        INICIO<br />{route.starthour}
+                        INICIO
+                        <br />
+                        {route.starthour}
                       </div>
                     </IonCardHeader>
 
                     <IonCardContent className="home-card-point">
-                      <div>
-                        Pontos de Embarque: {route.boarding_point_amount}
-                      </div>
-                      <div>
-                        Pontos de Desembarque: {route.landing_point_amount}
-                      </div>
+                      <div>Pontos de Embarque: {route.boarding_point_amount}</div>
+                      <div>Pontos de Desembarque: {route.landing_point_amount}</div>
                       <div>Passageiros: {route.passager_amount}</div>
                     </IonCardContent>
                   </IonCard>
                 );
-              })
-              }
+              })}
             </div>
           </>
-          : <div id="home-loading">
+        ) : (
+          <div id="home-loading">
             <img src={loading}></img>
           </div>
-        }
+        )}
       </IonContent>
     </IonPage>
   );

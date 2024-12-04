@@ -19,8 +19,7 @@ import {
 import { useContext, useEffect, useState } from "react";
 
 import { ContextAppInfo } from "../../../services/context/context";
-import routeImg from "../../../assets/img/route-map.png";
-import { add } from "ionicons/icons";
+import { add, mapOutline } from "ionicons/icons";
 import "./routeList.css";
 
 interface Route {
@@ -110,10 +109,10 @@ const RouteList: React.FC = () => {
         <div id="route-container">
           {routesList.map((route, key) => {
             return (
-              <IonCard key={key} routerLink={`/route-config/${route.id}`}>
+              <IonCard key={key} color="light" routerLink={`/route-config/${route.id}`}>
                 <IonCardHeader class="route-card-header">
-                  <img className="route-photo" src={routeImg}></img>
-                  <IonCardTitle>{route.name}</IonCardTitle>
+                  <IonIcon className="route-photo" icon={mapOutline} color="dark" />
+                  <IonCardTitle  class="route-card-header-name">{route.name}</IonCardTitle>
                 </IonCardHeader>
 
                 <IonCardContent className="route-card-point">

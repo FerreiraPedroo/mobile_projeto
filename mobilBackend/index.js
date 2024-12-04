@@ -231,6 +231,10 @@ app.get("/route-passager-status/:passagerId/:routeId/:routeDate/:status", async 
     });
   }
 });
+
+
+
+
 app.get("/route/:routeId/date/:routeDate", async (req, res, next) => {
   const { routeId, routeDate } = req.params;
 
@@ -253,6 +257,8 @@ app.get("/route/:routeId/date/:routeDate", async (req, res, next) => {
         landing_time: passager.landing_time,
         boarding_point: passager.boarding_point,
         landing_point: passager.landing_point,
+        boarding_point_maps: passager.boarding_point_maps,
+        landing_point_maps: passager.landing_point_maps,
       };
     });
 
@@ -275,6 +281,11 @@ app.get("/route/:routeId/date/:routeDate", async (req, res, next) => {
     });
   }
 });
+
+
+
+
+
 app.post("/route", async (req, res, next) => {
   const { routeName, userId } = req.body;
 

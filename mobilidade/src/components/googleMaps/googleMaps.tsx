@@ -100,7 +100,7 @@ const MyMap: React.FC<any> = ({ routeInfo }: any) => {
     }
   }
 
-  // ATUALIZAR A POSIÇÃO 
+  // ATUALIZAR A POSIÇÃO
   function getCurrentPosition() {}
 
   // ADICIONAR MARCADORES
@@ -116,32 +116,36 @@ const MyMap: React.FC<any> = ({ routeInfo }: any) => {
   }
   useEffect(() => {
     if (map) {
-      // const boardingMarkers = routeInfo.boardingPoints.map((landing: any) => {
-      //   return {
-      //     coordinate: {
-      //       lat: parseFloat(landing.map.split("#")[0]),
-      //       lng: parseFloat(landing.map.split("#")[1]),
-      //     },
-      //     iconUrl: landing.photo ?? "https://img.icons8.com/stickers/50/map-pin.png",
-      //     iconSize: new google.maps.Size(32, 32), // Tamanho total do ícone
-      //     iconOrigin: new google.maps.Point(0, 0), // Ponto de origem da imagem
-      //     iconAnchor: new google.maps.Point(16, 32), // Define a âncora na base do ícone
-      //   };
-      // });
-      // const landingMarkers = routeInfo.landingPoints.map((landing: any) => {
-      //   return {
-      //     coordinate: {
-      //       lat: parseFloat(landing.map.split("#")[0]),
-      //       lng: parseFloat(landing.map.split("#")[1]),
-      //     },
-      //     iconUrl: landing.photo ?? "https://img.icons8.com/stickers/50/map-pin.png",
-      //     iconSize: new google.maps.Size(32, 32), // Tamanho total do ícone
-      //     iconOrigin: new google.maps.Point(0, 0), // Ponto de origem da imagem
-      //     iconAnchor: new google.maps.Point(16, 32), // Define a âncora na base do ícone
-      //   };
-      // });
-      // addMark([...boardingMarkers, ...landingMarkers]);
+      const passagersMarkers = routeInfo.passagers.map((passager: any) => {
+        let passagerMark: any = "";
+        if (passager.status == 0 && passager.boarding_point_maps) {
+          passagerMark = {
+            coordinate: {
+              lat: parseFloat(passager.boarding_point_maps.split("#")[0]),
+              lng: parseFloat(passager.boarding_point_maps.split("#")[1]),
+            },
+            iconUrl: "https://img.icons8.com/stickers/50/map-pin.png",
+            iconSize: new google.maps.Size(32, 32), // Tamanho total do ícone
+            iconOrigin: new google.maps.Point(0, 0), // Ponto de origem da imagem
+            iconAnchor: new google.maps.Point(16, 32), // Define a âncora na base do ícone
+          };
+        } else if (passager.status == 1 && passager.landing_point_maps) {
+          passagerMark = {
+            coordinate: {
+              lat: parseFloat(passager.landing_point_maps.split("#")[0]),
+              lng: parseFloat(passager.landing_point_maps.split("#")[1]),
+            },
+            iconUrl: "https://img.icons8.com/stickers/50/map-pin.png",
+            iconSize: new google.maps.Size(32, 32), // Tamanho total do ícone
+            iconOrigin: new google.maps.Point(0, 0), // Ponto de origem da imagem
+            iconAnchor: new google.maps.Point(16, 32), // Define a âncora na base do ícone
+          };
+        }
+        return passagerMark
+      });
+      addMark([...passagersMarkers]);
     }
+
   }, [map, routeInfo]);
 
   return (

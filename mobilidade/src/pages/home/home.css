@@ -46,8 +46,8 @@ capacitor-google-map {
 } 
 
 .home-photo {
-  width: 40px;
-  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
 }
 
 .home-card-point {
@@ -64,16 +64,10 @@ capacitor-google-map {
   font-size: 1.5em;
 }
 
-
 .home-card-status-{
-  font-weight: 600;
-  color: blue;
-}
-.home-card-status-andamento{
-  font-weight: 600;
-  color: red;
-}
-.home-card-status-finalizado{
-  font-weight: 600;
-  color: green;
+  font-size: 0.85rem;
+  margin:0;
+  text-align: center;
+  font-weight: 500;
+
 }

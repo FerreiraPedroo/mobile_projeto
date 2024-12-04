@@ -47,6 +47,7 @@ const PointList: React.FC = () => {
   const [modalDeletePointInfo, setModalDeletePointInfo] = useState<Point>();
 
   async function createPoint() {
+
     try {
       const response = await fetch(`http://127.0.0.1:3000/point`, {
         method: "POST",
@@ -143,12 +144,12 @@ const PointList: React.FC = () => {
         <div id="point-container">
           {pointsList.map((point, key) => {
             return (
-              <IonCard key={key} className="point-card-container">
+              <IonCard key={key} color="light" className="point-card-container">
                 <div className="point-config">
                   <div>
                     <IonCardHeader class="point-card-header">
                       <img className="point-photo" src={pointImg}></img>
-                      <IonCardTitle>{point.name}</IonCardTitle>
+                      <IonCardTitle class="point-card-header-name">{point.name}</IonCardTitle>
                     </IonCardHeader>
                   </div>
                   <IonButton color="danger" onClick={() => deletePointModalOpen(point)}>
@@ -171,7 +172,8 @@ const PointList: React.FC = () => {
         >
           <div className="point-config-add-modal">
             <MapAddPoint setPointCoordinate={setPointCoordinate}></MapAddPoint>
-            <p>Digite o nome do ponto de parada</p>
+            <p>Digite o nome do ponto de parada
+            </p>
             <input
               type="text"
               name="pointName"
@@ -184,7 +186,7 @@ const PointList: React.FC = () => {
                 className="point-config-add-buttons"
                 color="primary"
                 expand="full"
-                disabled={!pointName}
+                disabled={!pointName || !pointCoordinate}
                 onClick={() => createPoint()}
               >
                 CRIAR

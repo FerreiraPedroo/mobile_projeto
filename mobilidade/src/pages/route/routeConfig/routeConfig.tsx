@@ -229,18 +229,17 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
             backgroundColor: "#c8e5d0",
           };
         });
-        
+
         setRouteCalendar(statusDays);
 
         const newDate = new Date().toISOString().split("T")[0];
         const findDate = statusDays.find((day: any) => day.date == newDate);
 
-        if(findDate){
+        if (findDate) {
           setShowCalendarButtons(false);
-        }else {
+        } else {
           setShowCalendarButtons(true);
         }
-
       } else {
         throw "Erro";
       }
@@ -274,7 +273,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
 
     getRoute(match.params.routeId);
 
-  const monthActual = new Date().getMonth()
+    const monthActual = new Date().getMonth();
 
     getRouteCalendar(match.params.routeId, 2024, monthActual);
   }, [userInfo, updatePage]);
@@ -331,8 +330,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
                   // value={String(new Date().toISOString())}
                   size="cover"
                   highlightedDates={routeCalendar}
-                >
-                </IonDatetime>
+                ></IonDatetime>
                 <div id="route-config-calendar-buttons">
                   {showCalendarButtons ? (
                     <IonButton
@@ -390,6 +388,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
                   routeInfo.passagers.map((passager) => (
                     <IonCard
                       key={passager.name}
+                      color="light"
                       className="route-confg-card-container"
                       onClick={() =>
                         router.push(`/route-config/${match.params.routeId}/${passager.id}`)
@@ -402,7 +401,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
                             className={"route-config-icon"}
                             size="large"
                           ></IonIcon>
-                          <IonCardTitle>{passager.name}</IonCardTitle>
+                          <IonCardTitle class="route-config-card-header-name">{passager.name}</IonCardTitle>
                         </IonCardHeader>
                       </div>
                     </IonCard>
@@ -477,9 +476,7 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
                         onClick={() => routeAddItem(modalInfo.type, modalInfo.route, item.id)}
                       >
                         <IonIcon
-                          icon={
-                            modalInfo.type == "passager" ? personOutline : locationOutline
-                          }
+                          icon={modalInfo.type == "passager" ? personOutline : locationOutline}
                           className="route-config-icon"
                           size="large"
                         ></IonIcon>

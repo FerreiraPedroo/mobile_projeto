@@ -16,7 +16,7 @@ p {
 }
 
 .route-home-card-container {
-  margin: 8px 8px;
+  margin: 12px 12px;
   padding: 0px;
 }
 
@@ -28,24 +28,35 @@ p {
   padding: 0px;
 }
 
-/* *{border: 1px solid red;} */
+#route-home-header-passagers{
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+.route-home-card-container hr {
+  width: 95%;
+  height: 0.05px;
+  border: 0.5px solid #DDD;
+  margin-top:0;
+}
+
+
 .route-home-card-header {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  
+
   gap: 8px;
   margin: 0;
   padding: 8px;
   align-items: center;
 }
 
-.route-home-card-title{
+.route-home-card-title {
   font-size: 1rem;
 }
 
-.route-home-card-header ion-card-title{
+.route-home-card-header ion-card-title {
   margin: 0;
 }
 
@@ -61,17 +72,26 @@ p {
   padding: 0 12px 8px 12px;
 }
 
-.route-home-passager-points-box{
+.route-home-passager-points-box {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-#route-home-status-button-container{
+#route-home-status-button-container {
   padding: 12px 4px 8px 4px;
 }
 
+.point-user-icon{
+  min-width: 32px;
+}
+
+.route-passager-button {
+  padding: 50px;
+  margin: 10px;
+}
+
 .point-icon {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
 }

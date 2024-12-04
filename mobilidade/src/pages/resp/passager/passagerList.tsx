@@ -52,7 +52,7 @@ const RespPassagerList: React.FC = () => {
         setPassagerName("");
         setUpdatePage((prev) => !prev);
       }
-    } catch (error) { }
+    } catch (error) {}
   }
 
   useEffect(() => {
@@ -112,9 +112,9 @@ const RespPassagerList: React.FC = () => {
         <div id="resp-passager-container">
           {passagerList.map((passager, key) => {
             return (
-              <IonCard key={key} routerLink={`/resp-passager-config/${passager.id}`}>
+              <IonCard key={key} color="light" routerLink={`/resp-passager-config/${passager.id}`}>
                 <IonCardHeader class="resp-passager-card-header">
-                <IonIcon icon={personOutline} size="large"></IonIcon>
+                  <IonIcon icon={personOutline} size="large"></IonIcon>
                   <IonCardTitle>{passager.name}</IonCardTitle>
                 </IonCardHeader>
 

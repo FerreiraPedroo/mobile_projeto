@@ -36,7 +36,7 @@ const ResponsableList: React.FC = () => {
 
   const [responsableList, setResponsableList] = useState<Responsable[]>([]);
   const [modalShow, setModalShow] = useState(false);
-  const [userResponsable, setUserResponsable] = useState("")
+  const [userResponsable, setUserResponsable] = useState("");
 
   async function changeResponsable(e: any) {
     setUserResponsable(e.target.value);
@@ -47,8 +47,7 @@ const ResponsableList: React.FC = () => {
       const response = await fetch(`http://127.0.0.1:3000/responsable-add`, {
         method: "POST",
         mode: "cors",
-        body: JSON.stringify({ userResponsableId: userResponsable, driverId: userInfo.userId })
-        ,
+        body: JSON.stringify({ userResponsableId: userResponsable, driverId: userInfo.userId }),
         headers: {
           "Content-Type": "application/json",
         },
@@ -56,13 +55,11 @@ const ResponsableList: React.FC = () => {
 
       const routeDataReturn = await response.json();
       if (routeDataReturn.codStatus == 200) {
-        setUpdatePage((prev) => !prev)
-        setModalShow(false)
+        setUpdatePage((prev) => !prev);
+        setModalShow(false);
       }
       throw "Erro";
-    } catch (error) {
-
-    }
+    } catch (error) {}
   }
 
   useEffect(() => {
@@ -119,7 +116,7 @@ const ResponsableList: React.FC = () => {
         <div id="route-container">
           {responsableList.map((responsable, key) => {
             return (
-              <IonCard key={key} routerLink={`/responsable/${responsable.id}`}>
+              <IonCard key={key} color="light" routerLink={`/responsable/${responsable.id}`}>
                 <IonCardHeader class="route-card-header">
                   <img className="route-photo" src={man}></img>
                   <IonCardTitle>{responsable.name}</IonCardTitle>
@@ -142,13 +139,17 @@ const ResponsableList: React.FC = () => {
         >
           <div className="route-config-delete-modal">
             <div id="route-responsable-add">
-
               <div id="route-responsable-add-text">Digite o ID do responsável.</div>
 
               <input type="text" onChange={(e) => changeResponsable(e)} />
             </div>
             <div className="route-config-delete-modal-buttons">
-              <IonButton color="medium" expand="full" disabled={!userResponsable} onClick={() => addResponsable()}>
+              <IonButton
+                color="medium"
+                expand="full"
+                disabled={!userResponsable}
+                onClick={() => addResponsable()}
+              >
                 SALVAR
               </IonButton>
               <IonButton color="medium" expand="full" onClick={() => setModalShow(false)}>

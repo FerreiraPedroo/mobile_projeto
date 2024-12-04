@@ -108,6 +108,11 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
+
+}
+
+.point-card-header-name {
+  margin: 0;
 }
 
 .route-config-calendar-accordion {

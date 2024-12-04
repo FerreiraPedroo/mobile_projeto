@@ -89,7 +89,6 @@ const RoutePassagerConfig: React.FC<PassagerConfigParams> = ({ match }) => {
   });
   const [modalShow, setModalShow] = useState(false);
 
-  
   async function openDeletePassagerModal(id: number, name: string, route: string) {
     setModalDeletePassagerShow(true);
     setModalDeletePassagerInfo({ id, name, route });
@@ -143,7 +142,6 @@ const RoutePassagerConfig: React.FC<PassagerConfigParams> = ({ match }) => {
       }
     } catch (error) {}
   }
-
 
   async function openAddModal(type: string) {
     setModalShow(true);
@@ -258,7 +256,7 @@ const RoutePassagerConfig: React.FC<PassagerConfigParams> = ({ match }) => {
 
             {passagerInfo &&
               passagerInfo.boardingPoints.map((point) => (
-                <IonCard key={point.name} className="route-confg-card-container">
+                <IonCard key={point.name} color="light" className="route-confg-card-container">
                   <div className="route-config">
                     <div>
                       <IonCardHeader class="route-config-card-header">
@@ -295,7 +293,7 @@ const RoutePassagerConfig: React.FC<PassagerConfigParams> = ({ match }) => {
 
             {passagerInfo &&
               passagerInfo.landingPoints.map((point) => (
-                <IonCard key={point.name} className="route-confg-card-container">
+                <IonCard key={point.name} color="light" className="route-confg-card-container">
                   <div className="route-config">
                     <div>
                       <IonCardHeader class="route-config-card-header">
@@ -428,6 +426,7 @@ const RoutePassagerConfig: React.FC<PassagerConfigParams> = ({ match }) => {
               {modalInfo.data.map((item) => (
                 <IonCard
                   key={item.name}
+                  color="light"
                   className="passager-config-card-container"
                   onClick={() => routeAddItem(modalInfo.type, item.id)}
                 >
