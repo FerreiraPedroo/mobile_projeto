@@ -16,21 +16,20 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `route_passagers`
+-- Table structure for table `passager`
 --
 
-DROP TABLE IF EXISTS `route_passagers`;
+DROP TABLE IF EXISTS `passager`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `route_passagers` (
+CREATE TABLE `passager` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `passager_id` int NOT NULL,
-  `route_id` int NOT NULL,
-  `boarding_point_id` int DEFAULT NULL,
-  `landing_point_id` int DEFAULT NULL,
+  `user_responsable_id` int NOT NULL,
+  `name` varchar(90) NOT NULL,
+  `img` varchar(90) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -42,4 +41,4 @@ CREATE TABLE `route_passagers` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-28 23:19:29
+-- Dump completed on 2024-12-06 15:31:33

@@ -16,33 +16,22 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `route_passager_status`
+-- Table structure for table `route_status`
 --
 
-DROP TABLE IF EXISTS `route_passager_status`;
+DROP TABLE IF EXISTS `route_status`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `route_passager_status` (
+CREATE TABLE `route_status` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `passager_id` int NOT NULL,
   `route_id` int NOT NULL,
-  `status` int DEFAULT NULL,
-  `date` varchar(90) NOT NULL,
-  `boarding_time` varchar(40) DEFAULT NULL,
-  `landing_time` varchar(40) DEFAULT NULL,
+  `status` varchar(20) DEFAULT NULL,
+  `date` date NOT NULL,
+  `start_time` varchar(12) DEFAULT NULL,
+  `end_time` varchar(12) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=150 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `route_passager_status`
---
-
-LOCK TABLES `route_passager_status` WRITE;
-/*!40000 ALTER TABLE `route_passager_status` DISABLE KEYS */;
-INSERT INTO `route_passager_status` VALUES (147,1,15,1,'2024-11-28','2024-11-29T02:18:13.369Z','2024-11-29T02:18:28.441Z'),(148,7,15,1,'2024-11-28','2024-11-29T02:18:24.809Z','2024-11-29T02:18:29.385Z'),(149,2,15,2,'2024-11-28','2024-11-29T02:18:23.481Z','2024-11-29T02:18:27.281Z');
-/*!40000 ALTER TABLE `route_passager_status` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -53,4 +42,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-28 23:19:17
+-- Dump completed on 2024-12-06 15:31:33

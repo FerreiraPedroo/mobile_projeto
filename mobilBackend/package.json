@@ -11,10 +11,13 @@
   "author": "Pedro Henrique",
   "license": "ISC",
   "dependencies": {
+    "canvas": "^2.11.2",
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.11.2",
-    "qrcode": "^1.5.4"
+    "path": "^0.12.7",
+    "qrcode": "^1.5.4",
+    "url": "^0.11.4"
   }
 }

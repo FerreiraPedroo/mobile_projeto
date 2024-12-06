@@ -16,21 +16,24 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `route_status`
+-- Table structure for table `user`
 --
 
-DROP TABLE IF EXISTS `route_status`;
+DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `route_status` (
+CREATE TABLE `user` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `route_id` int NOT NULL,
-  `status` varchar(20) DEFAULT NULL,
-  `date` date NOT NULL,
-  `start_time` varchar(12) DEFAULT NULL,
-  `end_time` varchar(12) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8mb3;
+  `email` varchar(255) NOT NULL,
+  `password` varchar(32) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `user_type` varchar(45) DEFAULT NULL,
+  `driver_id` int DEFAULT NULL,
+  `token` longtext,
+  `recovery_password` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -42,4 +45,4 @@ CREATE TABLE `route_status` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-28 23:19:29
+-- Dump completed on 2024-12-06 15:31:33

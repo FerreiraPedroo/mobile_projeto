@@ -1,6 +1,8 @@
 import { GoogleMap } from "@capacitor/google-maps";
 import { Geolocation } from "@capacitor/geolocation";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { useIonViewWillEnter } from "@ionic/react";
+import { ContextAppInfo } from "../../services/context/context";
 
 interface GPSPosition {
   latitude: number;
@@ -19,6 +21,7 @@ interface Route {
 
 const MyMap: React.FC<any> = ({ routeInfo }: any) => {
   const [GPSPosition, setGPSPosition] = useState<GPSPosition | null>(null);
+  const { updatePage } = useContext(ContextAppInfo);
 
   const mapRef = useRef<HTMLElement>();
   const [map, setMap] = useState<GoogleMap | null>(null);
@@ -33,15 +36,15 @@ const MyMap: React.FC<any> = ({ routeInfo }: any) => {
         latitude: coordinates.coords.latitude,
         longitude: coordinates.coords.longitude,
       });
-      console.log("Current position:", coordinates);
+      // console.log("Current position:", coordinates);
     }
     createGPS();
   }, []);
-
   // CRIA O MAPA
   useEffect(() => {
     async function createMap() {
       if (!mapRef.current || !GPSPosition || map) return;
+
       const newMap = await GoogleMap.create({
         id: "driver-map",
         element: mapRef.current,
@@ -75,7 +78,8 @@ const MyMap: React.FC<any> = ({ routeInfo }: any) => {
           lat: GPSPosition.latitude,
           lng: GPSPosition.longitude,
         },
-        iconSize: new google.maps.Size(16, 16), // Tamanho total do ícone
+        iconUrl: "https://img.icons8.com/ios-filled/50/car.png",
+        iconSize: new google.maps.Size(32, 32), // Tamanho total do ícone
         iconOrigin: new google.maps.Point(0, 0), // Ponto de origem da imagem
         iconAnchor: new google.maps.Point(8, 16), // Define a âncora na base do ícone
       });
@@ -86,6 +90,75 @@ const MyMap: React.FC<any> = ({ routeInfo }: any) => {
 
     createMap();
   }, [GPSPosition]);
+
+  useIonViewWillEnter(updateMarks);
+
+  // CRIA TODOS OS MARCADORES
+  function updateMarks() {
+    if (map) {
+      const boardingMarkers = routeInfo.passagers.reduce((acc: any, passager: any) => {
+        if (passager.status == 0) {
+          acc.push({
+            coordinate: {
+              lat: parseFloat(passager.boarding_point_maps.split("#")[0]),
+              lng: parseFloat(passager.boarding_point_maps.split("#")[1]),
+            },
+            iconUrl: passager.img
+              ? `http://localhost:3000/${passager.img}`
+              : "https://img.icons8.com/stickers/50/map-pin.png",
+            iconSize: new google.maps.Size(32, 32), // Tamanho total do ícone
+            // iconOrigin: new google.maps.Point(0, 0), // Ponto de origem da imagem
+            iconAnchor: new google.maps.Point(16, 32), // Define a âncora na base do ícone
+          });
+        }
+        if (passager.status == 1) {
+          acc.push({
+            coordinate: {
+              lat: parseFloat(passager.landing_point_maps.split("#")[0]),
+              lng: parseFloat(passager.landing_point_maps.split("#")[1]),
+            },
+            iconUrl: passager.img
+              ? `http://localhost:3000/${passager.img}`
+              : "https://img.icons8.com/stickers/50/map-pin.png",
+            iconSize: new google.maps.Size(32, 32), // Tamanho total do ícone
+            // iconOrigin: new google.maps.Point(0, 0), // Ponto de origem da imagem
+            iconAnchor: new google.maps.Point(16, 32), // Define a âncora na base do ícone
+          });
+        }
+        return acc;
+      }, []);
+
+      addMark([...boardingMarkers]);
+    }
+  }
+
+  // ADICIONAR MARCADORES
+  async function addMark(mark: any) {
+    if (map) {
+      if (mapMarks.length) {
+        await map.removeMarkers(mapMarks);
+      }
+      
+      function addMarkers() {
+        let newMarkers: any[] = [];
+        mark.forEach((marker: any) => {
+          newMarkers.push(map!.addMarker({ ...marker }));
+        });
+        return newMarkers;
+      }
+
+      const result = await Promise.all(addMarkers()).then((value)=> {
+        return value;
+      })
+
+      setMapMarks([...result]);
+    }
+  }
+
+  // CRIA OS PONTOS DOS PASSAGEIROS
+  useEffect(() => {
+    updateMarks();
+  }, [map, routeInfo, updatePage]);
 
   // ATUALIZAR POSIÇÃO DO MOTORISTA
   async function moveMap() {
@@ -102,51 +175,6 @@ const MyMap: React.FC<any> = ({ routeInfo }: any) => {
 
   // ATUALIZAR A POSIÇÃO
   function getCurrentPosition() {}
-
-  // ADICIONAR MARCADORES
-  async function addMark(mark: any) {
-    if (map) {
-      if (mapMarks.length) {
-        await map.removeMarkers(mapMarks);
-      }
-      const newMarks = await map.addMarkers(mark);
-      // console.log({ routeInfo, mapMarks, newMarks });
-      setMapMarks([...newMarks]);
-    }
-  }
-  useEffect(() => {
-    if (map) {
-      const passagersMarkers = routeInfo.passagers.map((passager: any) => {
-        let passagerMark: any = "";
-        if (passager.status == 0 && passager.boarding_point_maps) {
-          passagerMark = {
-            coordinate: {
-              lat: parseFloat(passager.boarding_point_maps.split("#")[0]),
-              lng: parseFloat(passager.boarding_point_maps.split("#")[1]),
-            },
-            iconUrl: "https://img.icons8.com/stickers/50/map-pin.png",
-            iconSize: new google.maps.Size(32, 32), // Tamanho total do ícone
-            iconOrigin: new google.maps.Point(0, 0), // Ponto de origem da imagem
-            iconAnchor: new google.maps.Point(16, 32), // Define a âncora na base do ícone
-          };
-        } else if (passager.status == 1 && passager.landing_point_maps) {
-          passagerMark = {
-            coordinate: {
-              lat: parseFloat(passager.landing_point_maps.split("#")[0]),
-              lng: parseFloat(passager.landing_point_maps.split("#")[1]),
-            },
-            iconUrl: "https://img.icons8.com/stickers/50/map-pin.png",
-            iconSize: new google.maps.Size(32, 32), // Tamanho total do ícone
-            iconOrigin: new google.maps.Point(0, 0), // Ponto de origem da imagem
-            iconAnchor: new google.maps.Point(16, 32), // Define a âncora na base do ícone
-          };
-        }
-        return passagerMark
-      });
-      addMark([...passagersMarkers]);
-    }
-
-  }, [map, routeInfo]);
 
   return (
     <div className="component-wrapper">

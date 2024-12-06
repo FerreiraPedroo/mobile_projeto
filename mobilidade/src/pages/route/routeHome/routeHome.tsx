@@ -3,7 +3,6 @@ import {
   IonButtons,
   IonCard,
   IonCardHeader,
-  IonCardTitle,
   IonContent,
   IonHeader,
   IonIcon,
@@ -58,7 +57,6 @@ import {
   caretForwardOutline,
   enterOutline,
   exitOutline,
-  personCircleOutline,
   personOutline,
   squareOutline,
 } from "ionicons/icons";
@@ -66,8 +64,6 @@ import {
 const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
   const { userInfo, updatePage, setUpdatePage } = useContext(ContextAppInfo);
   const [routeInfo, setRouteInfo] = useState<Route | null>(null);
-  console.log({ routeInfo });
-  console.log({ updatePage });
   const [finishModal, setFinishModal] = useState(false);
 
   // STATUS DA ROTA
@@ -223,7 +219,7 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
                         color="primary"
                         size="small"
                         onClick={() => changeStatusPassager(passager.id, "boarding")}
-                        disabled={routeInfo.status.status != "EM ANDAMENTO"}
+                        disabled={routeInfo.status.status != "EM ANDAMENTO" || !passager.boarding_point_maps || !passager.landing_point_maps}
                       >
                         <IonIcon className="point-icon" icon={caretForwardOutline} color="light" />
                         <IonIcon className="point-icon" icon={squareOutline} color="light" />
@@ -260,7 +256,7 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
                     )}
                   </div>
                 </div>
-                <hr/>
+                <hr />
                 <div className="route-home-passager-points-conteiner">
                   <div className="route-home-passager-points-box">
                     <IonIcon className="point-icon" icon={enterOutline} color="dark" />:{" "}

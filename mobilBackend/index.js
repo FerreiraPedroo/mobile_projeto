@@ -1,5 +1,7 @@
 import express, { urlencoded } from "express";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from 'url';
 
 import { validateTokenJWT } from "./helpers/jwt.js";
 import { loginUserService } from "./service/loginUserService.js";
@@ -17,6 +19,11 @@ app.use(
     // exposedHeaders: ["x-strao-update-data"]
   })
 );
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+console.log(__dirname)
+app.use('/', express.static(path.join(__dirname, 'icons')));
+
 
 app.post("/check-login", async (req, res, next) => {
   const { token } = req.body;
@@ -232,9 +239,6 @@ app.get("/route-passager-status/:passagerId/:routeId/:routeDate/:status", async 
   }
 });
 
-
-
-
 app.get("/route/:routeId/date/:routeDate", async (req, res, next) => {
   const { routeId, routeDate } = req.params;
 
@@ -252,6 +256,7 @@ app.get("/route/:routeId/date/:routeDate", async (req, res, next) => {
         id: passager.passager_id,
         name: passager.name,
         status: passager.status,
+        img: passager.img,
         date: passager.date,
         boarding_time: passager.boarding_time,
         landing_time: passager.landing_time,
@@ -281,10 +286,6 @@ app.get("/route/:routeId/date/:routeDate", async (req, res, next) => {
     });
   }
 });
-
-
-
-
 
 app.post("/route", async (req, res, next) => {
   const { routeName, userId } = req.body;

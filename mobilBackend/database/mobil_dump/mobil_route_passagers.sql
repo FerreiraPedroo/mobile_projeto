@@ -16,32 +16,22 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `point`
+-- Table structure for table `route_passagers`
 --
 
-DROP TABLE IF EXISTS `point`;
+DROP TABLE IF EXISTS `route_passagers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `point` (
+CREATE TABLE `route_passagers` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int NOT NULL,
-  `name` varchar(90) NOT NULL,
-  `maps` varchar(45) DEFAULT NULL,
-  `photo` varchar(128) DEFAULT NULL,
+  `passager_id` int NOT NULL,
+  `route_id` int NOT NULL,
+  `boarding_point_id` int DEFAULT NULL,
+  `landing_point_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb3 COMMENT='							';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `point`
---
-
-LOCK TABLES `point` WRITE;
-/*!40000 ALTER TABLE `point` DISABLE KEYS */;
-INSERT INTO `point` VALUES (5,2,'QUINTA PARADA','-22.8104764#-43.3190986',NULL),(21,1,'Novo ponto de parada certa...','','null'),(22,1,'Dique','-22.803204198376392#-43.3265691316882','null');
-/*!40000 ALTER TABLE `point` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -52,4 +42,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-28 23:19:17
+-- Dump completed on 2024-12-06 15:31:33
