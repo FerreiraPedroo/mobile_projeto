@@ -105,4 +105,5 @@ ion-footer h3 {
   font-size: 1.3rem;
   padding: 16px 0 20px 0;
   color: blue;
+  cursor: pointer;
 }

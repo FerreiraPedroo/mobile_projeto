@@ -97,15 +97,18 @@ const MyMap: React.FC<any> = ({ routeInfo }: any) => {
   function updateMarks() {
     if (map) {
       const boardingMarkers = routeInfo.passagers.reduce((acc: any, passager: any) => {
+        console.log(passager.img)
+        console.log(`http://localhost:3000/${passager.img}`)
         if (passager.status == 0) {
           acc.push({
             coordinate: {
               lat: parseFloat(passager.boarding_point_maps.split("#")[0]),
               lng: parseFloat(passager.boarding_point_maps.split("#")[1]),
             },
-            iconUrl: passager.img
-              ? `http://localhost:3000/${passager.img}`
-              : "https://img.icons8.com/stickers/50/map-pin.png",
+            iconUrl: "https://img.icons8.com/ios-glyphs/30/user-male-circle.png",
+            // iconUrl: passager.img
+            //   ? `http://localhost:3000/icons/${passager.img}`
+            //   : "https://img.icons8.com/ios-glyphs/30/user-male-circle.png",
             iconSize: new google.maps.Size(32, 32), // Tamanho total do ícone
             // iconOrigin: new google.maps.Point(0, 0), // Ponto de origem da imagem
             iconAnchor: new google.maps.Point(16, 32), // Define a âncora na base do ícone
@@ -117,9 +120,10 @@ const MyMap: React.FC<any> = ({ routeInfo }: any) => {
               lat: parseFloat(passager.landing_point_maps.split("#")[0]),
               lng: parseFloat(passager.landing_point_maps.split("#")[1]),
             },
-            iconUrl: passager.img
-              ? `http://localhost:3000/${passager.img}`
-              : "https://img.icons8.com/stickers/50/map-pin.png",
+            iconUrl: "https://img.icons8.com/ios-glyphs/30/user-male-circle.png",
+            // iconUrl: passager.img
+            //   ? `http://localhost:3000/icons/${passager.img}`
+            //   : "https://img.icons8.com/ios-glyphs/30/user-male-circle.png",
             iconSize: new google.maps.Size(32, 32), // Tamanho total do ícone
             // iconOrigin: new google.maps.Point(0, 0), // Ponto de origem da imagem
             iconAnchor: new google.maps.Point(16, 32), // Define a âncora na base do ícone
@@ -128,7 +132,7 @@ const MyMap: React.FC<any> = ({ routeInfo }: any) => {
         return acc;
       }, []);
 
-      addMark([...boardingMarkers]);
+      addMark(boardingMarkers);
     }
   }
 
@@ -138,18 +142,18 @@ const MyMap: React.FC<any> = ({ routeInfo }: any) => {
       if (mapMarks.length) {
         await map.removeMarkers(mapMarks);
       }
-      
+
       function addMarkers() {
         let newMarkers: any[] = [];
         mark.forEach((marker: any) => {
-          newMarkers.push(map!.addMarker({ ...marker }));
+          newMarkers.push(map!.addMarkers([marker]));
         });
         return newMarkers;
       }
 
-      const result = await Promise.all(addMarkers()).then((value)=> {
+      const result = await Promise.all(addMarkers()).then((value) => {
         return value;
-      })
+      });
 
       setMapMarks([...result]);
     }
@@ -159,22 +163,6 @@ const MyMap: React.FC<any> = ({ routeInfo }: any) => {
   useEffect(() => {
     updateMarks();
   }, [map, routeInfo, updatePage]);
-
-  // ATUALIZAR POSIÇÃO DO MOTORISTA
-  async function moveMap() {
-    if (map) {
-      const move = await map.setCamera({
-        coordinate: {
-          lat: GPSPosition!.latitude,
-          lng: GPSPosition!.longitude,
-        },
-        animate: true,
-      });
-    }
-  }
-
-  // ATUALIZAR A POSIÇÃO
-  function getCurrentPosition() {}
 
   return (
     <div className="component-wrapper">

@@ -30,6 +30,7 @@ import loading from "../../../assets/img/loading.gif";
 
 
 import "./routeConfig.css";
+import { UserConfig } from "../../../components/userConfig/userConfig";
 
 
 interface RouteConfig {
@@ -187,6 +188,9 @@ const RouteConfig: React.FC<RouteConfigParams> = ({ match }) => {
             <IonMenuButton />
           </IonButtons>
           <IonTitle>{"Mobil"}</IonTitle>
+          <div slot="end">
+            <UserConfig />
+          </div>
         </IonToolbar>
       </IonHeader>
 

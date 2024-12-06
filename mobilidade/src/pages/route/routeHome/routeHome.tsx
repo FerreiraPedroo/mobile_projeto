@@ -60,6 +60,7 @@ import {
   personOutline,
   squareOutline,
 } from "ionicons/icons";
+import { UserConfig } from "../../../components/userConfig/userConfig";
 
 const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
   const { userInfo, updatePage, setUpdatePage } = useContext(ContextAppInfo);
@@ -165,6 +166,9 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
             <IonMenuButton />
           </IonButtons>
           <IonTitle>{"Mobil"}</IonTitle>
+          <div slot="end">
+            <UserConfig />
+          </div>
         </IonToolbar>
       </IonHeader>
 

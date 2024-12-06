@@ -21,8 +21,7 @@ app.use(
 );
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-console.log(__dirname)
-app.use('/', express.static(path.join(__dirname, 'icons')));
+app.use('/', express.static(path.join(__dirname, '')));
 
 
 app.post("/check-login", async (req, res, next) => {

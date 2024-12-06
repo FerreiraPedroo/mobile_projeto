@@ -27,6 +27,7 @@ import { add, locationOutline, personCircleOutline, trashSharp } from "ionicons/
 import loading from "../../../assets/img/loading.gif";
 
 import "./routePassagerConfig.css";
+import { UserConfig } from "../../../components/userConfig/userConfig";
 
 interface PassagerConfig {
   id: number;
@@ -120,7 +121,7 @@ const RoutePassagerConfig: React.FC<PassagerConfigParams> = ({ match }) => {
     setModalDeleteRoutePassagerShow(true);
     setModalDeleteRoutePassagerInfo({ passagerId, routeId, name });
   }
-  async function handleRoutePassagerDelete(passagerId: number, route: string) {
+  async function handleRoutePassagerDelete(passagerId: number | string, route: string) {
     try {
       const response = await fetch(
         `http://127.0.0.1:3000/passager/${passagerId}/route/${routeId}`,
@@ -225,6 +226,9 @@ const RoutePassagerConfig: React.FC<PassagerConfigParams> = ({ match }) => {
             <IonMenuButton />
           </IonButtons>
           <IonTitle>{"Mobil"}</IonTitle>
+          <div slot="end">
+            <UserConfig />
+          </div>
         </IonToolbar>
       </IonHeader>
 

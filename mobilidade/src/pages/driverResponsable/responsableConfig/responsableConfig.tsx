@@ -25,6 +25,7 @@ import { personOutline, trashSharp } from "ionicons/icons";
 import loading from "../../../assets/img/loading.gif";
 
 import "./responsableConfig.css";
+import { UserConfig } from "../../../components/userConfig/userConfig";
 
 interface RouteConfig {
   id: number;
@@ -120,6 +121,9 @@ const ResponsableConfig: React.FC<RouteConfigParams> = ({ match }) => {
             <IonMenuButton />
           </IonButtons>
           <IonTitle>{"Mobil"}</IonTitle>
+          <div slot="end">
+            <UserConfig />
+          </div>
         </IonToolbar>
       </IonHeader>
 

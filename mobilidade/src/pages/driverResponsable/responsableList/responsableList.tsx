@@ -23,6 +23,7 @@ import { ContextAppInfo } from "../../../services/context/context";
 import { add, man } from "ionicons/icons";
 
 import "./responsableList.css";
+import { UserConfig } from "../../../components/userConfig/userConfig";
 
 interface Responsable {
   id: number;
@@ -98,6 +99,9 @@ const ResponsableList: React.FC = () => {
             <IonMenuButton />
           </IonButtons>
           <IonTitle>{"Mobil"}</IonTitle>
+          <div slot="end">
+            <UserConfig />
+          </div>
         </IonToolbar>
       </IonHeader>
 

@@ -96,6 +96,7 @@ const Login: React.FC = () => {
           const loginDataReturn = await response.json();
 
           if (loginDataReturn.codStatus == 200) {
+            console
             if (userInfo.type == "driver") {
               router.push("/home");
             }

@@ -21,6 +21,7 @@ const Register: React.FC = () => {
   });
 
   const handleInput = (e: any) => {
+    console.log(e.target.value)
     const errorClean = { [e.target.name]: "", ["data" + e.target.name]: "", error: "" };
     if (!e.target.value && e.target.name == "user") {
       errorClean[e.target.name] = "O usuario não pode estar vazio.";
@@ -173,10 +174,10 @@ const Register: React.FC = () => {
               onChange={(e) => handleInput(e)}
               value={register.userType}
             >
-              <option defaultValue="responsable">
+              <option value="responsable">
                 Responsável
               </option>
-              <option defaultValue="driver">Motorista</option>
+              <option value="driver">Motorista</option>
             </select>
             <div id="user-error-label-userType">{registerError.userType}</div>
           </div>
