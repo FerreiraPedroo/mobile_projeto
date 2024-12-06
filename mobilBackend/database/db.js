@@ -113,7 +113,7 @@ async function selectRoute(routeId, routeDate) {
     const [passagerResults] = await conn.query(
       `SELECT * FROM passager WHERE id IN(${routePassagerIds})`
     );
-    console.log({passagerResults})
+    console.log({ passagerResults });
     // STATUS DOS PASSAGEIROS NO DIA
     const [passagerStatusResults] = await conn.query(
       `SELECT * FROM route_passager_status WHERE route_id=${routeId} AND passager_id IN (${routePassagerIds}) AND date='${
@@ -957,7 +957,6 @@ async function respPassagerList(responsableId) {
 async function respPassagerCreate(passagerName, userId) {
   const conn = await connect();
   const [passager] = await conn.query(
-
     `SELECT * FROM passager WHERE user_responsable_id=${userId} AND name='${passagerName}'`
   );
 
@@ -968,11 +967,15 @@ async function respPassagerCreate(passagerName, userId) {
   const [passagerResult] = await conn.query(
     `INSERT INTO passager (name, user_responsable_id) VALUES ('${passagerName}', ${userId})`
   );
-  
+
   const iconePassager = await createIconWithNumber(passagerResult.insertId, passagerName);
 
-  const [passagerUpdated] = await conn.query(`UPDATE passager SET img='${iconePassager}' WHERE id=${passagerResult.insertId}`)
-  console.log({passagerUpdated})
+  const [passagerUpdated] = await conn.query(
+    `UPDATE passager SET img='${"icones" + passagerName.replace(/\s+/g, "_") + ".png"}' WHERE id=${
+      passagerResult.insertId
+    }`
+  );
+  console.log({ passagerUpdated });
   return passagerResult;
 }
 async function respPassagerConfig(passagerId) {
