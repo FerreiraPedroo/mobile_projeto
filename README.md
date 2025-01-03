@@ -1,6 +1,11 @@
-Aplicativo desenvolvido como projeto do modulo mobile da faculdade.
-Tecnologias aplicadas:
-FrontEnd: ReactJS e 
+***Aplicativo desenvolvido como projeto do modulo mobile da faculdade.***
+
+**Ideia:** Um aplicativo para os motoristas de transporte e para os responsáveis(pais) que desejam receber informações dos passageiros(filhos) quando pega o transporte seja para escola, para o curso ou para algum outro lugar.<br/>
+**Tecnologias aplicadas:**<br/>
+**FrontEnd:** ReactJS e Ionic, IoniIcons, IonicUI.<br/>
+**BackEnd:** Node, Express.<br/>
+**Banco de dados:** MySQL.<br/>
+**Build:** Capacitor.</br>
 
 
 
