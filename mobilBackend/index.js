@@ -249,7 +249,6 @@ app.get("/route/:routeId/date/:routeDate", async (req, res, next) => {
     if (!routeData) {
       throw { codStatus: 422, message: "Rota não encontrada." };
     }
-
     const routePassager = routeData.routePassagerInfo.map((passager) => {
       return {
         id: passager.passager_id,

@@ -971,7 +971,7 @@ async function respPassagerCreate(passagerName, userId) {
   const iconePassager = await createIconWithNumber(passagerResult.insertId, passagerName);
 
   const [passagerUpdated] = await conn.query(
-    `UPDATE passager SET img='${"icones" + passagerName.replace(/\s+/g, "_") + ".png"}' WHERE id=${
+    `UPDATE passager SET img='${"icones/" + passagerName.replace(/\s+/g, "_") + ".png"}' WHERE id=${
       passagerResult.insertId
     }`
   );

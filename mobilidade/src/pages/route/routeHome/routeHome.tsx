@@ -29,6 +29,7 @@ interface Route {
     id: number;
     name: string;
     status: number;
+    img: string,
     boarding_time: string;
     landing_time: string;
     boarding_point: string;
@@ -213,7 +214,7 @@ const RouteHome: React.FC<RouteHomeParams> = ({ match }) => {
               <IonCard key={passager.name} className="route-home-card-container" color="light">
                 <div className="route-home">
                   <IonCardHeader class="route-home-card-header">
-                    <IonIcon className="point-user-icon" icon={personOutline} size="large" />
+                    <img className="point-user-icon" src={"http://127.0.0.1:3000/"+passager.img}/>
                     <IonText className="route-home-card-title">{passager.name}</IonText>
                   </IonCardHeader>
 

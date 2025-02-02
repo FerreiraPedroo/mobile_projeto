@@ -15,14 +15,14 @@ async function createIconWithNumber(number, filename) {
       // Desenhar a imagem carregada no canvas
       ctx.drawImage(image, 0, 0);
 
-      ctx.fillStyle = "#0000FF"; // Cor do texto
-      ctx.font = "bold 16px Arial";
+      ctx.fillStyle = "#ff0000"; // Cor do texto
+      ctx.font = "bold 20px Arial";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(number, 21, 23);
+      ctx.fillText(number, 23, 22);
 
       // Salvar a imagem modificada no disco
-      const out = fs.createWriteStream(path.join("icons", filename.replace(/\s+/g, "_") + ".png"));
+      const out = fs.createWriteStream(path.join("icones/", filename.replace(/\s+/g, "_") + ".png"));
       const stream = canvas.createPNGStream();
       stream.pipe(out);
 
